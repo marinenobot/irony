@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<meta name="theme-color" content="#101012" />
+<!-- 意図的に apple-mobile-web-app-capable は付けない。
+     ホーム画面に追加してもstandalone化させず、Safariでそのまま開かせるため
+     （standalone/PWA内ではPiPが不安定なため、常にSafariのタブとして起動する） -->
+<meta name="apple-mobile-web-app-title" content="出発PiP" />
+<link rel="apple-touch-icon" href="/icon.png" />
+<link rel="icon" type="image/png" href="/icon.png" />
+<title>出発PiP</title>
+<meta property="og:title" content="出発PiP">
+<meta property="og:description" content="ホームに追加すると、タップ1回でPiPカウントダウンを開始できます。">
+<style>
+:root{
+  --font-ui:-apple-system,BlinkMacSystemFont,"SF Pro Text","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+  --font-num:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",sans-serif;
+  --blue-primary:#3C4A63;
+  --blue-hover:#33415A;
+  --blue-active:#2A3446;
+  --accent-soft:rgba(60,74,99,0.10);
+  --border:#E4E1DB;
+  --text-primary:#1E1C19;
+  --text-secondary:#6E6860;
+  --text-muted:#756E64;
+  --bg:#F5F4F1;
+  --card-bg:#FFFFFF;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);
+  font-family:var(--font-ui);
+  color:var(--text-primary);
+  font-size:16px;
+  line-height:1.6;
+  padding:max(16px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+  -webkit-font-smoothing:antialiased;
+}
+.container{max-width:420px;margin:0 auto}
+.app-title{
+  text-align:center;
+  font-size:14px;
+  font-weight:600;
+  color:var(--text-muted);
+  margin-bottom:14px;
+}
+#pip-start-btn{
+  display:block;
+  width:100%;
+  background:var(--accent-soft);
+  color:var(--blue-primary);
+  border:1.5px solid var(--blue-primary);
+  border-radius:10px;
+  padding:16px;
+  font-size:17px;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:none;
+  transition:background 0.15s, transform 0.1s;
+}
+#pip-start-btn:active{
+  background:rgba(60,74,99,0.18);
+  transform:scale(0.98);
+}
+.pip-hint{
+  text-align:center;
+  font-size:13px;
+  color:var(--text-muted);
+  margin-top:10px;
+}
+.status-card{
+  background:#101012;
+  color:#fff;
+  border-radius:12px;
+  padding:20px 16px;
+  margin-top:18px;
+  text-align:center;
+}
+.clock-line{
+  font-family:var(--font-num);
+  font-size:36px;
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+}
+.clock-line .utc-label{
+  font-size:14px;
+  font-weight:500;
+  color:#9a9aa0;
+  margin-left:6px;
+}
+.countdown-line{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  margin-top:10px;
+  font-size:15px;
+  color:#9a9aa0;
+}
+.countdown-row{
+  display:flex;
+  align-items:baseline;
+  justify-content:center;
+  gap:6px;
+  white-space:nowrap;
+}
+.countdown-line b{
+  color:#fff;
+  font-weight:700;
+}
+.countdown-label{
+  color:#9a9aa0;
+  font-size:13px;
+  font-weight:500;
+}
+.countdown-time{
+  font-family:var(--font-num);
+  color:#fff;
+  font-size:16px;
+  font-weight:600;
+  font-variant-numeric:tabular-nums;
+}
+.countdown-line .countdown-value{
+  font-family:var(--font-num);
+  color:#fff;
+  font-size:26px;
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+}
+.device-settings-group-title{
+  margin:18px 4px 7px;
+  color:#8e8e93;
+  font-size:13px;
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.device-settings-group-icon{
+  display:inline-flex;
+  color:#8e8e93;
+}
+.device-settings-group-icon svg{
+  width:15px;
+  height:15px;
+}
+.device-settings-group{
+  overflow:hidden;
+  border-radius:13px;
+  background:var(--card-bg);
+}
+.device-settings-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  min-height:56px;
+  margin:0;
+  padding:6px 14px;
+  color:#1c1c1e;
+  font-size:15px;
+  font-weight:600;
+}
+.device-settings-row select{
+  flex:1;
+  min-width:0;
+  min-height:44px;
+  padding:5px 0;
+  border:0;
+  background:transparent;
+  color:#8e8e93;
+  text-align:right;
+  text-align-last:right;
+  box-shadow:none;
+}
+.device-sync-status{
+  margin:9px 4px 0;
+  color:#8e8e93;
+  font-size:11px;
+  line-height:1.5;
+}
+.footer{
+  text-align:center;
+  margin-top:22px;
+}
+.footer a{
+  font-size:13px;
+  color:var(--blue-primary);
+  text-decoration:none;
+  font-weight:600;
+}
+.utc-pip-source,
+.utc-pip-media{
+  position:fixed;
+  left:1px;
+  bottom:1px;
+  width:2px;
+  height:2px;
+  opacity:.001;
+  pointer-events:none;
+  z-index:0;
+}
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:18px;
+  transform:translateX(-50%);
+  background:var(--blue-primary);
+  color:#fff;
+  padding:10px 18px;
+  border-radius:8px;
+  font-size:14px;
+  font-weight:600;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.3s;
+  box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  z-index:9999;
+  white-space:nowrap;
+  max-width:90vw;
+  text-align:center;
+}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="app-title">出発カウントダウン PiP</div>
+
+  <button type="button" id="pip-start-btn">▶ PiP開始</button>
+  <p class="pip-hint" id="pip-hint">タップすると小窓（PiP）でカウントダウンを表示します</p>
+
+  <div class="status-card">
+    <div class="clock-line"><span id="utc-now">--:--:--</span><span class="utc-label">UTC</span></div>
+    <div id="countdown-line" class="countdown-line" hidden>
+      <div class="countdown-row"><b id="countdown-name"></b><span class="countdown-label">出発時刻</span><span id="countdown-time" class="countdown-time">--:--:--</span><span class="countdown-label">UTC</span></div>
+      <div class="countdown-row countdown-row-main"><span class="countdown-label">残り</span><span id="countdown-value" class="countdown-value">0.0</span><span class="countdown-label">秒</span></div>
+    </div>
+  </div>
+
+  <div class="device-settings-group-title"><span class="device-settings-group-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.6 3.1-6.4 7-6.4s7 2.8 7 6.4"/></svg></span>端末設定</div>
+  <div class="device-settings-group"><label class="device-settings-row" for="pip-member-select"><span>自分の名前</span><select id="pip-member-select"><option value="">同期を使用しない</option></select></label></div>
+  <p id="sync-status" class="device-sync-status">確認中…</p>
+
+  <div class="footer"><a href="./index.html">集結計算機を開く</a></div>
+</div>
+
+<canvas id="utc-pip-canvas" class="utc-pip-source" width="640" height="360" aria-hidden="true"></canvas>
+<video id="utc-pip-video" class="utc-pip-media" muted autoplay playsinline webkit-playsinline autopictureinpicture aria-hidden="true"></video>
+
+<div id="toast" class="toast"></div>
+
+<script>
+function pad2(n){return String(n).padStart(2,'0')}
+
+function showToast(text){
+  const toast = document.getElementById('toast');
+  toast.textContent = text;
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'), 2200);
+}
+
+/* ======= 固定メンバー名簿（本体アプリと共通） ======= */
+const FIXED_MEMBER_ROSTER = Object.freeze([
+  'KAI','サーフィス','のえたん','マリン','くまさん','おーちゃん','夏野菜','たいが','ゆーた主任','プリム',
+  'マリィ','とんちゃん','たろー','ごったん','チョコちゃん','Emu','かなしゃん','いか人参バイトリーダー','pomuたん','土井メロ'
+]);
+
+function canonicalRosterName(name){
+  const normalized = String(name || '').trim().toLocaleLowerCase('ja-JP');
+  return FIXED_MEMBER_ROSTER.find(member => member.toLocaleLowerCase('ja-JP') === normalized) || null;
+}
+
+function rosterFirebaseKey(name){
+  const canonical = canonicalRosterName(name);
+  return canonical || null;
+}
+
+const memberSelect = document.getElementById('pip-member-select');
+FIXED_MEMBER_ROSTER.forEach(name => memberSelect.add(new Option(name, name)));
+
+/* ======= Firebase同期（本体アプリと同じDBを再利用） ======= */
+const FIREBASE_CONFIG = window.ARRIVAL_FIREBASE_CONFIG || {
+  apiKey:'AIzaSyDZlCZo-h0lZ-lwU7FwNULDvem0isR_fa4',
+  authDomain:'celebration-7658d.firebaseapp.com',
+  databaseURL:'https://celebration-7658d-default-rtdb.asia-southeast1.firebasedatabase.app',
+  projectId:'celebration-7658d',
+  storageBucket:'celebration-7658d.firebasestorage.app',
+  messagingSenderId:'974478338084',
+  appId:'1:974478338084:web:2bdfb382f544de4c42d0b1'
+};
+
+let firebaseSync = null;
+let firebaseMemberUnsubscribe = null;
+let currentRemoteDeparture = null;
+let utcPipLastDeparture = null;
+let firebaseServerOffsetMs = 0;
+
+function firebaseNow(){
+  return Date.now() + firebaseServerOffsetMs;
+}
+
+function firebaseIsConfigured(){
+  return Boolean(FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.databaseURL && FIREBASE_CONFIG.projectId);
+}
+
+function getRegisteredDeviceMember(){
+  const currentName = canonicalRosterName(localStorage.getItem('arrivalDeviceMemberName'));
+  if(currentName) return currentName;
+  const legacyName = canonicalRosterName(localStorage.getItem('rallyMemberId'));
+  if(legacyName){
+    localStorage.setItem('arrivalDeviceMemberName', legacyName);
+    return legacyName;
+  }
+  return null;
+}
+
+function updateRegistrationUi(){
+  const registeredName = getRegisteredDeviceMember();
+  const status = document.getElementById('sync-status');
+  memberSelect.value = registeredName || '';
+  if(status){
+    if(!registeredName) status.textContent = '端末登録は任意です。同期を使う場合だけ名前を選択してください。';
+    else if(!firebaseIsConfigured()) status.textContent = `${registeredName}で端末登録済み（Firebase設定待ち）`;
+    else status.textContent = `${registeredName}の出発時刻を同期します。`;
+  }
+}
+
+function clearDeviceCountdown(options = {}){
+  currentRemoteDeparture = null;
+  if(!options.keepPipHold) utcPipLastDeparture = null;
+}
+
+function updateDeviceCountdown(){
+  if(!currentRemoteDeparture) return;
+  const remainingMs = currentRemoteDeparture.departureTime - firebaseNow();
+  if(remainingMs > 0) return;
+  const expiredKey = currentRemoteDeparture.key;
+  clearDeviceCountdown({keepPipHold:true});
+  if(firebaseSync && expiredKey){
+    firebaseSync.remove(firebaseSync.ref(firebaseSync.database, `activeRally/members/${expiredKey}`)).catch(()=>{});
+  }
+}
+
+function subscribeRegisteredMember(){
+  if(firebaseMemberUnsubscribe){
+    firebaseMemberUnsubscribe();
+    firebaseMemberUnsubscribe = null;
+  }
+  clearDeviceCountdown();
+  const name = getRegisteredDeviceMember();
+  const key = rosterFirebaseKey(name);
+  if(!firebaseSync || !key) return;
+  const memberRef = firebaseSync.ref(firebaseSync.database, `activeRally/members/${key}`);
+  firebaseMemberUnsubscribe = firebaseSync.onValue(memberRef, snapshot => {
+    const value = snapshot.val();
+    const departureTime = Number.isFinite(Number(value?.departureTime))
+      ? Number(value.departureTime)
+      : Date.parse(value?.launchTime || '');
+    if(!value || (value.name && value.name !== name) || !Number.isFinite(departureTime)){
+      clearDeviceCountdown();
+      return;
+    }
+    if(departureTime <= firebaseNow()){
+      clearDeviceCountdown();
+      firebaseSync.remove(memberRef).catch(()=>{});
+      return;
+    }
+    currentRemoteDeparture = {key, name, departureTime};
+    updateDeviceCountdown();
+  });
+}
+
+async function initializeFirebaseSync(){
+  updateRegistrationUi();
+  if(!firebaseIsConfigured()) return;
+  try{
+    const version = '12.17.1';
+    const [appModule, databaseModule] = await Promise.all([
+      import(`https://www.gstatic.com/firebasejs/${version}/firebase-app.js`),
+      import(`https://www.gstatic.com/firebasejs/${version}/firebase-database.js`)
+    ]);
+    const app = appModule.initializeApp(FIREBASE_CONFIG);
+    firebaseSync = {
+      database:databaseModule.getDatabase(app),
+      ref:databaseModule.ref,
+      onValue:databaseModule.onValue,
+      update:databaseModule.update,
+      remove:databaseModule.remove
+    };
+    databaseModule.onValue(databaseModule.ref(firebaseSync.database, '.info/serverTimeOffset'), snapshot => {
+      const offset = snapshot.val();
+      if(typeof offset === 'number') firebaseServerOffsetMs = offset;
+    });
+    updateRegistrationUi();
+    subscribeRegisteredMember();
+  }catch(error){
+    console.warn('Firebase同期を開始できませんでした', error);
+    const status = document.getElementById('sync-status');
+    if(status) status.textContent = 'Firebaseへ接続できません。設定と通信状態を確認してください。';
+  }
+}
+
+memberSelect.addEventListener('change', () => {
+  const selectedName = canonicalRosterName(memberSelect.value);
+  if(selectedName) localStorage.setItem('arrivalDeviceMemberName', selectedName);
+  else localStorage.removeItem('arrivalDeviceMemberName');
+  updateRegistrationUi();
+  subscribeRegisteredMember();
+  showToast(selectedName ? `${selectedName}で端末登録しました` : '端末登録を解除しました');
+});
+
+setInterval(updateDeviceCountdown, 1000);
+initializeFirebaseSync();
+
+/* ======= UTC時計 & PiP描画 ======= */
+const utcPipCanvas = document.getElementById('utc-pip-canvas');
+const utcPipVideo = document.getElementById('utc-pip-video');
+const utcPipContext = utcPipCanvas?.getContext('2d');
+let utcPipWindow = null;
+let utcVideoPipStream = null;
+
+const UTC_PIP_ASPECT = 3;
+const UTC_PIP_BASE_HEIGHT = 300;
+const UTC_PIP_HOLD_MS = 700;
+const UTC_PIP_FONT = '-apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif';
+
+if(utcPipCanvas){
+  utcPipCanvas.width = Math.round(UTC_PIP_BASE_HEIGHT * UTC_PIP_ASPECT);
+  utcPipCanvas.height = UTC_PIP_BASE_HEIGHT;
+}
+
+function formatRemainingSeconds(totalMs){
+  return (Math.max(0, totalMs) / 1000).toFixed(1);
+}
+
+function getUtcPipDepartureData(){
+  if(currentRemoteDeparture){
+    utcPipLastDeparture = {
+      name:currentRemoteDeparture.name,
+      departureTime:currentRemoteDeparture.departureTime
+    };
+  }
+  if(!utcPipLastDeparture) return null;
+  const remainingMs = utcPipLastDeparture.departureTime - firebaseNow();
+  if(remainingMs <= -UTC_PIP_HOLD_MS){
+    utcPipLastDeparture = null;
+    return null;
+  }
+  const departureDate = new Date(utcPipLastDeparture.departureTime);
+  const departureTimeText = `${pad2(departureDate.getUTCHours())}:${pad2(departureDate.getUTCMinutes())}:${pad2(departureDate.getUTCSeconds())}`;
+  return {
+    name:utcPipLastDeparture.name,
+    countdown:formatRemainingSeconds(remainingMs),
+    departureTimeText
+  };
+}
+
+function fitPipFont(ctx, parts, maxWidth){
+  let scale = 1;
+  for(let i = 0; i < 8; i++){
+    let total = 0;
+    for(const part of parts){
+      ctx.font = `${part.weight} ${Math.round(part.size * scale)}px ${UTC_PIP_FONT}`;
+      total += ctx.measureText(part.text).width;
+    }
+    if(total <= maxWidth) break;
+    scale *= maxWidth / total;
+  }
+  return scale;
+}
+
+function drawPipLine(ctx, parts, centerX, centerY, maxWidth){
+  const scale = fitPipFont(ctx, parts, maxWidth);
+  let total = 0;
+  for(const part of parts){
+    ctx.font = `${part.weight} ${Math.round(part.size * scale)}px ${UTC_PIP_FONT}`;
+    part.width = ctx.measureText(part.text).width;
+    total += part.width;
+  }
+  let x = centerX - total / 2;
+  ctx.textAlign = 'left';
+  for(const part of parts){
+    ctx.font = `${part.weight} ${Math.round(part.size * scale)}px ${UTC_PIP_FONT}`;
+    ctx.fillStyle = part.color;
+    ctx.fillText(part.text, x, centerY);
+    x += part.width;
+  }
+  ctx.textAlign = 'center';
+}
+
+const UTC_PIP_LAYOUT = {
+  sideMargin:0.05,
+  timeSize:0.62,
+  unitSize:0.18,
+  timeMillisSize:0.34,
+  timeY:0.53,
+  labelSize:0.14,
+  labelY:0.23,
+  valueSize:0.60,
+  secondSize:0.16,
+  valueY:0.66
+};
+
+function drawUtcVideoFrame(timeText, millisText, departureData){
+  if(!utcPipContext || !utcPipCanvas) return;
+  const ctx = utcPipContext;
+  const W = utcPipCanvas.width;
+  const H = utcPipCanvas.height;
+  const L = UTC_PIP_LAYOUT;
+  const inner = W - H * L.sideMargin * 2;
+  ctx.fillStyle = '#101012';
+  ctx.fillRect(0, 0, W, H);
+  ctx.textBaseline = 'middle';
+  if(departureData){
+    drawPipLine(ctx, [
+      {text:departureData.name || '', size:H * L.labelSize, weight:700, color:'#ffffff'},
+      {text:'　出発時刻　', size:H * L.labelSize, weight:400, color:'#9a9aa0'},
+      {text:departureData.departureTimeText || '--:--:--', size:H * L.labelSize, weight:600, color:'#ffffff'},
+      {text:' UTC', size:H * L.labelSize * 0.85, weight:600, color:'#9a9aa0'}
+    ], W / 2, H * L.labelY, inner);
+    drawPipLine(ctx, [
+      {text:'残り　', size:H * L.secondSize, weight:500, color:'#9a9aa0'},
+      {text:departureData.countdown, size:H * L.valueSize, weight:900, color:'#ffffff'},
+      {text:'秒', size:H * L.secondSize, weight:600, color:'#9a9aa0'}
+    ], W / 2, H * L.valueY, inner);
+    return;
+  }
+  drawPipLine(ctx, [
+    {text:timeText, size:H * L.timeSize, weight:600, color:'#ffffff'},
+    {text:millisText || '', size:H * L.timeMillisSize, weight:900, color:'#ffffff'},
+    {text:' UTC', size:H * L.unitSize, weight:600, color:'#9a9aa0'}
+  ], W / 2, H * L.timeY, inner);
+}
+
+function tickUTC(){
+  const d = new Date();
+  const utcText = `${pad2(d.getUTCHours())}:${pad2(d.getUTCMinutes())}:${pad2(d.getUTCSeconds())}`;
+  const millisText = (d.getUTCMilliseconds() / 1000).toFixed(1).slice(1);
+  document.getElementById('utc-now').textContent = utcText;
+  const departureData = getUtcPipDepartureData();
+  const countdownLine = document.getElementById('countdown-line');
+  if(countdownLine){
+    countdownLine.hidden = !departureData;
+    if(departureData){
+      document.getElementById('countdown-name').textContent = departureData.name || '';
+      document.getElementById('countdown-value').textContent = departureData.countdown;
+      const countdownTime = document.getElementById('countdown-time');
+      if(countdownTime) countdownTime.textContent = departureData.departureTimeText || '--:--:--';
+    }
+  }
+  if(utcPipWindow && !utcPipWindow.closed){
+    const pipDoc = utcPipWindow.document;
+    const pipNormal = pipDoc.getElementById('utc-pip-normal');
+    const pipTime = pipDoc.getElementById('utc-pip-time');
+    const pipCountdown = pipDoc.getElementById('utc-pip-countdown');
+    const pipCountdownName = pipDoc.getElementById('utc-pip-countdown-name');
+    const pipCountdownValue = pipDoc.getElementById('utc-pip-countdown-value');
+    const pipCountdownTime = pipDoc.getElementById('utc-pip-countdown-time');
+    if(pipTime) pipTime.textContent = utcText;
+    if(pipNormal) pipNormal.hidden = Boolean(departureData);
+    if(pipCountdown){
+      pipCountdown.hidden = !departureData;
+      if(departureData){
+        if(pipCountdownName) pipCountdownName.textContent = departureData.name || '';
+        if(pipCountdownValue) pipCountdownValue.textContent = departureData.countdown;
+        if(pipCountdownTime) pipCountdownTime.textContent = departureData.departureTimeText || '--:--:--';
+      }
+    }
+  }
+  drawUtcVideoFrame(utcText, millisText, departureData);
+}
+
+setInterval(tickUTC, 33); tickUTC();
+
+function initializeUtcVideoPipSource(){
+  if(utcVideoPipStream) return true;
+  if(!utcPipCanvas?.captureStream || !utcPipVideo) return false;
+  try{
+    utcVideoPipStream = utcPipCanvas.captureStream(30);
+    utcPipVideo.srcObject = utcVideoPipStream;
+    utcPipVideo.muted = true;
+    utcPipVideo.autoplay = true;
+    utcPipVideo.playsInline = true;
+    utcPipVideo.disableRemotePlayback = true;
+    utcPipVideo.play().catch(()=>{});
+    return true;
+  }catch(error){
+    utcVideoPipStream = null;
+    return false;
+  }
+}
+
+async function openUtcVideoPip(){
+  if(!initializeUtcVideoPipSource()) return false;
+  const playPromise = utcPipVideo.play().catch(()=>{});
+
+  /* iPhone Safariはタップ直後の同期呼び出しでないとPiPを拒否することがある */
+  try{
+    if(typeof utcPipVideo.webkitSetPresentationMode === 'function'){
+      const supportsPip = typeof utcPipVideo.webkitSupportsPresentationMode !== 'function'
+        || utcPipVideo.webkitSupportsPresentationMode('picture-in-picture');
+      if(supportsPip){
+        utcPipVideo.webkitSetPresentationMode('picture-in-picture');
+        return true;
+      }
+    }
+  }catch(error){
+    // 標準PiP方式を続けて試す
+  }
+
+  try{
+    await playPromise;
+    if(typeof utcPipVideo.webkitSetPresentationMode === 'function'){
+      const supportsPip = typeof utcPipVideo.webkitSupportsPresentationMode !== 'function'
+        || utcPipVideo.webkitSupportsPresentationMode('picture-in-picture');
+      if(supportsPip){
+        utcPipVideo.webkitSetPresentationMode('picture-in-picture');
+        return true;
+      }
+    }
+    if(document.pictureInPictureElement === utcPipVideo) return true;
+    if(typeof utcPipVideo.requestPictureInPicture === 'function' && document.pictureInPictureEnabled !== false){
+      await utcPipVideo.requestPictureInPicture();
+      return true;
+    }
+  }catch(error){
+    // 呼び出し元でフォールバック表示へ切り替える
+  }
+  return false;
+}
+
+initializeUtcVideoPipSource();
+
+async function openUtcPipWindow(){
+  if(window.documentPictureInPicture?.requestWindow){
+    try{
+      if(utcPipWindow && !utcPipWindow.closed){
+        utcPipWindow.focus();
+        return true;
+      }
+      utcPipWindow = await window.documentPictureInPicture.requestWindow({width:280, height:Math.round(280 / UTC_PIP_ASPECT)});
+      utcPipWindow.document.head.innerHTML = `<meta charset="UTF-8"><style>
+        *{box-sizing:border-box} body{display:flex;align-items:center;justify-content:center;width:100vw;height:100vh;margin:0;background:#101012;color:#fff;font-family:${UTC_PIP_FONT};overflow:hidden;font-variant-numeric:tabular-nums}
+        [hidden]{display:none!important}
+        .pip-line{display:flex;align-items:baseline;justify-content:center;gap:6px;white-space:nowrap}
+        #utc-pip-time{font-size:9.5vh;font-weight:600;letter-spacing:-.02em}
+        .pip-unit{color:#9a9aa0;font-size:4vh;font-weight:600}
+        .pip-cd{text-align:center;line-height:1.2}
+        .pip-cd-head{display:flex;align-items:baseline;justify-content:center;gap:.4em;color:#9a9aa0;font-size:3vh;font-weight:400;white-space:nowrap}
+        .pip-cd-head b{color:#fff;font-weight:700}
+        .pip-cd-head span{color:#fff;font-weight:600}
+        .pip-cd-value-row{display:flex;align-items:baseline;justify-content:center;gap:.35em;white-space:nowrap}
+        .pip-cd-label{color:#9a9aa0;font-size:3vh;font-weight:500}
+        .pip-cd-value{color:#fff;font-size:8.4vh;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
+        .pip-cd-value small{font-size:.45em;font-weight:600;color:#9a9aa0}
+      </style>`;
+      utcPipWindow.document.body.innerHTML = '<div><div id="utc-pip-normal" class="pip-line"><span id="utc-pip-time">--:--:--</span><span class="pip-unit">UTC</span></div><div id="utc-pip-countdown" class="pip-cd" hidden><div class="pip-cd-head"><b id="utc-pip-countdown-name"></b><span>出発時刻</span><span id="utc-pip-countdown-time">--:--:--</span><span>UTC</span></div><div class="pip-cd-value-row"><span class="pip-cd-label">残り</span><span class="pip-cd-value"><span id="utc-pip-countdown-value">0.0</span><small>秒</small></span></div></div></div>';
+      utcPipWindow.addEventListener('pagehide', () => { utcPipWindow = null; });
+      tickUTC();
+      return true;
+    }catch(e){
+      utcPipWindow = null;
+    }
+  }
+  return openUtcVideoPip();
+}
+
+/* タップ直後に同期的にPiPを試みる。iOS Safariの制約で不可能な場合は
+   無理に自動化・再試行はせず、その場でフォールバック表示に切り替える */
+document.getElementById('pip-start-btn').addEventListener('click', async () => {
+  const ok = await openUtcPipWindow();
+  const hint = document.getElementById('pip-hint');
+  if(ok){
+    if(hint) hint.textContent = 'PiPを開始しました。ホーム画面に戻ってもカウントダウンが表示され続けます。';
+  }else{
+    if(hint) hint.textContent = 'この端末ではPiPを開始できません。設定 → Safari →「ピクチャ・イン・ピクチャの自動開始」等をご確認のうえ、下の時計をそのままご利用ください。';
+    showToast('PiPを開始できませんでした');
+  }
+});
+</script>
+</body>
+</html>
