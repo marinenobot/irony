@@ -68,7 +68,7 @@
   /* 王城決戦・着弾時刻・スイッチ、3タブ共通のレイアウト寸法。
      タブ下から「計算開始」までの縦位置をここだけで揃える */
   --settings-row-height:56px;
-  --settings-top-gap:24px;
+  --settings-top-gap:12px;
   --settings-bottom-gap:24px;
   --settings-rows-max:2;
   --settings-area-height:calc(var(--settings-row-height) * var(--settings-rows-max));
@@ -199,10 +199,8 @@ button.secondary:hover{
   padding:16px;
   border:none !important;
   border-radius:8px;
-  background:#ffffff;
-  box-shadow:
-    0 8px 28px rgba(0,0,0,0.42),
-    0 4px 10px rgba(0,0,0,0.24);
+  background:rgba(255,255,255,.72);
+  box-shadow:0 2px 10px rgba(30,28,25,.08);
   font-variant-numeric:tabular-nums;
   font-family:var(--font-num);
 }
@@ -3497,7 +3495,8 @@ body .landing-settings-card{
 /* --- 設定行（集結時間・準備時間など） --- */
 body #page-calc .departure-setting-row,
 body #page-landing .l-setting-row,
-body #page-landing .l-wave-options{
+body #page-landing .l-wave-options,
+body #page-switch .departure-setting-row{
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -3547,7 +3546,8 @@ body #page-landing .l-setting-control select[class*="time"]{
 
 /* --- シェブロン（iOS標準の細い「>」） --- */
 body #page-calc .departure-chevron,
-body #page-landing .l-chevron{
+body #page-landing .l-chevron,
+body #page-switch .departure-chevron{
   display:inline-flex;
   align-items:center;
   justify-content:center;
@@ -3560,7 +3560,8 @@ body #page-landing .l-chevron{
 }
 
 body #page-calc .departure-chevron::after,
-body #page-landing .l-chevron::after{
+body #page-landing .l-chevron::after,
+body #page-switch .departure-chevron::after{
   content:"";
   display:block;
   width:7px;
@@ -3576,7 +3577,10 @@ body #page-calc .departure-chevron:focus,
 body #page-calc .departure-chevron:active,
 body #page-landing .l-chevron:hover,
 body #page-landing .l-chevron:focus,
-body #page-landing .l-chevron:active{
+body #page-landing .l-chevron:active,
+body #page-switch .departure-chevron:hover,
+body #page-switch .departure-chevron:focus,
+body #page-switch .departure-chevron:active{
   color:var(--ios-tint);
   background:transparent;
 }
@@ -4510,7 +4514,8 @@ body #page-landing .l-wave-options{
 
 body #page-calc .departure-setting-control,
 body #page-calc .departure-time-control,
-body #page-landing .l-setting-control{
+body #page-landing .l-setting-control,
+body #page-switch .departure-setting-control{
   display:inline-flex;
   align-items:center;
   justify-content:flex-end;
@@ -4531,6 +4536,7 @@ body #page-calc .departure-time-control select,
 body #page-calc .departure-after-text,
 body #page-calc .departure-mode-select,
 body #page-landing .l-setting-control select,
+body #page-switch .departure-setting-control select,
 body .inline-select,
 body .time-select,
 body .time-select-sm,
@@ -4927,7 +4933,8 @@ body #page-switch .mode-card{
 body #page-calc .departure-setting-row,
 body #page-landing .l-setting-row,
 body #page-landing .l-wave-options,
-body #page-switch .sw-row{
+body #page-switch .sw-row,
+body #page-switch .departure-setting-row{
   min-height:var(--settings-row-height) !important;
   align-items:center !important;
 }
@@ -4967,7 +4974,7 @@ body.landing-active .clock-time-line{
   justify-content:flex-start !important;
 }
 body .clock-pip-icon{
-  display:flex;
+  display:none !important;
   position:absolute;
   top:27px;
   right:58px;
@@ -5505,12 +5512,22 @@ body .member-pet-remaining{
         </span>
       </div>
 
-      <div class="sw-row" id="sw-from-now-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="今から○秒後を編集">
-        <span class="sw-row-label">今から</span>
-        <span class="sw-row-control">
-          <input type="number" id="sw-from-now" class="sw-number-input" inputmode="numeric" min="1" step="1" value="30" tabindex="-1">
-          <span class="sw-row-suffix">秒後</span>
-          <button type="button" class="sw-chevron departure-edit-trigger" data-editor="switch-from-now" aria-label="今から○秒後を編集">›</button>
+      <div class="departure-setting-row" id="sw-from-now-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="今から○秒後を編集">
+        <span class="departure-setting-name">今から</span>
+        <span class="departure-setting-control">
+          <select id="sw-from-now" class="inline-select" tabindex="-1">
+            <option value="55">55秒</option>
+            <option value="50">50秒</option>
+            <option value="45">45秒</option>
+            <option value="40">40秒</option>
+            <option value="39">39秒</option>
+            <option value="36">36秒</option>
+            <option value="35">35秒</option>
+            <option value="33">33秒</option>
+            <option value="32">32秒</option>
+            <option value="30" selected>30秒</option>
+          </select>
+          <button type="button" class="departure-chevron departure-edit-trigger" data-editor="switch-from-now" aria-label="今から○秒後を編集">›</button>
         </span>
       </div>
     </div>
