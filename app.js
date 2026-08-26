@@ -11,12 +11,6 @@ let firebaseRosterUnsubscribe = null;
 const SWITCH_MARCH_SECONDS = Object.freeze([55,50,45,40,39,36,35,33,32,30]);
 const swRallyMinSel = document.getElementById('sw-rally-min');
 const swFromNowInput = document.getElementById('sw-from-now');
-const swFromNowLabel = document.getElementById('sw-from-now-label');
-function syncSwitchFromNowLabel(){
-  if(swFromNowLabel && swFromNowInput) swFromNowLabel.textContent = `${parseInt(swFromNowInput.value,10) || 30}秒後`;
-}
-swFromNowInput?.addEventListener('change', syncSwitchFromNowLabel);
-syncSwitchFromNowLabel();
 
 function canonicalRosterName(name){
   const raw = String(name || '').trim();
@@ -44,7 +38,7 @@ function getCurrentDirectorRoster(){
 }
 
 function refreshDeviceMemberOptions(){
-  const selects = [document.getElementById('device-member-select'), document.getElementById('quick-device-member-select')].filter(Boolean);
+  const selects = [document.getElementById('quick-device-member-select')].filter(Boolean);
   const current = localStorage.getItem('arrivalDeviceMemberName') || localStorage.getItem('rallyMemberId') || '';
   selects.forEach(select => {
     const selected = select.value || current;
@@ -135,12 +129,9 @@ function getRegisteredDeviceMember(){
 function updateDeviceRegistrationUi(){
   const registeredName = getRegisteredDeviceMember();
   const settingsButton = document.getElementById('app-settings-button');
-  const memberSelect = document.getElementById('device-member-select');
-  const status = document.getElementById('device-sync-status');
   const quickName = document.getElementById('quick-sync-name');
   const quickSelect = document.getElementById('quick-device-member-select');
   const quickStatus = document.getElementById('quick-device-sync-status');
-  if(memberSelect) memberSelect.value = registeredName || '';
   if(quickSelect) quickSelect.value = registeredName || '';
   if(quickName) quickName.textContent = registeredName || '未設定';
   settingsButton?.classList.toggle('registered', Boolean(registeredName));
@@ -148,11 +139,6 @@ function updateDeviceRegistrationUi(){
     if(!registeredName) quickStatus.textContent = '同期を使う場合だけ名前を選択してください。';
     else if(!firebaseIsConfigured()) quickStatus.textContent = `${registeredName}で端末登録済み（Firebase設定待ち）`;
     else quickStatus.textContent = `${registeredName}の出発時刻を同期します。`;
-  }
-  if(status){
-    if(!registeredName) status.textContent = '端末登録は任意です。同期を使う場合だけ名前を選択してください。';
-    else if(!firebaseIsConfigured()) status.textContent = `${registeredName}で端末登録済み（Firebase設定待ち）`;
-    else status.textContent = `${registeredName}の出発時刻を同期します。`;
   }
 }
 
@@ -229,7 +215,6 @@ async function initializeFirebaseSync(){
     subscribeRegisteredMember();
   }catch(error){
     console.warn('Firebase同期を開始できませんでした', error);
-    const status = document.getElementById('device-sync-status');
     if(status) status.textContent = 'Firebaseへ接続できません。設定と通信状態を確認してください。';
   }
 }
@@ -258,28 +243,8 @@ async function publishRosterDepartureTimes(rowData){
   }
 }
 
-const deviceMemberSelect = document.getElementById('device-member-select');
 const quickDeviceMemberSelect = document.getElementById('quick-device-member-select');
 
-function openDeviceSettings(){
-  updateDeviceRegistrationUi();
-  const modal = document.getElementById('device-settings-modal');
-  modal.classList.add('show');
-  modal.style.visibility = 'visible';
-  modal.style.pointerEvents = 'auto';
-  modal.setAttribute('aria-hidden', 'false');
-  document.body.classList.add('modal-open');
-}
-
-function closeDeviceSettings(){
-  const modal = document.getElementById('device-settings-modal');
-  modal.classList.remove('show');
-  modal.style.visibility = '';
-  modal.style.pointerEvents = '';
-  modal.setAttribute('aria-hidden', 'true');
-  document.body.classList.remove('modal-open');
-  document.getElementById('app-settings-button').focus();
-}
 
 /* app-settings-button は時計横クイックメニューを開く */
 const appSettingsButton = document.getElementById('app-settings-button');
@@ -345,7 +310,7 @@ const THEME_KEY = 'rallyThemeV3';
 function normalizeTheme(theme){
   if(theme === 'caramel') return 'truffle';
   if(theme === 'default') return 'light';
-  return ['light','dark','mint','cookies','truffle'].includes(theme) ? theme : 'light';
+  return ['light','mint','cookies','truffle'].includes(theme) ? theme : 'light';
 }
 function applyTheme(theme,persist=true){
   const selected=normalizeTheme(theme);
@@ -359,7 +324,7 @@ function updateThemeMeta(){
   const meta=document.querySelector('meta[name="theme-color"]');
   if(!meta) return;
   const selected=document.body.getAttribute('data-theme');
-  const colors={dark:'#000000',light:'#F7F6F3',mint:'#F7F8F6',cookies:'#F6F8F9',truffle:'#F8F6F3'};
+  const colors={light:'#F7F6F3',mint:'#F7F8F6',cookies:'#F6F8F9',truffle:'#F8F6F3'};
   meta.setAttribute('content',colors[selected] || colors.light);
 }
 function openThemeMenu(){ clockQuickMenu?.classList.add('theme-open'); }
@@ -400,16 +365,6 @@ document.getElementById('device-sync-save')?.addEventListener('click', ()=>{
   });
 })();
 
-document.getElementById('device-settings-close').addEventListener('click', closeDeviceSettings);
-document.getElementById('device-settings-save').addEventListener('click', () => {
-  const selectedName = canonicalRosterName(deviceMemberSelect.value);
-  if(selectedName) localStorage.setItem('arrivalDeviceMemberName', selectedName);
-  else localStorage.removeItem('arrivalDeviceMemberName');
-  updateDeviceRegistrationUi();
-  subscribeRegisteredMember();
-  closeDeviceSettings();
-  showToast(selectedName ? `${selectedName}で端末登録しました` : '端末登録を解除しました');
-});
 
 setInterval(updateDeviceCountdown, 1000);
 initializeFirebaseSync();
@@ -682,122 +637,6 @@ async function openUtcPipWindow(){
         .pip-cd-value small{font-size:.45em;font-weight:600;color:#9a9aa0}
       
 
-/* ===== 2026-08-24 UI polish: 時計を浮かせる / 設定…を裸に / 補助カードを控えめに ===== */
-
-/* UTC時計：背景面とやわらかい影で、ページから少し浮かせる */
-body .clock,
-body.landing-active .clock{
-  width:100% !important;
-  padding:14px 18px 12px !important;
-  border:1px solid rgba(60,60,67,.08) !important;
-  border-bottom:1px solid rgba(60,60,67,.08) !important;
-  border-radius:14px !important;
-  background:rgba(255,255,255,.88) !important;
-  box-shadow:0 2px 8px rgba(30,28,25,.07), 0 10px 24px rgba(30,28,25,.055) !important;
-}
-
-/* 時計横の「…」：丸い囲み・背景を完全に消す */
-body .app-settings-button,
-body.landing-active .app-settings-button{
-  top:-9px !important;
-  right:4px !important;
-  width:36px !important;
-  min-width:36px !important;
-  height:36px !important;
-  min-height:36px !important;
-  padding:0 !important;
-  border:0 !important;
-  border-radius:0 !important;
-  background:transparent !important;
-  box-shadow:none !important;
-  color:rgba(60,60,67,.58) !important;
-  font-size:20px !important;
-  font-weight:600 !important;
-}
-body .app-settings-button::before,
-body .app-settings-button::after,
-body.landing-active .app-settings-button::before,
-body.landing-active .app-settings-button::after{
-  display:none !important;
-  content:none !important;
-  background:none !important;
-  box-shadow:none !important;
-}
-body .app-settings-button:hover,
-body .app-settings-button:focus,
-body .app-settings-button:active,
-body.landing-active .app-settings-button:hover,
-body.landing-active .app-settings-button:focus,
-body.landing-active .app-settings-button:active{
-  background:transparent !important;
-  box-shadow:none !important;
-  transform:none !important;
-}
-
-/* 集結主一覧：主役ではないので外枠を弱くし、面の主張を減らす */
-body #page-calc > .collapsible-card:first-of-type{
-  border:1px solid rgba(60,60,67,.08) !important;
-  border-radius:10px !important;
-  background:rgba(255,255,255,.62) !important;
-  box-shadow:none !important;
-}
-body #page-calc > .collapsible-card:first-of-type .member-row,
-body #page-calc > .collapsible-card:first-of-type .member-row-wrapper,
-body #page-calc > .collapsible-card:first-of-type .button-controls{
-  background:transparent !important;
-}
-
-/* チャット貼り付け用プレビュー：カード感を一段落として、本文より目立たせない */
-body .copy-preview-card{
-  border:1px solid rgba(60,60,67,.08) !important;
-  border-radius:10px !important;
-  background:rgba(255,255,255,.56) !important;
-  box-shadow:none !important;
-}
-body .copy-preview-card .collapsible-header{
-  min-height:48px !important;
-  padding:0 14px !important;
-  background:transparent !important;
-}
-body .copy-preview-card .collapsible-header-title{
-  color:rgba(60,60,67,.66) !important;
-  font-size:15px !important;
-  font-weight:500 !important;
-}
-body .copy-preview-card .collapsible-arrow{
-  color:rgba(60,60,67,.28) !important;
-}
-body .copy-preview-card .collapsible-content-inner{
-  background:transparent !important;
-}
-body .copy-preview-card .preview-text-box{
-  padding:10px 14px !important;
-  border-top:1px solid rgba(60,60,67,.06) !important;
-  background:rgba(118,118,128,.025) !important;
-  color:rgba(60,60,67,.68) !important;
-  font-size:13px !important;
-  line-height:1.5 !important;
-}
-
-/* 結果表示：上下の余白を同量にして、光った時の囲みのバランスを揃える */
-body #page-calc .impact-display,
-body #page-landing #l-result .impact-display,
-body #page-switch #sw-result .impact-display{
-  padding:12px 0 !important;
-}
-
-/* コピー完了フラッシュ：外側に均等に広がる、少し控えめな光 */
-@keyframes copyTargetFlashBalanced{
-  0%{ box-shadow:0 0 0 0 rgba(var(--signal-rgb),0), 0 0 0 rgba(var(--signal-rgb),0); }
-  35%,70%{ box-shadow:0 0 0 1.5px rgba(var(--signal-rgb),.82), 0 0 11px rgba(var(--signal-rgb),.20); }
-  100%{ box-shadow:0 0 0 0 rgba(var(--signal-rgb),0), 0 0 0 rgba(var(--signal-rgb),0); }
-}
-body #page-calc .members-table.flash,
-body #page-landing #l-result-inner.flash,
-body #page-switch #sw-result-inner.flash{
-  animation:copyTargetFlashBalanced var(--motion-signal-dur) ease !important;
-  border-radius:8px !important;
-}
 </style>`;
       utcPipWindow.document.body.innerHTML = '<div><div id="utc-pip-normal" class="pip-line"><span id="utc-pip-time">--:--:--</span><span class="pip-unit">UTC</span></div><div id="utc-pip-countdown" class="pip-cd" hidden><div class="pip-cd-head"><b id="utc-pip-countdown-name"></b><span>出発時刻</span><span id="utc-pip-countdown-time">--:--:--</span><span>UTC</span></div><div class="pip-cd-value-row"><span class="pip-cd-label">残り</span><span class="pip-cd-value"><span id="utc-pip-countdown-value">0.0</span><small>秒</small></span></div></div></div>';
       utcPipWindow.addEventListener('pagehide', () => { utcPipWindow = null; });
@@ -839,24 +678,6 @@ document.addEventListener('keydown', event => {
   if(event.key === 'Escape' && utcClockOverlay.classList.contains('show')) closeUtcClockOverlay();
 });
 
-/* ======= ペット終了チェック ======= */
-function checkPetExpiry(){
-  const pets = loadPets();
-  const now = Date.now();
-  let needsUpdate = false;
-  
-  for(const name in pets){
-    const pet = pets[name];
-    if(pet.status !== 'active' || !pet.endTime) continue;
-    
-    const remaining = pet.endTime - now;
-    
-    if(remaining <= 0) needsUpdate = true;
-  }
-  
-  
-  if(needsUpdate) renderPetList();
-}
 
 function isPetActiveForMember(memberName){
   const pets = loadPets();
@@ -888,13 +709,6 @@ function updateMemberRowHighlights(){
   }
 }
 
-function formatCountdown(totalSeconds){
-  const safeSeconds = Math.max(0, Math.ceil(totalSeconds));
-  const hours = Math.floor(safeSeconds / 3600);
-  const minutes = Math.floor((safeSeconds % 3600) / 60);
-  const seconds = safeSeconds % 60;
-  return `${pad2(hours)}:${pad2(minutes)}:${pad2(seconds)}`;
-}
 
 /* ペットの残り時間は分単位で表す（例: 残り2時間00分 / 残り48分） */
 function formatPetRemaining(remainingMs){
@@ -926,7 +740,6 @@ function updateMemberDepartureCountdowns(){
   });
 }
 
-setInterval(checkPetExpiry, 1000);
 setInterval(updateMemberRowHighlights, 1000);
 setInterval(updateMemberDepartureCountdowns, 50);
 
@@ -939,6 +752,15 @@ function marchLabel(i){
   return `${min}分${sec}秒`;
 }
 function generateMarchOptions(selectElement, defaultValue, minSec = 10, maxSec = 120){
+  // defaultValueがnull/空なら、行軍時間が分からない状態として「未設定」のまま数値を仮定しない
+  if(defaultValue === null || defaultValue === ''){
+    let html = `<option value="" selected>未設定</option>`;
+    for(let i=minSec; i<=maxSec; i++){
+      html += `<option value="${i}">${marchLabel(i)}</option>`;
+    }
+    selectElement.innerHTML = html;
+    return;
+  }
   const useDefault = parseInt(defaultValue) || minSec;
   let html = '';
   // 範囲外の現在値も先頭に追加して保持する
@@ -956,8 +778,8 @@ function generateMarchOptions(selectElement, defaultValue, minSec = 10, maxSec =
 }
 function updateAllMarchOptions(minSec = 10, maxSec = 120){
   document.querySelectorAll('.march-select').forEach(sel=>{
-    // 現在値を必ず保存してから再生成
-    const savedVal = parseInt(sel.value) || minSec;
+    // 現在値を必ず保存してから再生成（未選択なら未設定のまま維持する）
+    const savedVal = sel.value === '' ? null : (parseInt(sel.value) || minSec);
     generateMarchOptions(sel, savedVal, minSec, maxSec);
   });
 }
@@ -1037,12 +859,16 @@ function refreshMemberAutoMarch(row, options = {}){
     row.classList.add('auto-march-active');
     row.classList.remove('auto-march-missing');
     if(badge) badge.textContent = '自動';
+    boostToggle.disabled = false;
+    if(petToggle) petToggle.disabled = false;
   }else{
     marchSelect.dataset.autoMarch = 'false';
     marchSelect.disabled = false;
     row.classList.remove('auto-march-active');
     row.classList.toggle('auto-march-missing', hasCoordinates);
     if(badge) badge.textContent = '手動';
+    boostToggle.disabled = true;
+    if(petToggle) petToggle.disabled = true;
   }
 
   if(options.save !== false) saveSettings();
@@ -1058,36 +884,6 @@ function refreshAllMemberAutoMarchTimes(options = {}){
   if(options.updateTime !== false) updateLandingTimeOptions();
 }
 
-/* ======= 着弾時刻の自動セット（切り替え時に一発計算） ======= */
-function autoSetLandingTime(){
-  const now = new Date();
-  const rallyMin = parseInt(document.getElementById('rally-min-time').value || document.getElementById('rally-min').value) || 1;
-
-  let maxMarch = 0;
-  document.querySelectorAll('.march-select').forEach(sel => {
-    const v = parseInt(sel.value) || 0;
-    if(v > maxMarch) maxMarch = v;
-  });
-
-  // 着弾時刻 = 現在UTC + 集結時間 + 最遅行軍 + 60秒（バッファ）
-  const target = new Date(now.getTime() + rallyMin * 60 * 1000 + maxMarch * 1000 + 60 * 1000);
-
-  // 10秒単位に切り上げ
-  let H = target.getUTCHours();
-  let M = target.getUTCMinutes();
-  let S = Math.ceil(target.getUTCSeconds() / 10) * 10;
-  if(S >= 60){ S = 0; M += 1; }
-  if(M >= 60){ M = 0; H += 1; }
-  if(H >= 24){ H = 0; }
-
-  // hh/mm/ss セレクトに強制セット（選択肢は updateLandingTimeOptions が後から作るので value だけ記憶させる）
-  const hhSel = document.getElementById('hh');
-  const mmSel = document.getElementById('mm');
-  const ssSel = document.getElementById('ss');
-  hhSel.dataset.autoH = H;
-  mmSel.dataset.autoM = M;
-  ssSel.dataset.autoS = S;
-}
 
 /* ======= 着弾指定のデフォルト時刻 ======= */
 function updateLandingTimeOptions(){
@@ -1231,7 +1027,6 @@ document.getElementById('ss').addEventListener('change', updateLandingTimeOption
 document.getElementById('rally-min').addEventListener('change', updateLandingTimeOptions);
 
 /* ======= モード切替 ======= */
-const rallyTypeSel=document.getElementById('rally-type');
 const rallyMinSel=document.getElementById('rally-min');
 const actionBtn=document.getElementById('action-btn');
 const impactDisplay=document.getElementById('impact-display');
@@ -1269,10 +1064,8 @@ function syncRallyMinValues(){
   rallyMinTimeSel.value = val;
 }
 
-const timeInputGroup = document.getElementById('time-input-group');
 const prepTimeSel = document.getElementById('prep-time');
 const prepInputGroup = document.getElementById('prep-input-group');
-const departureScheduleRow = document.getElementById('departure-schedule-row');
 const rallyMinTimeSel = document.getElementById('rally-min-time');
 
 /* 各メンバーの行軍時間を履歴から復元 */
@@ -1300,11 +1093,9 @@ function restoreMarchTimesFromHistory(){
 }
 
 function updateMode(){
-  rallyTypeSel.value = 'now';
   updateAllMarchOptions(10, 300);
   restoreMarchTimesFromHistory();
   prepInputGroup.style.display='flex';
-  departureScheduleRow.htmlFor='prep-time';
   updateRallyMinOptions();
   updatePrepTimeOptions();
   syncRallyMinValues();
@@ -1963,12 +1754,12 @@ function buildMemberRowHtml(member = {}){
     <div class="delete-bg" onclick="deleteThisRow(this)">削除</div>
     <div class="member-row">
       <div class="member-identity-row">
-        <span class="name-text" contenteditable="true" data-placeholder="名前">${name}</span>
+        <span class="name-text" contenteditable="true" data-placeholder="マリン">${name}</span>
         <span class="member-departure-inline"><span class="member-departure-status">未設定</span><span class="dep" hidden>-</span></span>
         <button type="button" class="member-settings-toggle" aria-expanded="false" aria-label="集結主設定"></button>
       </div>
       <div class="member-auto-settings" hidden>
-        <div class="member-setting-pair"><div class="member-setting-row"><span class="member-setting-value member-coordinates"><span class="coord-axis">X</span><input class="coord-input coord-x" inputmode="numeric" pattern="[0-9]*" placeholder="—" aria-label="X座標" value="${coordX}"><span class="coord-axis">Y</span><input class="coord-input coord-y" inputmode="numeric" pattern="[0-9]*" placeholder="—" aria-label="Y座標" value="${coordY}"></span></div><div class="member-setting-row"><span class="member-setting-value march-control"><select class="march-select"></select><small class="march-auto-badge">手動</small></span></div></div><label class="member-setting-row stat-boost-control"><span class="member-setting-label">ステ強化</span><span class="member-setting-value"><input type="checkbox" class="stat-boost-toggle"${boostChecked}><span class="stat-boost-switch"></span></span></label><label class="member-setting-row member-settings-pet-control"><span class="member-setting-label">ペット</span><span class="member-setting-value"><span class="member-pet-remaining"></span><input type="checkbox" class="member-settings-pet-toggle"><span class="stat-boost-switch"></span></span></label>
+        <div class="member-setting-pair"><div class="member-setting-row"><span class="member-setting-value member-coordinates"><span class="coord-axis">X</span><input class="coord-input coord-x" inputmode="numeric" pattern="[0-9]*" placeholder="598" aria-label="X座標" value="${coordX}"><span class="coord-axis">Y</span><input class="coord-input coord-y" inputmode="numeric" pattern="[0-9]*" placeholder="606" aria-label="Y座標" value="${coordY}"></span></div><div class="member-setting-row"><span class="member-setting-value march-control"><select class="march-select"></select><small class="march-auto-badge">手動</small></span></div></div><label class="member-setting-row stat-boost-control"><span class="member-setting-label">ステ強化</span><span class="member-setting-value"><input type="checkbox" class="stat-boost-toggle"${boostChecked}><span class="stat-boost-switch"></span></span></label><label class="member-setting-row member-settings-pet-control"><span class="member-setting-label">ペット</span><span class="member-setting-value"><span class="member-pet-remaining"></span><input type="checkbox" class="member-settings-pet-toggle"><span class="stat-boost-switch"></span></span></label>
       </div>
     </div>`;
 }
@@ -1982,8 +1773,7 @@ function addMemberRow(name = '', marchSec = null, memberSettings = {}){
   container.appendChild(wrapper);
   const minSec = 10;
   const maxSec = 300;
-  const defaultMarch = marchSec !== null ? marchSec : minSec;
-  generateMarchOptions(row.querySelector('.march-select'), defaultMarch, minSec, maxSec);
+  generateMarchOptions(row.querySelector('.march-select'), marchSec, minSec, maxSec);
   attachRowEvents(row);
   attachSwipeToRow(row);
   refreshMemberAutoMarch(row, {save:false, updateTime:false});
@@ -2219,39 +2009,11 @@ function getSuggestions(inputText){
     .slice(0, 24);
 }
 
-function findMemberRowByName(name){
-  if(!name || !name.trim()) return null;
-  const normalizedName = name.trim().toLowerCase();
-  const existingRows = document.querySelectorAll('#players .member-row');
-  for(const row of existingRows){
-    const existingName = (row.querySelector('.name-text').textContent || '').trim().toLowerCase();
-    if(existingName === normalizedName) return row;
-  }
-  return null;
-}
 
 /* ======= オートコンプリートドロップダウン ======= */
 let currentDropdown = null;
 let currentInput = null;
 let selectedIndex = -1;
-
-function formatMarchTime(seconds){
-  if(seconds < 60){
-    return `${seconds}秒`;
-  }else if(seconds === 60){
-    return '1分';
-  }else if(seconds === 120){
-    return '2分';
-  }else{
-    const min = Math.floor(seconds / 60);
-    const sec = seconds % 60;
-    if(sec === 0){
-      return `${min}分`;
-    }else{
-      return `${min}分${sec}秒`;
-    }
-  }
-}
 
 function showAutocomplete(inputElement, suggestions){
   hideAutocomplete();
@@ -2353,253 +2115,6 @@ function selectSuggestion(inputElement, item){
   saveSettings();
 }
 
-function renderHistoryList(searchText = ''){
-  const historyListEl = document.getElementById('history-list');
-  const history = loadHistory();
-
-  historyListEl.innerHTML = '';
-
-  const filteredKeys = Object.keys(history).filter(key => key === getHistoryKey());
-
-  if(filteredKeys.length === 0){
-    historyListEl.innerHTML = '<div class="history-empty">履歴が登録されていません</div>';
-    return;
-  }
-
-  const currentKey = getHistoryKey();
-
-  let hasResults = false;
-
-  filteredKeys.forEach(key => {
-    const items = history[key];
-
-    const filteredItems = items.filter(item => {
-      const searchLower = searchText.toLowerCase();
-      const nameLower = item.name.toLowerCase();
-      return nameLower.includes(searchLower);
-    });
-
-    if(filteredItems.length === 0) return;
-
-    // 行軍時間順にソート
-    filteredItems.sort((a, b) => {
-      return a.marchSec - b.marchSec;
-    });
-
-    hasResults = true;
-
-    const isActive = (key === currentKey);
-
-    const groupDiv = document.createElement('div');
-    groupDiv.className = 'history-group ' + (isActive ? 'history-group--active' : 'history-group--inactive');
-    groupDiv.dataset.active = isActive ? 'true' : 'false';
-
-    const titleDiv = document.createElement('div');
-    titleDiv.className = 'history-group-title';
-    titleDiv.textContent = '履歴';
-    groupDiv.appendChild(titleDiv);
-
-    filteredItems.forEach(item => {
-      const wrapperDiv = document.createElement('div');
-      wrapperDiv.className = 'history-item-wrapper';
-
-      const deleteBg = document.createElement('div');
-      deleteBg.className = 'history-delete-bg';
-      deleteBg.textContent = '削除';
-
-      const itemDiv = document.createElement('div');
-      itemDiv.className = 'history-item';
-
-      const infoDiv = document.createElement('div');
-      infoDiv.className = 'history-item-info';
-      infoDiv.style.cursor = 'pointer';
-
-      const nameSpan = document.createElement('span');
-      nameSpan.className = 'history-item-name';
-      nameSpan.textContent = item.name;
-
-      const marchSpan = document.createElement('span');
-      marchSpan.className = 'history-item-march';
-      marchSpan.textContent = formatMarchTime(item.marchSec);
-
-      infoDiv.appendChild(nameSpan);
-      infoDiv.appendChild(marchSpan);
-
-      if(item.hasPet === true){
-        const petLabel = document.createElement('span');
-        petLabel.className = 'history-pet-label';
-        petLabel.textContent = 'ペットあり';
-        infoDiv.appendChild(petLabel);
-      }
-
-      function applyHistoryItem(){
-        const currentKey = getHistoryKey();
-        const itemKey = key;
-        if(currentKey !== itemKey) return;
-        const existingRow = findMemberRowByName(item.name);
-        if(existingRow){
-          const sel = existingRow.querySelector('.march-select');
-          if(sel){
-            sel.value = item.marchSec;
-            sel.dispatchEvent(new Event('change'));
-          }
-          closeHistoryModal();
-          showToast(`${item.name} の行軍時間を更新しました`);
-          return;
-        }
-        addMemberRow(item.name, item.marchSec);
-        closeHistoryModal();
-        showToast(`${item.name} を追加しました`);
-      }
-
-      itemDiv._applyHistoryItem = applyHistoryItem;
-
-      // 削除ボタン
-      const deleteBtn = document.createElement('button');
-      deleteBtn.type = 'button';
-      deleteBtn.className = 'history-item-delete';
-      deleteBtn.textContent = '×';
-      deleteBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        wrapperDiv.style.transition = 'all 0.3s ease';
-        wrapperDiv.style.transform = 'translateX(-100%)';
-        wrapperDiv.style.opacity = '0';
-        wrapperDiv.style.height = '0';
-        wrapperDiv.style.overflow = 'hidden';
-        setTimeout(() => {
-          deleteHistoryItemFromModal(key, item);
-        }, 300);
-      });
-
-      itemDiv.appendChild(infoDiv);
-      itemDiv.appendChild(deleteBtn);
-
-      wrapperDiv.appendChild(deleteBg);
-      wrapperDiv.appendChild(itemDiv);
-
-      // スワイプ削除イベント
-      initHistorySwipe(wrapperDiv, itemDiv, deleteBg, key, item);
-
-      groupDiv.appendChild(wrapperDiv);
-    });
-
-    historyListEl.appendChild(groupDiv);
-  });
-
-  if(!hasResults){
-    historyListEl.innerHTML = '<div class="history-empty">検索結果がありません</div>';
-  }
-}
-
-function initHistorySwipe(wrapper, itemDiv, deleteBg, key, item){
-  let startX = 0;
-  let currentX = 0;
-  let isDragging = false;
-  let didSwipe = false;
-  let touchFired = false;
-
-  function doDelete(){
-    wrapper.style.transition = 'all 0.3s ease';
-    wrapper.style.transform = 'translateX(-100%)';
-    wrapper.style.opacity = '0';
-    wrapper.style.height = '0';
-    wrapper.style.marginBottom = '0';
-    wrapper.style.overflow = 'hidden';
-    setTimeout(() => {
-      deleteHistoryItemFromModal(key, item);
-    }, 300);
-  }
-
-  itemDiv.addEventListener('touchstart', (e) => {
-    startX = e.touches[0].clientX;
-    currentX = startX;
-    isDragging = true;
-    didSwipe = false;
-    touchFired = false;
-    itemDiv.style.transition = 'none';
-  }, { passive: true });
-  
-  itemDiv.addEventListener('touchmove', (e) => {
-    if(!isDragging) return;
-    currentX = e.touches[0].clientX;
-    const diff = currentX - startX;
-    if(Math.abs(diff) > 15){
-      didSwipe = true;
-      const clamped = Math.min(diff, 0);
-      itemDiv.style.transform = `translateX(${clamped}px)`;
-    }
-  }, { passive: true });
-  
-  function isGroupActive(){
-    return itemDiv.closest('.history-group')?.dataset.active === 'true';
-  }
-
-  itemDiv.addEventListener('touchend', () => {
-    isDragging = false;
-    const diff = currentX - startX;
-    if(didSwipe && diff < -100){
-      doDelete();
-    } else if(didSwipe){
-      itemDiv.style.transition = 'transform 0.2s ease';
-      itemDiv.style.transform = 'translateX(0)';
-      didSwipe = false;
-    } else {
-      if(!isGroupActive()) return;
-      touchFired = true;
-      if(itemDiv._applyHistoryItem) itemDiv._applyHistoryItem();
-    }
-  }, { passive: true });
-
-  itemDiv.addEventListener('click', () => {
-    if(touchFired){ touchFired = false; return; }
-    if(!isGroupActive()) return;
-    if(itemDiv._applyHistoryItem) itemDiv._applyHistoryItem();
-  });
-  
-  deleteBg.addEventListener('click', () => doDelete());
-}
-
-function deleteHistoryItemFromModal(key, item){
-  const history = loadHistory();
-
-  if(!history[key]) return;
-
-  history[key] = history[key].filter(h => 
-    !(h.name.toLowerCase() === item.name.toLowerCase() && h.marchSec === item.marchSec)
-  );
-
-  if(history[key].length === 0){
-    delete history[key];
-  }
-
-  saveHistory(history);
-  showToast(`${item.name} を削除`);
-
-  renderHistoryList(document.getElementById('history-search-input').value);
-}
-
-function openHistoryModal(){
-  resetAllSwipeStates();
-  document.body.classList.add('modal-open');
-  const modal = document.getElementById('history-modal');
-  modal.classList.add('show');
-  renderHistoryList();
-  document.getElementById('history-search-input').value = '';
-}
-
-function closeHistoryModal(){
-  const modal = document.getElementById('history-modal');
-  modal.classList.remove('show');
-  document.body.classList.remove('modal-open');
-}
-
-function clearAllHistory(){
-  if(confirm('全ての履歴をリセットをしますか？')){
-    localStorage.removeItem('memberHistory');
-    showToast('すべて履歴をリセットしました');
-    renderHistoryList();
-  }
-}
 
 /* ======= 設定の保存/復元 ======= */
 function saveSettings(){
@@ -2615,7 +2130,6 @@ function saveSettings(){
   });
 
   const data={
-    rallyType:'now',
     rallyMin:rallyMinSel.value,
     prepTime:prepTimeSel.value,
     members: members
@@ -2627,8 +2141,6 @@ function loadSettings(){
   const raw=localStorage.getItem('arrivalMarineSettings'); if(!raw) return;
   try{
     const d=JSON.parse(raw);
-
-    rallyTypeSel.value='now';
 
     updateRallyMinOptions();
     updatePrepTimeOptions();
@@ -2720,13 +2232,6 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// 履歴モーダル
-document.getElementById('clear-all-history-modal').addEventListener('click', clearAllHistory);
-
-// 履歴検索
-document.getElementById('history-search-input').addEventListener('input', function(){
-  renderHistoryList(this.value);
-});
 
 /* ======= プレビュー折りたたみ ======= */
 const previewToggle = document.getElementById('preview-toggle');
@@ -2769,178 +2274,6 @@ function savePets(pets){
   localStorage.setItem('pets', JSON.stringify(pets));
 }
 
-function openPetModal(){
-  resetAllSwipeStates();
-  document.body.classList.add('modal-open');
-  renderPetList();
-  document.getElementById('pet-modal').classList.add('show');
-}
-
-function closePetModal(){
-  document.getElementById('pet-modal').classList.remove('show');
-  document.body.classList.remove('modal-open');
-}
-
-function getPetIconForName(name){
-  // スペースを無視して正規化
-  const normalizedName = name.replace(/\s/g, '');
-  
-  // マリー系の判定（さん、ちゃん等の敬称付きも対応）
-  const marieBases = ['マリー', 'まりー', 'マリィ', 'まりぃ', 'marie', 'Marie'];
-  for(const base of marieBases){
-    if(normalizedName.startsWith(base) || normalizedName.toLowerCase().startsWith(base.toLowerCase())){
-      return 'marie-icon.png';
-    }
-  }
-  if(marieBases.some(b => normalizedName.includes(b))){
-    return 'marie-icon.png';
-  }
-  
-  // ごったん、ゴツオ、ごったんさん、ごっちゃん の判定
-  const gottanNames = ['ごったん', 'ごったんさん', 'ごっちゃん', 'ゴツオ', 'ごつお'];
-  if(gottanNames.includes(normalizedName)){
-    return 'gottan-icon.png';
-  }
-  
-  // デフォルトはブルドック
-  return 'dog-icon.png';
-}
-
-function renderPetList(){
-  const pets = loadPets();
-  const petListEl = document.getElementById('pet-list');
-
-  // 現在のメンバーリストを取得
-  const currentMembers = [];
-  document.querySelectorAll('.name-text').forEach(input => {
-    const name = (input.textContent||'').trim();
-    if(name) currentMembers.push(name);
-  });
-
-  // 発動中のペット（ホームで削除されても表示）
-  const now = Date.now();
-  const activePetNames = [];
-  for(const name in pets){
-    const pet = pets[name];
-    if(pet.status === 'active' && pet.endTime && pet.endTime > now){
-      if(!currentMembers.includes(name)){
-        activePetNames.push(name);
-      }
-    }
-  }
-
-  // 表示するメンバー = 現在のメンバー + 発動中の削除済みメンバー
-  const displayMembers = [...currentMembers, ...activePetNames];
-
-  if(displayMembers.length === 0){
-    petListEl.innerHTML = '<div class="pet-empty">集結主が登録されていません</div>';
-    return;
-  }
-
-  let html = '';
-
-  displayMembers.forEach(name => {
-    const pet = pets[name] || { status: 'waiting' };
-    let statusText = '';
-    let statusClass = '';
-
-    if(pet.status === 'active' && pet.endTime){
-      if(now < pet.endTime){
-        const endDate = new Date(pet.endTime);
-        const remaining = pet.endTime - now;
-        const remainMin = Math.floor(remaining / 60000);
-        const remainHour = Math.floor(remainMin / 60);
-        const remainMinOnly = remainMin % 60;
-        const remainText = remainHour > 0 ? `${remainHour}:${pad2(remainMinOnly)}` : `0:${pad2(remainMinOnly)}`;
-        statusText = `残り${remainText}<br><span class="pet-end-time">${pad2(endDate.getUTCHours())}:${pad2(endDate.getUTCMinutes())} UTC</span>`;
-        statusClass = 'active';
-      }else{
-        statusText = '終了';
-        statusClass = 'ended';
-        pet.status = 'ended';
-        pets[name] = pet;
-        savePets(pets);
-      }
-    }else if(pet.status === 'ended'){
-      statusText = '終了';
-      statusClass = 'ended';
-    }else{
-      statusText = '▶ 発動';
-      statusClass = 'waiting';
-    }
-
-    // 名前に基づいてアイコンを選択
-    const petIcon = getPetIconForName(name);
-    
-    // アイコン（状態によって表示を変える）
-    let iconButton = '';
-    if(statusClass === 'waiting'){
-      // 待機中：普通のアイコン
-      iconButton = `<div class="pet-icon-wrapper"><img src="${petIcon}" class="pet-item-icon" alt="pet"></div>`;
-    }else if(statusClass === 'active'){
-      // 発動中：光る（クリックでリセット）
-      iconButton = `<div class="pet-icon-wrapper active" data-name="${name}"><img src="${petIcon}" class="pet-item-icon" alt="pet"></div>`;
-    }else if(statusClass === 'ended'){
-      // 終了：薄く＋💤
-      iconButton = `<div class="pet-icon-wrapper ended"><img src="${petIcon}" class="pet-item-icon" alt="pet"></div>`;
-    }else{
-      iconButton = `<div class="pet-icon-wrapper"><img src="${petIcon}" class="pet-item-icon" alt="pet"></div>`;
-    }
-    
-    // ステータス表示
-    let statusDisplay = `<span class="pet-item-status ${statusClass}">${statusText}</span>`;
-    
-    html += `
-      <div class="pet-item" data-name="${name}" data-status="${pet.status}">
-        ${iconButton}
-        <span class="pet-item-name">${name}</span>
-        ${statusDisplay}
-      </div>
-    `;
-  });
-
-  petListEl.innerHTML = html;
-
-  // アイコンボタンのクリックイベント（待機中のみ）
-  petListEl.querySelectorAll('.pet-icon-btn').forEach(btn => {
-    btn.addEventListener('click', function(e){
-      e.stopPropagation();
-      const name = this.getAttribute('data-name');
-      activatePet(name);
-    });
-  });
-  
-  // 待機中のONボタンクリックで発動
-  petListEl.querySelectorAll('.pet-item-status.waiting').forEach(btn => {
-    btn.addEventListener('click', function(e){
-      e.stopPropagation();
-      const parentItem = this.closest('.pet-item');
-      const name = parentItem.getAttribute('data-name');
-      activatePet(name);
-    });
-  });
-  
-  // 発動中のアイコンクリックでリセット
-  petListEl.querySelectorAll('.pet-icon-wrapper.active').forEach(icon => {
-    icon.addEventListener('click', function(e){
-      e.stopPropagation();
-      const name = this.getAttribute('data-name');
-      resetPetForMember(name);
-    });
-  });
-  
-  // 発動中のステータスクリックでもリセット
-  petListEl.querySelectorAll('.pet-item-status.active').forEach(btn => {
-    btn.addEventListener('click', function(e){
-      e.stopPropagation();
-      const parentItem = this.closest('.pet-item');
-      const name = parentItem.getAttribute('data-name');
-      resetPetForMember(name);
-    });
-  });
-  
-}
-
 function activatePet(name){
   resetAllSwipeStates();
   const pets = loadPets();
@@ -2954,7 +2287,6 @@ function activatePet(name){
   };
   
   savePets(pets);
-  renderPetList();
   refreshAllMemberAutoMarchTimes();
   resetAllSwipeStates();
   showToast(`${name} ペット発動`);
@@ -2965,100 +2297,11 @@ function resetPetForMember(name){
   const pets = loadPets();
   pets[name] = { status: 'waiting' };
   savePets(pets);
-  renderPetList();
   refreshAllMemberAutoMarchTimes();
   resetAllSwipeStates();
   showToast(`${name} リセット`);
 }
 
-function resetAllPets(){
-  if(!confirm('全員のペットスキルをリセットしますか？')){
-    return;
-  }
-
-  const pets = loadPets();
-  const currentMembers = [];
-  document.querySelectorAll('.name-text').forEach(input => {
-    const name = (input.textContent||'').trim();
-    if(name) currentMembers.push(name);
-  });
-
-  currentMembers.forEach(name => {
-    pets[name] = { status: 'waiting' };
-  });
-
-  savePets(pets);
-  renderPetList();
-  refreshAllMemberAutoMarchTimes();
-}
-
-// ペットモーダルのイベント
-document.getElementById('reset-all-pets').addEventListener('click', resetAllPets);
-
-// モーダル内のタッチイベントがホーム画面に伝播しないようにする
-document.querySelectorAll('.history-modal-content').forEach(content => {
-  content.addEventListener('touchstart', function(e){
-    e.stopPropagation();
-  }, { passive: true });
-  content.addEventListener('touchmove', function(e){
-    e.stopPropagation();
-  }, { passive: true });
-  content.addEventListener('touchend', function(e){
-    e.stopPropagation();
-  }, { passive: true });
-});
-
-/* ======= 下部ツールバー ======= */
-function toggleHistoryModal(){
-  const modal = document.getElementById('history-modal');
-  if(modal.classList.contains('show')){
-    closeHistoryModal();
-  }else{
-    openHistoryModal();
-  }
-}
-
-function togglePetModal(){
-  const modal = document.getElementById('pet-modal');
-  if(modal.classList.contains('show')){
-    closePetModal();
-  }else{
-    openPetModal();
-  }
-}
-
-// ツールバーのイベント（要素が存在する場合のみ）
-const tabHome = document.getElementById('tab-home');
-if(tabHome) tabHome.addEventListener('click', function(){
-  resetAllSwipeStates();
-  closeHistoryModal();
-  closePetModal();
-});
-const tabHistory = document.getElementById('tab-history');
-if(tabHistory) tabHistory.addEventListener('click', function(){
-  resetAllSwipeStates();
-  closePetModal();
-  toggleHistoryModal();
-});
-const tabPet = document.getElementById('tab-pet');
-if(tabPet) tabPet.addEventListener('click', function(){
-  resetAllSwipeStates();
-  closeHistoryModal();
-  togglePetModal();
-});
-
-
-/* ======= 集結主の見出しからモーダルを開く ======= */
-const openPetButton = document.getElementById('open-pet-btn');
-if(openPetButton) openPetButton.addEventListener('click', function(e){
-  e.stopPropagation();
-  openPetModal();
-});
-const openHistoryButton = document.getElementById('open-history-btn');
-if(openHistoryButton) openHistoryButton.addEventListener('click', function(e){
-  e.stopPropagation();
-  openHistoryModal();
-});
 
 /* ======= ページ切り替え ======= */
 function switchPage(pageId){
@@ -3434,8 +2677,6 @@ resetPetForMember = function(name){
 window.addEventListener('load', function() {
   restoreNotificationsOnLoad();
 });
-
-/* ===== split from index.html ===== */
 
 (function(){
   const players=document.getElementById('players');
