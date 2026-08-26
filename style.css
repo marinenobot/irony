@@ -5262,4 +5262,238 @@ body #page-calc .members-table.flash, body #page-landing #l-result-inner.flash, 
   animation:copyTargetFlashBalanced var(--motion-signal-dur) ease !important;
   border-radius:8px !important;
 }
+/* =========================================================
+   Rally UI — 3タブ骨格統一パッチ
+   対象:
+   - 王城決戦
+   - 着弾時刻
+   - スイッチ
 
+   このパッチはレイアウトだけを揃えます。
+   JS / Firebase / PiP / 計算ロジック / テーマ定義には触れません。
+   ========================================================= */
+
+:root{
+  --rally-ui-row-height:64px;
+  --rally-ui-side-padding:16px;
+  --rally-ui-label-size:17px;
+  --rally-ui-value-size:17px;
+  --rally-ui-helper-size:15px;
+  --rally-ui-chevron-size:22px;
+
+  /* タブ下→設定、設定→ボタンの共通間隔 */
+  --rally-ui-settings-top:20px;
+  --rally-ui-settings-bottom:24px;
+
+  /* 3行ある「着弾時刻」を基準にボタン位置を固定 */
+  --rally-ui-settings-height:calc(var(--rally-ui-row-height) * 3);
+}
+
+/* ---------- 1. 3タブの設定エリア ---------- */
+
+#page-calc .departure-settings-card,
+#page-landing .landing-settings-card,
+#page-switch .switch-settings-card{
+  box-sizing:border-box !important;
+  width:100% !important;
+  height:var(--rally-ui-settings-height) !important;
+  min-height:var(--rally-ui-settings-height) !important;
+
+  margin-top:var(--rally-ui-settings-top) !important;
+  margin-bottom:var(--rally-ui-settings-bottom) !important;
+
+  padding:0 !important;
+  overflow:hidden;
+}
+
+/* ---------- 2. 設定行の高さ・左右位置を共通化 ---------- */
+
+#page-calc .departure-setting-row,
+#page-landing .l-setting-row,
+#page-landing .l-wave-options,
+#page-switch .sw-row,
+#page-switch .departure-setting-row{
+  box-sizing:border-box !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+
+  width:100% !important;
+  height:var(--rally-ui-row-height) !important;
+  min-height:var(--rally-ui-row-height) !important;
+
+  margin:0 !important;
+  padding:0 var(--rally-ui-side-padding) !important;
+}
+
+/* 行区切りも同じ基準 */
+#page-calc .departure-setting-row:not(:last-child),
+#page-landing .l-setting-row,
+#page-landing .l-wave-options:not(:last-child),
+#page-switch .sw-row:not(:last-child),
+#page-switch .departure-setting-row:not(:last-child){
+  border-bottom:1px solid rgba(60,60,67,.08);
+}
+
+/* ---------- 3. 左ラベル ---------- */
+
+#page-calc .departure-setting-name,
+#page-landing .l-setting-name,
+#page-switch .sw-row-label,
+#page-switch .departure-setting-name{
+  flex:0 0 auto !important;
+
+  margin:0 !important;
+  padding:0 !important;
+
+  font-size:var(--rally-ui-label-size) !important;
+  font-weight:500 !important;
+  line-height:1.25 !important;
+  text-align:left !important;
+  white-space:nowrap !important;
+}
+
+/* ---------- 4. 右側コントロール ---------- */
+
+#page-calc .departure-setting-control,
+#page-landing .l-setting-control,
+#page-switch .sw-row-control,
+#page-switch .departure-setting-control{
+  flex:1 1 auto !important;
+  min-width:0 !important;
+
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+  gap:6px !important;
+
+  margin:0 !important;
+  padding:0 !important;
+}
+
+/* 表示値 */
+#page-calc .inline-select,
+#page-landing .inline-select,
+#page-switch .inline-select{
+  width:auto !important;
+  min-width:0 !important;
+  min-height:0 !important;
+
+  margin:0 !important;
+  padding:0 !important;
+
+  border:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+
+  color:inherit;
+  font-size:var(--rally-ui-value-size) !important;
+  font-weight:500 !important;
+  line-height:1.25 !important;
+  text-align:right !important;
+  text-align-last:right !important;
+
+  font-variant-numeric:tabular-nums !important;
+  font-feature-settings:"tnum" 1 !important;
+
+  appearance:none !important;
+  -webkit-appearance:none !important;
+}
+
+/* 「後」などの補助文字 */
+#page-calc .departure-after-text{
+  margin:0 !important;
+  font-size:var(--rally-ui-helper-size) !important;
+  font-weight:400 !important;
+  line-height:1.25 !important;
+}
+
+/* ---------- 5. chevron の右端を統一 ---------- */
+
+#page-calc .departure-chevron,
+#page-landing .l-chevron,
+#page-switch .sw-chevron{
+  flex:0 0 20px !important;
+
+  width:20px !important;
+  min-width:20px !important;
+  height:44px !important;
+  min-height:44px !important;
+
+  display:flex !important;
+  align-items:center !important;
+  justify-content:flex-end !important;
+
+  margin:0 !important;
+  padding:0 !important;
+
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+
+  font-size:var(--rally-ui-chevron-size) !important;
+  font-weight:300 !important;
+  line-height:1 !important;
+}
+
+/* スイッチ「今から」の行も、右側開始位置を他と同じにする */
+#page-switch #sw-from-now-row{
+  padding-left:var(--rally-ui-side-padding) !important;
+  padding-right:var(--rally-ui-side-padding) !important;
+}
+
+/* ---------- 6. 計算開始ボタンを3タブで統一 ---------- */
+
+#page-calc .departure-action,
+#page-landing .landing-action,
+#page-switch .switch-action{
+  display:block !important;
+  box-sizing:border-box !important;
+
+  width:100% !important;
+  min-height:48px !important;
+
+  margin-top:0 !important;
+  margin-bottom:24px !important;
+
+  padding:0 16px !important;
+
+  font-size:17px !important;
+  font-weight:600 !important;
+  line-height:48px !important;
+}
+
+/* ---------- 7. 2行しかないタブの3行目を「空白」として確保 ----------
+   王城決戦・スイッチのボタン位置を、3行の着弾時刻と同じ高さにする。
+   見た目上は空白で、操作要素は追加しません。
+   --------------------------------------------------------- */
+
+#page-calc .departure-settings-card::after,
+#page-switch .switch-settings-card::after{
+  content:"";
+  display:block;
+  height:var(--rally-ui-row-height);
+  pointer-events:none;
+}
+
+/* ---------- 8. 小さい画面でも左右位置を維持 ---------- */
+
+@media (max-width:360px){
+  :root{
+    --rally-ui-side-padding:14px;
+  }
+
+  #page-calc .departure-setting-name,
+  #page-landing .l-setting-name,
+  #page-switch .sw-row-label,
+  #page-switch .departure-setting-name{
+    font-size:16px !important;
+  }
+
+  #page-calc .inline-select,
+  #page-landing .inline-select,
+  #page-switch .inline-select{
+    font-size:16px !important;
+  }
+}
