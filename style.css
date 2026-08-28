@@ -5358,3 +5358,11 @@ body #page-switch .result {
   margin-left: 16px !important;
   margin-right: 16px !important;
 }
+
+body #page-landing .setting-chevron::before,
+body #page-landing .setting-chevron::after,
+body #page-switch .setting-chevron::before,
+body #page-switch .setting-chevron::after {
+  content: none !important;
+  display: none !important;
+}
