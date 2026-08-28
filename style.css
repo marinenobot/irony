@@ -5263,3 +5263,98 @@ body #page-calc .members-table.flash, body #page-landing #l-result-inner.flash, 
   border-radius:8px !important;
 }
 
+/* ===== 着弾時刻・スイッチ 共通設定UI ===== */
+
+body #page-landing .setting-row,
+body #page-switch .setting-row {
+  display: grid !important;
+  grid-template-columns: max-content 1fr !important;
+  align-items: center !important;
+  min-height: 64px !important;
+  margin: 0 16px !important;
+  padding: 0 !important;
+  border-bottom: 1px solid var(--separator-soft) !important;
+}
+
+body #page-landing .setting-label,
+body #page-switch .setting-label {
+  grid-column: 1 !important;
+  justify-self: start !important;
+  font-size: 17px !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+}
+
+body #page-landing .setting-control,
+body #page-switch .setting-control {
+  grid-column: 2 !important;
+  justify-self: end !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  min-height: 44px !important;
+}
+
+body #page-landing .setting-chevron,
+body #page-switch .setting-chevron {
+  flex: 0 0 auto !important;
+  width: 28px !important;
+  min-width: 28px !important;
+  height: 44px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 28px !important;
+  line-height: 1 !important;
+}
+
+body #page-landing .setting-control,
+body #page-switch .setting-control {
+  gap: 8px !important;
+  font-size: 17px !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+}
+
+body #page-landing .setting-control .inline-select,
+body #page-switch .setting-control .inline-select {
+  font-size: 17px !important;
+  line-height: 1 !important;
+  text-align: right !important;
+}
+
+body #page-landing .setting-control .departure-after-text,
+body #page-switch .setting-control .departure-after-text {
+  margin: 0 !important;
+  font-size: 17px !important;
+  line-height: 1 !important;
+}
+
+body #page-landing .setting-row:last-child,
+body #page-switch .setting-row:last-child {
+  border-bottom: none !important;
+}
+
+body #page-landing .landing-settings-card,
+body #page-switch .switch-settings-card {
+  margin-top: 20px !important;
+  margin-bottom: 24px !important;
+  padding: 0 !important;
+}
+
+body #page-landing .landing-action,
+body #page-switch .switch-action {
+  margin-top: 0 !important;
+  margin-bottom: 24px !important;
+}ー
+
+body #page-landing .result,
+body #page-switch .result {
+  margin-top: 24px !important;
+  margin-left: 16px !important;
+  margin-right: 16px !important;
+}
