@@ -165,23 +165,23 @@
     <div class="mode-card landing-settings-card">
 
       <!-- 集結時間 -->
-      <div class="l-setting-row" id="l-rally-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="集結時間を編集">
-        <span class="l-setting-name">集結時間</span>
-        <span class="l-setting-control">
+      <div class="setting-row l-setting-row" id="l-rally-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="集結時間を編集">
+        <span class="setting-label l-setting-name">集結時間</span>
+        <span class="setting-control l-setting-control">
           <select id="l-rally-min" class="inline-select" tabindex="-1">
             <option value="1">1分</option>
             <option value="2">2分</option>
             <option value="5" selected>5分</option>
             <option value="10">10分</option>
           </select>
-          <button type="button" class="l-chevron departure-edit-trigger" data-editor="landing-rally" aria-label="集結時間を編集">›</button>
+          <button type="button" class="setting-chevron l-chevron departure-edit-trigger" data-editor="landing-rally" aria-label="集結時間を編集">›</button>
         </span>
       </div>
 
       <!-- 準備時間 -->
-      <div class="l-setting-row" id="l-prep-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="準備時間を編集">
-        <span class="l-setting-name">準備時間</span>
-        <span class="l-setting-control">
+      <div class="setting-row l-setting-row" id="l-prep-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="準備時間を編集">
+        <span class="setting-label l-setting-name">準備時間</span>
+        <span class="setting-control l-setting-control">
           <select id="l-from-now" class="inline-select" tabindex="-1">
             <option value="60" selected>1分</option>
             <option value="80">1分20秒</option>
@@ -194,14 +194,14 @@
             <option value="220">3分40秒</option>
             <option value="240">4分</option>
           </select>
-          <button type="button" class="l-chevron departure-edit-trigger" data-editor="landing-prep" aria-label="準備時間を編集">›</button>
+          <button type="button" class="setting-chevron l-chevron departure-edit-trigger" data-editor="landing-prep" aria-label="準備時間を編集">›</button>
         </span>
       </div>
 
       <!-- 時差(0分00秒なら同時着、それ以外なら2連着弾) -->
-      <div id="l-two-wave-section" class="l-wave-options" role="button" tabindex="0" aria-haspopup="dialog" aria-label="時差を編集">
-        <span class="l-setting-name">時差</span>
-        <span class="l-setting-control">
+      <div id="l-two-wave-section" class="setting-row l-wave-options" role="button" tabindex="0" aria-haspopup="dialog" aria-label="時差を編集">
+        <span class="setting-label l-setting-name">時差</span>
+        <span class="setting-control l-setting-control">
           <select id="l-diff-min" class="inline-select" tabindex="-1">
             <option value="0" selected>0分</option>
             <option value="1">1分</option>
@@ -223,7 +223,7 @@
             <option value="40">40秒</option>
             <option value="50">50秒</option>
           </select>
-          <button type="button" class="l-chevron departure-edit-trigger" data-editor="landing-diff" aria-label="時差を編集">›</button>
+          <button type="button" class="setting-chevron l-chevron departure-edit-trigger" data-editor="landing-diff" aria-label="時差を編集">›</button>
         </span>
       </div>
     </div>
@@ -255,9 +255,9 @@
   <!-- ページ3: スイッチ -->
   <div id="page-switch" class="page-content">
     <div class="mode-card switch-settings-card">
-      <div class="sw-row" id="sw-rally-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="基準の行軍時間を編集">
-        <span class="sw-row-label">基準の行軍時間</span>
-        <span class="sw-row-control">
+      <div class="setting-row sw-row" id="sw-rally-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="基準の行軍時間を編集">
+        <span class="setting-label sw-row-label">基準の行軍時間</span>
+        <span class="setting-control sw-row-control">
           <select id="sw-rally-min" class="inline-select" tabindex="-1">
             <option value="55" selected>55秒</option>
             <option value="50">50秒</option>
@@ -270,13 +270,13 @@
             <option value="32">32秒</option>
             <option value="30">30秒</option>
           </select>
-          <button type="button" class="sw-chevron departure-edit-trigger" data-editor="switch-rally" aria-label="基準の行軍時間を編集">›</button>
+          <button type="button" class="setting-chevron sw-chevron departure-edit-trigger" data-editor="switch-rally" aria-label="基準の行軍時間を編集">›</button>
         </span>
       </div>
 
-      <div class="departure-setting-row" id="sw-from-now-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="30秒後を編集">
-        <span class="departure-setting-name">今から</span>
-        <span class="departure-setting-control">
+      <div class="setting-row departure-setting-row" id="sw-from-now-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="30秒後を編集">
+        <span class="setting-label departure-setting-name">今から</span>
+        <span class="setting-control departure-setting-control">
           <select id="sw-from-now" class="inline-select" tabindex="-1">
             <option value="55">55秒</option>
             <option value="50">50秒</option>
@@ -290,7 +290,7 @@
             <option value="30" selected>30秒</option>
           </select>
           <span class="departure-after-text">後</span>
-          <button type="button" class="sw-chevron departure-edit-trigger" data-editor="switch-from-now" aria-label="30秒後を編集">›</button>
+          <button type="button" class="setting-chevron sw-chevron departure-edit-trigger" data-editor="switch-from-now" aria-label="30秒後を編集">›</button>
         </span>
       </div>
     </div>
