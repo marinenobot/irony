@@ -71,18 +71,11 @@ body{
 }
 
 /* ===== 共通パーツ ===== */
-.section-title, label{
+label{
   font-size:15px;
   font-weight:600;
   color:var(--text-secondary);
   margin-bottom:8px;
-}
-.single-line{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  flex-wrap:wrap;
-  line-height:1.4;
 }
 select{
   background:var(--card-bg);
@@ -116,11 +109,6 @@ input:focus{
   border-color:var(--blue-primary);
   box-shadow:0 0 0 3px rgba(60,74,99,0.1);
 }
-.inline-text{
-  font-size:15px;
-  color:var(--text-secondary);
-  font-weight:500;
-}
 
 /* ===== ボタン ===== */
 button{
@@ -148,14 +136,6 @@ button:focus{
   outline:none;
   box-shadow:0 0 0 3px rgba(60,74,99,0.2);
 }
-button.secondary{
-  background:var(--card-bg);
-  color:var(--text-secondary);
-  border:1px solid var(--border);
-}
-button.secondary:hover{
-  background:var(--bg-light);
-}
 
 /* ===== ヘッダー（UTC時計） ===== */
 .header{
@@ -166,11 +146,6 @@ button.secondary:hover{
   font-size:40px;
   font-weight:700;
   color:var(--blue-text);
-  padding:16px;
-  border:none !important;
-  border-radius:8px;
-  background:rgba(255,255,255,.72);
-  box-shadow:0 2px 10px rgba(30,28,25,.08);
   font-variant-numeric:tabular-nums;
   font-family:var(--font-num);
 }
@@ -196,10 +171,6 @@ button.secondary:hover{
 .impact-display{
   display:none;
   text-align:center;
-  background:var(--bg-blue-light);
-  padding:var(--spacing);
-  border-radius:0;
-  margin-top:8px;
 }
 .impact-display-inner{
   display:flex;
@@ -208,18 +179,6 @@ button.secondary:hover{
   gap:6px;
   line-height:1.5;
   margin-left:-20px;
-}
-.impact-label{
-  font-size:14px;
-  color:var(--text-secondary);
-  font-weight:500;
-}
-.impact-time{
-  font-size:26px;
-  font-weight:700;
-  color:var(--blue-text);
-  font-variant-numeric:tabular-nums;
-  font-family:var(--font-num);
 }
 .collapsible-card{
   background:var(--card-bg);
@@ -264,16 +223,6 @@ button.secondary:hover{
   font-weight:600;
   color:var(--text-secondary);
 }
-.header-link{
-  margin-left:auto;
-  margin-right:14px;
-  font-size:13px;
-  font-weight:600;
-  color:var(--blue-primary);
-  cursor:pointer;
-  -webkit-tap-highlight-color:transparent;
-}
-.header-link + .header-link{margin-left:0;}
 .collapsible-arrow{
   font-size:16px;
   color:var(--text-muted);
@@ -283,32 +232,16 @@ button.secondary:hover{
   transition:height 0.3s ease;
 }
 .collapsible-content-inner{
-  padding:0 !important;
+  padding:0;
   background:#fff;
   border-radius:0;
   border:1px solid #ddd;
-}
-.full-width{
-  width:100%;
-}
-.margin-top{
-  margin-top:var(--spacing);
-}
-.margin-left-sm{
-  margin-left:4px;
 }
 #time-input-group{
   margin-right:4px;
 }
 .hidden{
   display:none;
-}
-.clock .utc{
-  font-size:0.6em;
-  color:var(--blue-primary);
-  vertical-align:top;
-  font-weight:500;
-  margin-left:4px;
 }
 .aligned-box{
   width:100%;
@@ -319,39 +252,9 @@ button.secondary:hover{
   text-align:center;
   box-shadow:var(--shadow);
 }
-/* ボタンにaligned-boxを適用した場合の上書き */
-button.aligned-box{
-  background:var(--blue-primary);
-  color:#fff;
-  border:2px solid var(--blue-primary);
-  padding:14px 20px;
-  font-weight:700;
-  font-size:18px;
-  min-height:var(--touch-target);
-  display:block;
-  width:100%;
-}
-button.aligned-box:hover{
-  background:var(--blue-hover);
-  border-color:var(--blue-hover);
-}
-button.aligned-box:active{
-  background:var(--blue-active);
-  border-color:var(--blue-active);
-  transform:scale(0.98);
-}
-button.aligned-box:focus{
-  outline:none;
-  box-shadow:0 0 0 3px rgba(60,74,99,0.2);
-}
-
 /* ===== セクション（カード風アコーディオン） ===== */
-.section-body{
-  padding:var(--spacing);
-}
 
 /* “カードっぽさ”は最小限 */
-.card-slim{padding:0}
 
 /* 結果ボックス（強調） */
 /* メンバーテーブル */
@@ -455,12 +358,6 @@ body.modal-open .member-row-wrapper{
   background:#eeeeef;
   color:var(--text-secondary);
 }
-.member-departure-countdown-value{
-  font-family:var(--font-num);
-  font-size:14px;
-  font-weight:800;
-  letter-spacing:0;
-}
 
 @media (max-width:350px){
 .member-departure-status{
@@ -468,9 +365,6 @@ body.modal-open .member-row-wrapper{
     padding-left:5px;
     padding-right:5px;
     font-size:11px;
-  }
-.member-departure-countdown-value{
-    font-size:13px;
   }
 }
 .member-settings-toggle{
@@ -740,27 +634,8 @@ body.modal-open .member-row-wrapper{
 }
 
 /* 時刻（自動） */
-.time-text{
-  font-family:var(--font-num);
-  font-size: 24px;
-  font-weight: 700;
-  color: #1e88e5;
-  text-align: right;
-  white-space: nowrap;
-  padding-right: 4px;
-}
-.time-text::after{
-  content: ' UTC';
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  margin-left: 4px;
-}
 
 /* 削除ボタン - 非表示 */
-.del-btn{
-  display: none;
-}
 .button-controls{
   display:flex;
   align-items:center;
@@ -826,35 +701,11 @@ body.modal-open .member-row-wrapper{
   animation:tableFlashEffect var(--motion-signal-dur) ease;
 }
 /* ===== Tab2 (着弾時刻発行) スコープ限定 ===== */
-body.landing-active{ background:var(--bg); }
-body.landing-active .page-tabs{ background:var(--card-bg); }
 #page-landing .mode-card{
   padding:12px !important;
   margin:12px 0 !important;
 }
-#page-landing .l-row, #page-landing .checkbox-row{
-  display:flex;
-  align-items:center;
-  gap:6px !important;
-  margin-top:7px !important;
-  flex-wrap:nowrap;
-}
-#page-landing .l-label, #page-landing .checkbox-row label{
-  color:var(--text-secondary);
-  white-space:nowrap;
-}
 #l-result .impact-display{ display:block; }
-.checkbox-row label{
-  margin:0;
-  line-height:24px;
-  white-space:nowrap;
-  font-size:16px;
-  color:var(--text-muted);
-  cursor:pointer;
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-}
 /* ===== /Tab2 ===== */
 
 /* ===== Tab3 (スイッチ) スコープ限定 ===== */
@@ -892,19 +743,6 @@ body.landing-active .page-tabs{ background:var(--card-bg); }
 }
 /* 同じ行にある select（55秒）と書体を揃える。font-numだと「30」だけ字形が変わり、
    同じスイッチタブの中で行ごとに高さ・太さの見え方がずれて見える原因になっていた */
-#page-switch .sw-number-input{
-  width:44px;
-  min-width:44px;
-  padding:0;
-  text-align:right;
-  font-variant-numeric:tabular-nums;
-  font-family:inherit;
-}
-#page-switch .sw-row-suffix{
-  font-size:15px;
-  font-weight:500;
-  color:var(--text-secondary);
-}
 #page-switch .impact-display{
   display:block;
 }
@@ -961,30 +799,9 @@ body.landing-active .page-tabs{ background:var(--card-bg); }
 .copy{white-space:pre-line;background:var(--card-bg);border:1px solid var(--border);padding:8px;min-height:40px;font-size:14px;line-height:1.4;margin-top:8px;border-radius:var(--radius);color:var(--text-secondary);font-weight:500}
 .copy-btn-container{display:none}
 .footer{text-align:center;color:var(--text-tertiary);font-size:12px;margin-top:20px;user-select:none}
-.time-select{width:85px;padding:12px 10px;font-size:1.3rem;font-weight:700;border:1px solid var(--border);color:var(--blue-text);text-align:center;border-radius:var(--radius);background:var(--card-bg);min-height:var(--touch-target);font-family:var(--font-num)}
 #action-btn.calculating{background:var(--btn-disabled);cursor:not-allowed;box-shadow:none}
-.calculating-msg{font-size:13px;color:var(--text-muted);margin-top:6px;font-style:italic;line-height:1.5}
 
 /* シングルライン */
-.single-line{
-  display:flex;
-  align-items:center;
-  gap:4px;
-  flex-wrap:wrap;
-  line-height:1.3;
-}
-.divider{
-  border-top:1px solid var(--border);
-  margin:8px 0;
-}
-.inline-text{
-  font-size:16px;
-  color:var(--text-secondary);
-  font-weight:500;
-  white-space:nowrap;
-  line-height:1.5;
-  vertical-align:middle;
-}
 .inline-select{
   background:var(--card-bg);
   border:1px solid var(--border);
@@ -1005,59 +822,16 @@ body.landing-active .page-tabs{ background:var(--card-bg); }
   border-color:var(--blue-primary);
   box-shadow:0 0 0 3px rgba(60,74,99,0.1);
 }
-.time-select-sm{
-  background:var(--card-bg);
-  border:1px solid var(--border);
-  border-radius:var(--radius);
-  padding:8px 6px;
-  font-size:16px;
-  font-weight:600;
-  font-variant-numeric:tabular-nums;
-  font-family:var(--font-num);
-  color:var(--text-secondary);
-  cursor:pointer;
-  text-align:center;
-  min-width:50px;
-  min-height:var(--touch-target);
-  transition:border-color 0.2s;
-}
-.time-select-sm:focus{
-  outline:none;
-  border-color:var(--blue-primary);
-  box-shadow:0 0 0 3px rgba(60,74,99,0.1);
-}
-.time-sep{
-  color:var(--text-muted);
-  font-weight:600;
-  line-height:1.5;
-  margin:0 2px;
-}
 .btn-primary{
-  background:var(--blue-primary);
-  color:#fff;
-  border:none;
-  border-radius:8px;
-  padding:12px;
-  font-size:17px;
-  font-weight:700;
   cursor:pointer;
   transition:all 0.2s;
-  min-height:var(--touch-target);
-  box-shadow:0 2px 8px rgba(60,74,99,0.35);
-}
-.btn-primary:hover{
-  background:var(--blue-hover);
-  box-shadow:0 4px 12px rgba(60,74,99,0.4);
 }
 .btn-primary:active{
-  background:var(--blue-active);
   transform:scale(0.98);
-  box-shadow:0 1px 4px rgba(60,74,99,0.3);
 }
 .btn-primary:focus{
   outline:2px solid var(--blue-primary);
   outline-offset:2px;
-  box-shadow:0 0 0 3px rgba(60,74,99,0.25);
 }
 
 /* コピー時のトースト */
@@ -1176,9 +950,6 @@ body.landing-active .page-tabs{ background:var(--card-bg); }
 
 
 /* ===== 着弾時刻発行：iOS風レイアウト ===== */
-.clock-heading, .clock-status{
-  display:none;
-}
 .clock-time-line{
   display:inline-flex;
   align-items:baseline;
@@ -1194,50 +965,11 @@ body.landing-active .header{
   margin:18px 2px 28px;
   text-align:left;
 }
-body.landing-active .clock{
-  display:block;
-  padding:0;
-  color:var(--text-primary);
-  background:transparent;
-  border:none;
-  border-radius:0;
-  box-shadow:none;
-  font-family:var(--font-num);
-}
-body.landing-active .clock-heading{
-  display:block;
-  margin:0 0 2px;
-  color:var(--text-secondary);
-  font-family:var(--font-ui);
-  font-size:15px;
-  font-weight:700;
-  letter-spacing:.02em;
-}
-body.landing-active .clock-time-line{
-  display:flex;
-  align-items:baseline;
-  line-height:1;
-}
 body.landing-active #utc-now{
   color:var(--text-primary);
   font-size:clamp(36px, 11vw, 52px);
   font-weight:800;
   letter-spacing:-.08em;
-}
-body.landing-active .utc-label{
-  margin-left:12px;
-  color:var(--text-secondary);
-  font-family:var(--font-ui);
-  font-size:20px;
-  font-weight:700;
-}
-body.landing-active .clock-status{
-  display:block;
-  margin-top:10px;
-  color:#c3c3c6;
-  font-family:var(--font-ui);
-  font-size:13px;
-  font-weight:700;
 }
 body.landing-active .page-tabs{
   display:flex;
@@ -1348,27 +1080,8 @@ body.landing-active .page-tab-btn.active{
   min-height:60px;
   border-bottom:0;
 }
-#page-landing .landing-action{
-  min-height:64px;
-  margin:26px 0 0;
-  border-radius:16px;
-  background:var(--blue-primary);
-  color:#fff;
-  font-size:20px;
-  font-weight:800;
-  box-shadow:none;
-}
-#page-landing .landing-action:hover{
-  background:#0077ed;
-}
-#page-landing .landing-action:active{
-  background:var(--blue-primary);
-}
 #page-landing #l-result{
   margin-top:18px;
-}
-#page-landing #l-result .divider{
-  display:none;
 }
 #page-landing #l-result-inner{
   overflow:hidden;
@@ -1378,18 +1091,9 @@ body.landing-active .page-tab-btn.active{
 }
 #page-landing #l-result .impact-display{
   margin:0 !important;
-  padding:16px;
-  border-radius:0;
-  background:#fff;
 }
 #page-landing #l-result2-row{
   border-top:1px solid #e7e7e7;
-}
-#page-landing #l-result .impact-display-inner{
-  margin:0;
-}
-#page-landing #l-result .impact-time{
-  color:var(--blue-primary);
 }
 body.landing-active #page-landing .footer{
   margin-top:34px;
@@ -1412,10 +1116,6 @@ body.landing-active #utc-now{
 }
 
 /* ===== 両画面で共通のアプリ外観 ===== */
-body, body.landing-active{
-  background:#f7f7f5;
-  padding:28px 18px max(24px, env(safe-area-inset-bottom));
-}
 .container, body.landing-active .container{
   max-width:480px;
 }
@@ -1461,43 +1161,14 @@ body, body.landing-active{
   background:#34c759;
 }
 .clock, body.landing-active .clock{
-  display:inline-flex;
-  flex-direction:column;
-  align-items:center;
-  width:min(96%, 390px);
   max-width:100%;
-  margin:0 auto;
-  padding:12px 26px 10px;
   color:var(--text-primary);
-  background:rgba(255,255,255,.94);
-  border:none !important;
-  border-radius:18px;
-  box-shadow:0 10px 46px rgba(0,0,0,.13), 0 2px 12px rgba(0,0,0,.08);
   font-family:var(--font-num);
   cursor:pointer;
   -webkit-tap-highlight-color:transparent;
 }
 .clock:active{
   opacity:.65;
-}
-.clock-heading, body.landing-active .clock-heading{
-  display:block;
-  margin:0 0 2px;
-  color:var(--text-secondary);
-  font-family:var(--font-ui);
-  font-size:15px;
-  font-weight:700;
-  letter-spacing:.02em;
-}
-.clock-tap-hint{
-  display:block;
-  margin-top:7px;
-  color:#a4a4a9;
-  font-family:var(--font-ui);
-  font-size:10px;
-  font-weight:500;
-  letter-spacing:.02em;
-  line-height:1.2;
 }
 .device-settings-modal{
   display:flex;
@@ -1515,20 +1186,11 @@ body, body.landing-active{
 .device-settings-header{display:flex;align-items:center;min-height:44px;margin-bottom:24px}
 .device-settings-header h2{flex:1;margin:0;font-size:17px;text-align:center}
 .device-settings-header button{width:78px;min-width:78px;min-height:44px;margin:0;padding:0;border:0;background:transparent;color:#0a84ff;font-size:16px;box-shadow:none}
-.device-settings-header #device-settings-close{text-align:left}
-.device-settings-header #device-settings-save{text-align:right;font-weight:700}
 .device-settings-group-title{margin:0 4px 7px;color:#8e8e93;font-size:13px;font-weight:600}
 .device-settings-group{overflow:hidden;border-radius:13px;background:#fff}
 .device-settings-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;margin:0;padding:6px 14px;color:#1c1c1e;font-size:15px;font-weight:600}
 .device-settings-row select{flex:1;min-width:0;min-height:44px;padding:5px 0;border:0;background:transparent;color:#8e8e93;text-align:right;text-align-last:right;box-shadow:none}
 .device-sync-status{margin:9px 4px 0;color:#8e8e93;font-size:11px;line-height:1.5}
-.clock-time-line, body.landing-active .clock-time-line{
-  display:flex;
-  align-items:baseline;
-  justify-content:center;
-  width:100%;
-  line-height:1;
-}
 .clock-time-value{
   display:inline;
   white-space:nowrap;
@@ -1549,11 +1211,7 @@ body, body.landing-active{
   font-variant-numeric:tabular-nums;
 }
 .utc-label, body.landing-active .utc-label{
-  margin-left:12px;
-  color:var(--text-secondary);
   font-family:var(--font-ui);
-  font-size:20px;
-  font-weight:700;
 }
 .utc-clock-overlay{
   display:flex;
@@ -1641,12 +1299,6 @@ body.utc-overlay-open{
   color:#8ec8ff;
   font-size:13px;
   font-weight:800;
-}
-.utc-clock-overlay-countdown-line{
-  display:inline-flex;
-  align-items:baseline;
-  gap:6px;
-  white-space:nowrap;
 }
 .utc-clock-overlay-countdown-value{
   font-family:var(--font-num);
@@ -1758,53 +1410,22 @@ body.utc-overlay-open{
   background:#f0f0f2;
   color:#444;
 }
-#page-calc .btn-primary, #page-calc .control-btn{
+#page-calc .control-btn{
   border-radius:14px;
-}
-#page-calc .impact-display{
-  border-radius:12px;
 }
 #page-calc .departure-settings-card{
   margin:0 !important;
   padding:0 !important;
   border-radius:16px;
 }
-#page-calc .departure-setting-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  min-height:66px;
-  margin:0 16px;
-  padding:0 2px;
-  border-bottom:1px solid #e7e7e7;
-}
-#page-calc .departure-setting-row:last-of-type{
-  border-bottom:0;
-}
-#page-calc .departure-setting-name, #page-calc .departure-mode-select{
-  color:var(--text-primary);
-  font-size:17px;
-  font-weight:700;
-}
-#page-calc .departure-mode-select{
-  width:auto;
-  min-height:44px;
-  padding:6px 0;
-  border:0;
-  border-radius:0;
-  background:transparent;
-  box-shadow:none;
-  -webkit-appearance:none;
-  appearance:none;
-}
-#page-calc .departure-setting-control, #page-calc .departure-time-control{
+#page-calc .departure-setting-control{
   display:flex;
   align-items:center;
   justify-content:flex-end;
   gap:8px;
   min-width:0;
 }
-#page-calc .departure-setting-control select, #page-calc .departure-time-control select{
+#page-calc .departure-setting-control select{
   width:auto;
   min-width:0;
   min-height:44px;
@@ -1820,16 +1441,6 @@ body.utc-overlay-open{
   box-shadow:none;
   -webkit-appearance:none;
   appearance:none;
-}
-#page-calc .departure-time-control select{
-  width:30px;
-  font-family:var(--font-num);
-  font-size:15px;
-}
-#page-calc .departure-after-text{
-  color:var(--text-secondary);
-  font-size:15px;
-  font-weight:700;
 }
 #page-calc .departure-chevron{
   display:inline-flex;
@@ -1855,31 +1466,6 @@ body.utc-overlay-open{
   color:var(--blue-primary);
   box-shadow:none;
   transform:none;
-}
-#page-calc .departure-action{
-  min-height:64px;
-  margin:26px 0 0;
-  border-radius:16px;
-  background:var(--blue-primary);
-  color:#fff;
-  font-size:20px;
-  font-weight:800;
-  box-shadow:none;
-}
-#page-calc .departure-action:hover{
-  background:#0077ed;
-}
-#page-calc .departure-result{
-  margin-top:18px;
-  padding:16px;
-  border-radius:16px;
-  background:#fff;
-}
-#page-calc .departure-result .impact-display-inner{
-  margin:0;
-}
-#page-calc .departure-result .impact-time{
-  color:var(--blue-primary);
 }
 .departure-edit-modal{
   display:flex;
@@ -2149,37 +1735,11 @@ body.departure-edit-open{
 }
 
 /* ボトムシート化に伴い、行タップでシートを開くため、内側のネイティブコントロール自体は無効化する */
-#page-calc .departure-setting-control select, #page-calc .departure-time-control select, #page-landing .l-setting-control select, #page-switch .sw-row-control select, #page-switch .sw-row-control input[type="number"]{
+#page-calc .departure-setting-control select, #page-landing .l-setting-control select, #page-switch .sw-row-control select, #page-switch .sw-row-control input[type="number"]{
   pointer-events:none;
 }
-#page-calc .departure-setting-row:active, #page-calc .departure-setting-control:active, #page-calc .departure-time-control:active, #page-landing .l-setting-row:active, #page-landing .l-wave-options:active, #page-switch .sw-row:active{
+#page-calc .departure-setting-row:active, #page-calc .departure-setting-control:active, #page-landing .l-setting-row:active, #page-landing .l-wave-options:active, #page-switch .sw-row:active{
   background:rgba(120,120,128,.08);
-}
-.departure-edit-field{
-  display:flex;
-  flex:1;
-  flex-direction:column;
-  gap:7px;
-  margin:0;
-  color:#777;
-  font-size:13px;
-  font-weight:700;
-}
-.departure-edit-field input{
-  width:100%;
-  min-height:52px;
-  padding:8px 12px;
-  border:1px solid #dedee2;
-  border-radius:12px;
-  background:#fff;
-  color:var(--text-primary);
-  font-size:22px;
-  font-weight:700;
-  text-align:center;
-}
-.departure-edit-field input:focus{
-  border-color:var(--blue-primary);
-  box-shadow:0 0 0 3px rgba(60,74,99,.14);
 }
 #page-calc .footer, #page-landing .footer{
   margin-top:34px;
@@ -2201,10 +1761,6 @@ body, body.landing-active{
 /* ===== スマホ：iOS設定画面に近い縦密度 ===== */
 @media (max-width:600px){
   /* 左右余白と時計カードの寸法は上の共通指定を維持 */
-  .header,
-  body.landing-active .header{
-    margin-bottom:24px;
-  }
 
   .page-tabs,
   body.landing-active .page-tabs{
@@ -2256,10 +1812,8 @@ body, body.landing-active{
     min-height:56px;
   }
 
-  #page-calc .departure-mode-select,
-  #page-calc .departure-setting-control select,
-  #page-calc .departure-time-control select,
-  #page-calc .departure-chevron{
+#page-calc .departure-setting-control select,
+#page-calc .departure-chevron{
     min-height:44px;
   }
 
@@ -2443,10 +1997,6 @@ body, body.landing-active{
   }
 
   /* 補助テキストとフッターはグリッドを乱さない */
-  #page-calc .calculating-msg{
-    width:100%;
-    margin:-12px 0 var(--layout-section-gap);
-  }
 
   #page-calc .footer,
   #page-landing .footer,
@@ -2487,33 +2037,10 @@ body, body.landing-active{
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
 }
-body .container, body.landing-active .container{
-  max-width:430px;
-}
 
 /* --- ヘッダーのUTC時計 --- */
-body .header, body.landing-active .header{
-  margin:0 0 18px;
-  padding-top:32px;
-}
 body .clock, body.landing-active .clock{
-  width:100%;
-  padding:13px 18px 9px;
-  border-radius:var(--ios-radius);
-  background:var(--ios-card);
-  box-shadow:0 1px 2px rgba(0,0,0,.05);
   font-family:var(--font-ui);
-}
-body .clock-heading, body.landing-active .clock-heading{
-  margin:0 0 1px;
-  color:var(--ios-secondary);
-  font-family:var(--font-ui);
-  font-size:13px;
-  font-weight:400;
-  letter-spacing:0;
-}
-body .clock-time-line, body.landing-active .clock-time-line{
-  gap:0;
 }
 body #utc-now, body.landing-active #utc-now{
   color:var(--ios-label);
@@ -2535,19 +2062,8 @@ body #utc-millis, body.landing-active #utc-millis{
   font-feature-settings:"tnum" 1;
 }
 body .utc-label, body.landing-active .utc-label{
-  margin-left:8px;
-  color:var(--ios-secondary);
   font-family:var(--font-ui);
-  font-size:13px;
-  font-weight:600;
   letter-spacing:.01em;
-}
-body .clock-tap-hint{
-  margin-top:5px;
-  color:var(--ios-tertiary);
-  font-family:var(--font-ui);
-  font-size:11px;
-  font-weight:400;
 }
 body .app-settings-button{
   top:2px;
@@ -2557,13 +2073,6 @@ body .app-settings-button{
 }
 
 /* --- セグメンテッドコントロール --- */
-body .page-tabs, body.landing-active .page-tabs{
-  gap:2px;
-  margin:0 0 18px;
-  padding:2px;
-  border-radius:9px;
-  background:var(--ios-fill);
-}
 body .page-tab-btn, body.landing-active .page-tab-btn{
   min-height:30px;
   padding:4px 8px;
@@ -2573,10 +2082,6 @@ body .page-tab-btn, body.landing-active .page-tab-btn{
   font-size:14px;
   font-weight:600;
   letter-spacing:-.01em;
-}
-body .page-tab-btn.active, body.landing-active .page-tab-btn.active{
-  background:var(--ios-card);
-  box-shadow:0 3px 8px rgba(0,0,0,.12), 0 1px 1px rgba(0,0,0,.04);
 }
 
 /* --- カード（設定グループ） --- */
@@ -2598,28 +2103,25 @@ body #page-calc .departure-setting-row, body #page-landing .l-setting-row, body 
   padding:0;
   border-bottom:1px solid var(--ios-separator);
 }
-body #page-calc .departure-setting-row:last-of-type, body #page-landing .l-setting-row:last-of-type{
-  border-bottom:0;
-}
 body #page-landing .l-wave-options{
   min-height:50px;
   border-bottom:0;
 }
-body #page-calc .departure-setting-name, body #page-calc .departure-mode-select, body #page-landing .l-setting-name{
+body #page-calc .departure-setting-name, body #page-landing .l-setting-name{
   color:var(--ios-label);
   font-family:var(--font-ui);
   font-size:17px;
   font-weight:600;
   letter-spacing:-.01em;
 }
-body #page-calc .departure-setting-control select, body #page-calc .departure-after-text, body #page-landing .l-setting-control select, body #page-landing .l-setting-control .l-setting-value{
+body #page-calc .departure-setting-control select, body #page-calc .departure-after-text, body #page-landing .l-setting-control select{
   color:var(--ios-secondary);
   font-family:var(--font-ui);
   font-size:17px;
   font-weight:400;
   letter-spacing:-.01em;
 }
-body #page-calc .departure-time-control select, body #page-landing .l-setting-control select[class*="time"]{
+body #page-landing .l-setting-control select[class*="time"]{
   font-family:var(--font-num);
   font-size:17px;
   font-variant-numeric:tabular-nums;
@@ -2654,27 +2156,11 @@ body #page-calc .departure-chevron:hover, body #page-calc .departure-chevron:foc
 
 /* --- 主ボタン（計算開始） --- */
 body #page-calc .departure-action, body #page-landing .landing-action{
-  display:flex;
   align-items:center;
   justify-content:center;
-  width:100%;
-  min-height:50px;
-  margin:20px 0 18px;
-  border:0;
-  border-radius:var(--ios-radius);
-  background:var(--ios-tint);
-  color:#fff;
-  font-family:var(--font-ui);
-  font-size:17px;
-  font-weight:600;
   letter-spacing:-.01em;
-  box-shadow:none;
-}
-body #page-calc .departure-action:hover, body #page-landing .landing-action:hover{
-  background:#0071eb;
 }
 body #page-calc .departure-action:active, body #page-landing .landing-action:active{
-  background:var(--ios-tint);
   opacity:.75;
   transform:none;
 }
@@ -2688,7 +2174,7 @@ body .collapsible-header, body #page-calc .collapsible-header{
   min-height:50px;
   padding:0 16px !important;
   border:0;
-  background:var(--ios-card) !important;
+  background:var(--ios-card);
 }
 body .collapsible-header-title{
   color:var(--ios-label);
@@ -2891,9 +2377,6 @@ body .coord-input:focus{
   background:var(--ios-fill);
   box-shadow:0 0 0 2px rgba(60,74,99,.3);
 }
-body .march-control{
-  gap:2px;
-}
 body #page-calc .march-select, body .march-select{
   width:auto;
   min-width:0;
@@ -3019,9 +2502,6 @@ body .member-settings-toggle::before{
   mask:none;
   transform:rotate(45deg);
 }
-body .member-settings-toggle[aria-expanded="true"]{
-  transform:rotate(180deg);
-}
 body .member-settings-toggle:hover, body .member-settings-toggle:focus, body .member-settings-toggle:active, body .member-settings-toggle[aria-expanded="true"]{
   background:transparent;
   color:var(--ios-tint);
@@ -3056,32 +2536,8 @@ body .button-controls .control-btn:hover, body .button-controls .control-btn:act
 }
 
 /* --- 結果表示 --- */
-body .impact-display, body #page-calc .impact-display{
-  border-radius:10px;
-  background:rgba(60,74,99,.08);
-}
-body .impact-display-inner{
-  margin-left:0;
-  gap:8px;
-}
-body .impact-label{
-  color:var(--ios-secondary);
-  font-family:var(--font-ui);
-  font-size:13px;
-  font-weight:400;
-}
 body .impact-time, body #page-calc .departure-result .impact-time{
-  color:var(--ios-tint);
-  font-family:var(--font-num);
-  font-size:28px;
-  font-weight:600;
-  letter-spacing:-.02em;
-  font-variant-numeric:tabular-nums;
   font-feature-settings:"tnum" 1;
-}
-body #page-calc .departure-result{
-  margin-top:16px;
-  border-radius:var(--ios-radius);
 }
 
 /* --- フッター --- */
@@ -3165,12 +2621,6 @@ body .utc-clock-overlay-countdown{
   font-family:var(--font-ui);
   font-size:13px;
 }
-body .utc-clock-overlay-countdown-name{
-  color:#ffffff;
-  font-family:var(--font-ui);
-  font-size:13px;
-  font-weight:600;
-}
 body .utc-clock-overlay-countdown-value{
   color:var(--blue-primary);
   font-family:var(--font-num);
@@ -3234,17 +2684,6 @@ body .header, body.landing-active .header{
   margin:0 0 var(--space-4);
   padding-top:var(--space-5);
 }
-body .app-settings-button, body.landing-active .app-settings-button{
-  top:0;
-  right:0;
-  width:44px;
-  min-width:44px;
-  height:44px;
-  min-height:44px;
-  padding:0;
-  border-radius:50%;
-  background:transparent;
-}
 body .app-settings-button::before, body.landing-active .app-settings-button::before{
   content:'';
   position:absolute;
@@ -3255,36 +2694,23 @@ body .app-settings-button::before, body.landing-active .app-settings-button::bef
 body .app-settings-button, body .app-settings-button::after, body.landing-active .app-settings-button, body.landing-active .app-settings-button::after{
   z-index:2;
 }
-body .clock, body.landing-active .clock{
-  width:100%;
-  padding:0 0 var(--space-4);
-  border-radius:0;
-  background:none;
-  box-shadow:none;
-  border-bottom:1px solid var(--border);
-}
-body .clock-heading, body.landing-active .clock-heading, body .utc-clock-overlay-label{
+body .utc-clock-overlay-label{
   color:var(--label-secondary);
   font-size:13px;
   font-weight:500;
-}
-body #utc-now, body.landing-active #utc-now{
-  font-size:clamp(44px, 13vw, 56px);
-  font-weight:600;
-  letter-spacing:-.03em;
 }
 body #utc-millis, body.landing-active #utc-millis, body #utc-overlay-millis{
   color:var(--label-secondary);
   font-size:clamp(18px, 4.8vw, 22px);
   font-weight:600;
 }
-body .utc-label, body.landing-active .utc-label, body .utc-clock-overlay-unit{
+body .utc-clock-overlay-unit{
   margin-left:8px;
   color:var(--label-secondary);
   font-size:13px;
   font-weight:500;
 }
-body .clock-tap-hint, body .member-pet-remaining, body .march-auto-badge, body .coord-axis, body .calculating-msg, body .device-sync-status, body .footer, body #page-calc .footer, body #page-landing .footer, body.landing-active #page-landing .footer{
+body .member-pet-remaining, body .march-auto-badge, body .coord-axis, body .device-sync-status, body .footer, body #page-calc .footer, body #page-landing .footer, body.landing-active #page-landing .footer{
   color:var(--label-tertiary);
   font-size:13px;
   font-weight:400;
@@ -3317,9 +2743,6 @@ body .page-tab-btn.active, body.landing-active .page-tab-btn.active{
 body #page-calc > .mode-card, body #page-landing > .mode-card{
   margin:0 0 var(--space-4) !important;
 }
-body #page-calc > .departure-action, body #page-landing > .landing-action{
-  margin:0 0 var(--space-3) !important;
-}
 body #page-calc > #impact-display, body #page-landing > #l-result{
   margin:0 0 var(--space-4) !important;
 }
@@ -3331,23 +2754,11 @@ body #page-calc > .collapsible-card, body #page-calc > .collapsible-card + .coll
 body #page-switch > .mode-card{
   margin:0 0 var(--space-4) !important;
 }
-body #page-switch > .switch-action{
-  margin:0 0 var(--space-3) !important;
-}
 body #page-switch > #sw-result{
   margin:0 0 var(--space-4) !important;
 }
 body #page-switch > .collapsible-card{
   margin:0 0 var(--space-4) !important;
-}
-body #page-switch .sw-row{
-  min-height:60px;
-  margin:0 var(--space-3);
-  padding:0;
-  border-bottom:1px solid var(--separator-soft);
-}
-body #page-switch .sw-row:last-of-type{
-  border-bottom:0;
 }
 body #page-switch .sw-row-control{
   display:inline-flex;
@@ -3359,22 +2770,6 @@ body #page-switch .sw-row-control{
   border-radius:0;
   background:transparent;
 }
-body #page-switch .switch-action{
-  min-height:48px;
-  border-radius:var(--radius-control);
-  background:var(--accent-soft);
-  border:1.5px solid var(--action-primary);
-  color:var(--action-primary);
-  font-size:16px;
-  font-weight:700;
-  box-shadow:none;
-}
-body #page-switch .switch-action:hover, body #page-switch .switch-action:active{
-  background:var(--accent-soft);
-}
-body #page-calc .calculating-msg{
-  margin:-8px 0 var(--space-3);
-}
 body .collapsible-card, body #page-calc .collapsible-card{
   border-radius:var(--radius-section);
   background:var(--surface-primary);
@@ -3384,9 +2779,9 @@ body .collapsible-card, body #page-calc .collapsible-card{
 
 /* mode-cardは行区切り(border-bottom)だけで十分に構造が伝わるため、外箱(背景/角丸)を持たない */
 body .mode-card, body #page-calc .mode-card, body #page-calc .departure-settings-card, body .landing-settings-card, body #page-landing .landing-settings-card{
-  border-radius:0 !important;
-  background:transparent !important;
-  box-shadow:none !important;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
 }
 body #l-result-inner{
   border-radius:0;
@@ -3397,24 +2792,15 @@ body .collapsible-header, body #page-calc .collapsible-header{
   min-height:44px;
   padding:0 var(--space-3) !important;
 }
-body .collapsible-header-title, body .section-title, body label, body #page-calc .departure-setting-name, body #page-landing .l-setting-name, body .member-setting-label{
+body .collapsible-header-title, body label, body .member-setting-label{
   color:var(--label-strong);
   font-size:17px;
   font-weight:600;
 }
-body #page-calc .departure-setting-row, body #page-landing .l-setting-row, body #page-landing .l-wave-options{
-  min-height:60px;
-  margin:0 var(--space-3);
-  padding:0;
-  border-bottom:1px solid var(--separator-soft);
-}
-body #page-calc .departure-setting-row:last-of-type, body #page-landing .l-setting-row:last-of-type{
-  border-bottom:0;
-}
 body #page-landing .l-wave-options{
   margin:0 var(--space-3);
 }
-body #page-calc .departure-setting-control, body #page-calc .departure-time-control, body #page-landing .l-setting-control, body #page-switch .departure-setting-control{
+body #page-calc .departure-setting-control, body #page-landing .l-setting-control, body #page-switch .departure-setting-control{
   display:inline-flex;
   align-items:center;
   justify-content:flex-end;
@@ -3427,25 +2813,11 @@ body #page-calc .departure-setting-control, body #page-calc .departure-time-cont
 body #time-input-group, body #prep-input-group{
   margin-right:0;
 }
-body #page-calc .departure-setting-control select, body #page-calc .departure-time-control select, body #page-calc .departure-after-text, body #page-calc .departure-mode-select, body #page-landing .l-setting-control select, body #page-switch .departure-setting-control select, body .inline-select, body .time-select, body .time-select-sm, body select, body input:not([type="checkbox"]){
+body #page-calc .departure-setting-control select, body #page-calc .departure-after-text, body #page-landing .l-setting-control select, body #page-switch .departure-setting-control select, body .inline-select, body select, body input:not([type="checkbox"]){
   min-height:var(--control-height);
   border:0;
   background:transparent;
   box-shadow:none;
-  color:var(--text-primary);
-  font-size:16px;
-  font-weight:600;
-}
-body #page-calc .departure-mode-select{
-  flex:0 0 auto;
-  min-width:auto;
-  padding:0 18px 0 0;
-  border-radius:0;
-  background:transparent;
-  background-image:linear-gradient(45deg, transparent 50%, var(--label-tertiary) 50%), linear-gradient(135deg, var(--label-tertiary) 50%, transparent 50%);
-  background-position:calc(100% - 5px) calc(50% - 1px), 100% calc(50% - 1px);
-  background-size:5px 5px, 5px 5px;
-  background-repeat:no-repeat;
   color:var(--text-primary);
   font-size:16px;
   font-weight:600;
@@ -3455,23 +2827,7 @@ body #page-calc .departure-schedule-label{
   align-items:center;
   min-height:var(--control-height);
 }
-body #page-calc .departure-schedule-row .departure-mode-select{
-  position:absolute;
-  width:1px;
-  height:1px;
-  margin:-1px;
-  padding:0;
-  overflow:hidden;
-  clip:rect(0 0 0 0);
-  clip-path:inset(50%);
-  white-space:nowrap;
-  border:0;
-}
-body #page-calc .departure-time-control select, body .time-select-sm, body .time-select{
-  font-family:var(--font-num);
-  font-variant-numeric:tabular-nums;
-}
-body .time-sep, body #page-calc .departure-after-text{
+body #page-calc .departure-after-text{
   color:var(--label-secondary);
   font-size:15px;
   font-weight:500;
@@ -3485,95 +2841,28 @@ body #page-calc .departure-after-text{
 body #page-calc .departure-chevron, body #page-landing .l-chevron, body .member-settings-toggle{
   min-height:var(--control-height);
 }
-body #page-calc .departure-action, body #page-landing .landing-action{
-  min-height:48px;
-  border-radius:var(--radius-control);
-  background:var(--accent-soft);
-  border:1.5px solid var(--action-primary);
-  color:var(--action-primary);
-  font-size:16px;
-  font-weight:700;
-  box-shadow:none;
-}
-body #page-calc .departure-action:hover, body #page-landing .landing-action:hover{
-  background:var(--accent-soft);
-}
-body #page-calc .departure-action:active, body #page-landing .landing-action:active{
-  background:var(--accent-soft);
-  border-color:var(--action-primary-pressed);
-  color:var(--action-primary-pressed);
-}
 
 /* 結果もカードにしない。時計と同じ「基準点」の言語で、罫線と数字だけで見せる */
-body .impact-display, body #page-calc .impact-display, body #page-landing #l-result .impact-display{
-  padding:var(--space-3) 0 0;
-  border-radius:0 !important;
-  background:transparent !important;
-  border-top:1px solid var(--border);
-}
-body .impact-display-inner, body #page-calc .departure-result .impact-display-inner, body #page-landing #l-result .impact-display-inner{
-  display:grid;
-  grid-template-columns:max-content max-content;
-  grid-template-areas:
-    "label label"
-    "time unit";
-  justify-content:center;
-  align-items:end;
-  column-gap:8px;
-  row-gap:4px;
-  margin:0;
-}
-body .impact-display-inner > .impact-label:first-child{
-  grid-area:label;
-  color:var(--label-secondary);
-  font-size:13px;
-  font-weight:500;
-}
-body .impact-display-inner > .impact-time{
-  grid-area:time;
-  color:var(--action-primary);
-  font-size:32px;
-  font-weight:600;
-  line-height:1.05;
-}
-body .impact-display-inner > .impact-label:last-child{
-  grid-area:unit;
-  align-self:end;
-  padding-bottom:4px;
-  color:var(--label-secondary);
-  font-size:12px;
-  font-weight:500;
-}
 body #page-calc .member-row-wrapper, body #page-calc .member-row, body #page-calc .button-controls{
   background:var(--surface-primary);
 }
 body .member-row::after, body .member-setting-row::after{
   background:var(--separator-soft);
 }
-body .member-identity-row{
-  min-height:56px;
-  padding:0 var(--space-3);
-  gap:var(--space-2);
-}
 body .member-identity-row .name-text{
   color:var(--label-strong);
   font-size:18px;
   font-weight:700;
 }
-body .member-departure-status, body .member-departure-countdown-value{
+body .member-departure-status{
   color:var(--label-secondary);
   font-size:15px;
   font-weight:600;
 }
-body .member-departure-status.counting, body .member-departure-status.counting .member-departure-countdown-value{
+body .member-departure-status.counting{
   color:var(--action-primary);
 }
-body .member-departure-status.departed, body .member-departure-status.departed .member-departure-countdown-value{
-  color:var(--label-tertiary);
-}
-body .member-settings-toggle{
-  width:44px;
-  min-width:44px;
+body .member-departure-status.departed{
   color:var(--label-tertiary);
 }
 body .member-auto-settings{
@@ -3691,13 +2980,6 @@ body .preview-text-box, body .copy{
   font-size:14px;
   line-height:1.65;
 }
-body button.secondary{
-  min-height:var(--control-height);
-  border-radius:14px;
-  box-shadow:none;
-  font-size:15px;
-  font-weight:600;
-}
 
 @media (max-width:380px){
 body .header, body.landing-active .header{
@@ -3721,37 +3003,22 @@ body .impact-display-inner > .impact-time{
    既存の重複ルールが !important で散在しているため、ここで最終的に一括上書きする。
    ========================================================================== */
 body .page-tabs, body.landing-active .page-tabs{
-  margin:0 0 var(--settings-top-gap) !important;
+  margin:0 0 var(--settings-top-gap);
 }
 
 /* 設定エリア（mode-card）：内側の余白を0にし、行の高さだけで積み上げる。
    コンテンツが少ないタブは min-height で不足分を空白として補い、
    常に3行分の高さ（--settings-area-height）で揃える */
-body #page-calc .mode-card, body #page-landing .mode-card, body #page-switch .mode-card{
-  margin:0 0 var(--settings-bottom-gap) !important;
-  padding:0 !important;
-  min-height:var(--settings-area-height) !important;
-}
 
 /* 各設定行の行高を3タブ共通で64pxに */
 body #page-calc .departure-setting-row, body #page-landing .l-setting-row, body #page-landing .l-wave-options, body #page-switch .sw-row, body #page-switch .departure-setting-row{
   min-height:var(--settings-row-height) !important;
-  align-items:center !important;
+  align-items:center;
 }
 
 /* ボタン（計算開始）：高さ・角丸・配色を3タブ共通の1ルールにまとめる */
 body #page-calc .departure-action, body #page-landing .landing-action, body #page-switch .switch-action{
-  min-height:48px !important;
-  width:calc(100% - 32px) !important;
-  border-radius:var(--radius-control) !important;
-  background:var(--accent-soft) !important;
-  border:1.5px solid var(--action-primary) !important;
-  color:var(--action-primary) !important;
-  font-size:16px !important;
-  font-weight:700 !important;
-  box-shadow:none !important;
-  margin:0 auto !important;
-  display:block !important;
+  display:block;
 }
 
 /* ==========================================================================
@@ -3759,18 +3026,11 @@ body #page-calc .departure-action, body #page-landing .landing-action, body #pag
    時計の右側にモノクロの小窓（PiP）アイコンだけを添える
    ========================================================================== */
 body .clock, body.landing-active .clock{
-  display:flex !important;
-  flex-direction:row !important;
-  align-items:center !important;
-  justify-content:center !important;
-  gap:10px !important;
-}
-body .clock-time-line, body.landing-active .clock-time-line{
-  width:auto !important;
-  justify-content:flex-start !important;
+  flex-direction:row;
+  gap:10px;
 }
 body .clock-pip-icon{
-  display:none !important;
+  display:none;
   position:absolute;
   top:27px;
   right:58px;
@@ -3794,14 +3054,7 @@ body .clock-pip-icon svg{
    ・ヘッダーを少し上へ、「…」ボタンに余白を追加
    ・UTC時計本体（整数・小数・UTC）にごく弱いtext-shadowを付けて浮遊感を出す
    ========================================================================== */
-body .header, body.landing-active .header{
-  padding-top:calc(var(--space-5) - 8px);
-}
-body .app-settings-button, body.landing-active .app-settings-button{
-  top:-13px;
-  right:6px;
-}
-body #utc-now, body.landing-active #utc-now, body #utc-millis, body.landing-active #utc-millis, body .utc-label, body.landing-active .utc-label{
+body #utc-now, body.landing-active #utc-now, body #utc-millis, body.landing-active #utc-millis{
   text-shadow:0 2px 4px rgba(30,28,25,.16);
 }
 
@@ -3850,7 +3103,7 @@ body .utc-clock-overlay-countdown-unit{
   font-weight:600;
 }
 body .utc-clock-overlay-countdown-value{
-  color:#ffffff !important;
+  color:#ffffff;
   font-family:var(--font-num);
   font-size:26px;
   font-weight:700;
@@ -3866,9 +3119,9 @@ body .utc-clock-overlay-countdown-suffix{
 
 /* チャット貼り付け用プレビュー：文字と上下余白を少し詰める */
 body .preview-text-box{
-  padding:6px 16px !important;
-  font-size:13px !important;
-  line-height:1.5 !important;
+  padding:6px 16px;
+  font-size:13px;
+  line-height:1.5;
 }
 
 /* 設定画面：見出しにアイコンを追加、PiP欄をカード＋行タップに変更 */
@@ -3876,20 +3129,6 @@ body .device-settings-group-title{
   display:flex;
   align-items:center;
   gap:6px;
-}
-body .device-sync-status + .device-settings-group-title{
-  margin-top:20px;
-}
-body .device-settings-group-icon{
-  display:inline-flex;
-  color:#8e8e93;
-}
-body .device-settings-group-icon svg{
-  width:15px;
-  height:15px;
-}
-body a.device-settings-row{
-  text-decoration:none;
 }
 body .device-settings-row-chevron{
   color:#c7c7cc;
@@ -3905,7 +3144,7 @@ body .page-tab-btn, body.landing-active .page-tab-btn{
 
 /* 設定ボタン：丸い背景と登録済みを示す緑の点を非表示に */
 body .app-settings-button::before, body.landing-active .app-settings-button::before, body .app-settings-button.registered::after, body.landing-active .app-settings-button.registered::after{
-  display:none !important;
+  display:none;
 }
 
 /* ==========================================================================
@@ -3919,18 +3158,15 @@ body .app-settings-button::before, body.landing-active .app-settings-button::bef
   --row-chevron-w:28px;
 }
 body #page-calc .departure-setting-row, body #page-calc .departure-schedule-row, body #page-landing .l-setting-row, body #page-landing .l-wave-options, body #page-switch .sw-row{
-  display:grid !important;
+  display:grid;
   grid-template-columns:max-content 1fr;
   align-items:center;
-  gap:0 var(--row-gap) !important;
+  gap:0 var(--row-gap);
   min-height:var(--settings-row-height) !important;
   margin:0 var(--row-inset) !important;
   padding:0 !important;
-  border-top:0 !important;
-  border-bottom:1px solid var(--separator-soft) !important;
-}
-body #page-calc .departure-settings-card > div:last-of-type, body #page-landing .landing-settings-card > div:last-of-type, body #page-switch .switch-settings-card > div:last-of-type{
-  border-bottom:0 !important;
+  border-top:0;
+  border-bottom:1px solid var(--separator-soft);
 }
 body #page-calc .departure-setting-name, body #page-landing .l-setting-name, body #page-switch .sw-row-label{
   grid-column:1;
@@ -3940,36 +3176,36 @@ body #page-calc .departure-setting-name, body #page-landing .l-setting-name, bod
   font-weight:600;
   white-space:nowrap;
 }
-body #page-calc .departure-setting-control, body #page-calc .departure-time-control, body #page-landing .l-setting-control, body #page-switch .sw-row-control{
+body #page-calc .departure-setting-control, body #page-landing .l-setting-control, body #page-switch .sw-row-control{
   grid-column:2;
   justify-self:end;
   display:inline-flex;
   align-items:center;
   justify-content:flex-end;
-  gap:var(--row-gap) !important;
+  gap:var(--row-gap);
   min-width:0;
   min-height:var(--control-height);
   margin:0 !important;
   padding:0 !important;
 }
-body #page-calc .departure-setting-control select, body #page-calc .departure-time-control select, body #page-landing .l-setting-control select, body #page-switch .sw-row-control select, body #page-switch .sw-number-input{
+body #page-calc .departure-setting-control select, body #page-landing .l-setting-control select, body #page-switch .sw-row-control select{
   text-align:right;
   text-align-last:right;
 }
 body #page-calc .departure-chevron, body #page-landing .l-chevron, body #page-switch .sw-chevron{
   flex:0 0 var(--row-chevron-w);
-  width:var(--row-chevron-w) !important;
-  min-width:var(--row-chevron-w) !important;
-  min-height:var(--control-height) !important;
-  margin:0 !important;
-  padding:0 !important;
-  color:var(--label-tertiary) !important;
-  font-size:0 !important;
+  width:var(--row-chevron-w);
+  min-width:var(--row-chevron-w);
+  min-height:var(--control-height);
+  margin:0;
+  padding:0;
+  color:var(--label-tertiary);
+  font-size:0;
   background:transparent;
 }
 body #page-calc .departure-chevron::after, body #page-landing .l-chevron::after, body #page-switch .sw-chevron::after{
-  content:"" !important;
-  display:block !important;
+  content:"";
+  display:block;
   width:7px;
   height:7px;
   border-right:2px solid currentColor;
@@ -3981,8 +3217,6 @@ body #page-calc .departure-chevron::after, body #page-landing .l-chevron::after,
 /* ==========================================================================
    集結一覧：ヘッダーなしの一覧＋行タップで開く詳細
    ========================================================================== */
-body #players{ counter-reset:member-index; }
-body #players .member-row-wrapper{ counter-increment:member-index; }
 
 /* 連番は名前より控えめに。並べ替え・削除でも自動で振り直される */
 body .member-identity-row::before{
@@ -4059,182 +3293,156 @@ body #page-calc .mode-card, body #page-landing .mode-card, body #page-switch .mo
 
 /* スイッチ2行目も、他の入力行と同じグリッドへ含める。 */
 body #page-calc .departure-setting-row, body #page-calc .departure-schedule-row, body #page-landing .l-setting-row, body #page-landing .l-wave-options, body #page-switch .sw-row, body #page-switch .departure-setting-row{
-  display:grid !important;
-  grid-template-columns:max-content 1fr !important;
-  align-items:center !important;
+  display:grid;
+  grid-template-columns:max-content 1fr;
+  align-items:center;
   min-height:var(--final-row-height) !important;
   margin:0 var(--final-row-inset) !important;
   padding:0 !important;
-  border-top:0 !important;
-  border-bottom:1px solid var(--separator-soft) !important;
+  border-top:0;
+  border-bottom:1px solid var(--separator-soft);
 }
 body #page-calc .departure-settings-card > div:last-of-type, body #page-landing .landing-settings-card > div:last-of-type, body #page-switch .switch-settings-card > div:last-of-type{
-  border-bottom:0 !important;
+  border-bottom:0;
 }
 
 /* 左ラベルは全タブ同じサイズ・太さ。 */
 body #page-calc .departure-setting-name, body #page-landing .l-setting-name, body #page-switch .sw-row-label, body #page-switch .departure-setting-name{
-  grid-column:1 !important;
-  justify-self:start !important;
-  font-family:var(--font-ui) !important;
+  grid-column:1;
+  justify-self:start;
+  font-family:var(--font-ui);
   font-size:17px !important;
-  font-weight:600 !important;
-  line-height:1.25 !important;
-  letter-spacing:-.01em !important;
-  color:var(--label-strong) !important;
-  white-space:nowrap !important;
+  font-weight:600;
+  line-height:1.25;
+  letter-spacing:-.01em;
+  color:var(--label-strong);
+  white-space:nowrap;
 }
 
 /* 右の値エリアは全タブ同じ基準。 */
-body #page-calc .departure-setting-control, body #page-calc .departure-time-control, body #page-landing .l-setting-control, body #page-switch .sw-row-control, body #page-switch .departure-setting-control{
-  grid-column:2 !important;
-  justify-self:end !important;
-  display:inline-flex !important;
-  align-items:center !important;
-  justify-content:flex-end !important;
-  gap:8px !important;
+body #page-calc .departure-setting-control, body #page-landing .l-setting-control, body #page-switch .sw-row-control, body #page-switch .departure-setting-control{
+  grid-column:2;
+  justify-self:end;
+  display:inline-flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
   min-height:44px !important;
   margin:0 !important;
   padding:0 !important;
 }
 
 /* 値の文字サイズを統一。Safariのnative select矢印は表示しない。 */
-body #page-calc .departure-setting-control select, body #page-calc .departure-time-control select, body #page-landing .l-setting-control select, body #page-switch .sw-row-control select, body #page-switch .departure-setting-control select{
-  -webkit-appearance:none !important;
-  appearance:none !important;
-  background-image:none !important;
-  border:0 !important;
-  box-shadow:none !important;
+body #page-calc .departure-setting-control select, body #page-landing .l-setting-control select, body #page-switch .sw-row-control select, body #page-switch .departure-setting-control select{
+  -webkit-appearance:none;
+  appearance:none;
+  background-image:none;
+  border:0;
+  box-shadow:none;
   min-height:44px !important;
   padding:0 !important;
-  font-family:var(--font-ui) !important;
+  font-family:var(--font-ui);
   font-size:17px !important;
-  font-weight:700 !important;
-  line-height:1.25 !important;
-  letter-spacing:-.01em !important;
-  color:var(--text-primary) !important;
-  text-align:right !important;
-  text-align-last:right !important;
+  font-weight:700;
+  line-height:1.25;
+  letter-spacing:-.01em;
+  color:var(--text-primary);
+  text-align:right;
+  text-align-last:right;
 }
 body #page-calc .departure-after-text{
-  font-family:var(--font-ui) !important;
-  font-size:15px !important;
-  font-weight:500 !important;
-  line-height:1.25 !important;
-  color:var(--label-secondary) !important;
+  font-family:var(--font-ui);
+  font-size:15px;
+  font-weight:500;
+  line-height:1.25;
+  color:var(--label-secondary);
 }
 
 /* 共通chevron。 */
 body #page-calc .departure-chevron, body #page-landing .l-chevron, body #page-switch .sw-chevron{
-  flex:0 0 var(--final-chevron-w) !important;
-  width:var(--final-chevron-w) !important;
-  min-width:var(--final-chevron-w) !important;
-  min-height:44px !important;
-  margin:0 !important;
-  padding:0 !important;
+  flex:0 0 var(--final-chevron-w);
+  width:var(--final-chevron-w);
+  min-width:var(--final-chevron-w);
+  min-height:44px;
+  margin:0;
+  padding:0;
 }
 
 /* 計算開始：最後の入力行から16px。3タブ同じ寸法。 */
 body #page-calc .departure-action, body #page-landing .landing-action, body #page-switch .switch-action{
-  width:calc(100% - 32px) !important;
-  min-height:48px !important;
-  margin:0 auto var(--final-section-gap) !important;
-  padding:0 16px !important;
-  border-radius:var(--radius-control) !important;
-  font-family:var(--font-ui) !important;
-  font-size:16px !important;
-  font-weight:700 !important;
-  line-height:1.2 !important;
+  font-family:var(--font-ui);
+  font-weight:700;
+  line-height:1.2;
 }
 
 /* 結果表示：タイトル・時刻・UTCの文字基準を3タブ共通化。 */
 body #page-calc > #impact-display, body #page-landing > #l-result, body #page-switch > #sw-result{
   width:100% !important;
   margin:0 0 var(--final-section-gap) !important;
-  box-sizing:border-box !important;
+  box-sizing:border-box;
 }
 body .impact-display, body #page-calc .impact-display, body #page-landing #l-result .impact-display, body #page-switch #sw-result .impact-display{
   padding:16px 0 0 !important;
-  border-top:1px solid var(--border) !important;
-  border-radius:0 !important;
-  background:transparent !important;
+  border-top:1px solid var(--border);
+  border-radius:0;
+  background:transparent;
 }
 body .impact-display-inner, body #page-calc .departure-result .impact-display-inner, body #page-landing #l-result .impact-display-inner, body #page-switch #sw-result .impact-display-inner{
-  display:grid !important;
-  grid-template-columns:max-content max-content !important;
-  grid-template-areas:"label label" "time unit" !important;
-  justify-content:center !important;
-  align-items:end !important;
-  column-gap:8px !important;
-  row-gap:4px !important;
+  display:grid;
+  grid-template-columns:max-content max-content;
+  grid-template-areas:"label label" "time unit";
+  justify-content:center;
+  align-items:end;
+  column-gap:8px;
+  row-gap:4px;
   margin:0 !important;
 }
 body .impact-display-inner > .impact-label:first-child{
-  grid-area:label !important;
-  font-family:var(--font-ui) !important;
+  grid-area:label;
+  font-family:var(--font-ui);
   font-size:13px !important;
-  font-weight:500 !important;
-  line-height:1.2 !important;
-  color:var(--label-secondary) !important;
+  font-weight:500;
+  line-height:1.2;
+  color:var(--label-secondary);
 }
 body .impact-display-inner > .impact-time{
-  grid-area:time !important;
-  font-family:var(--font-num) !important;
+  grid-area:time;
+  font-family:var(--font-num);
   font-size:32px !important;
-  font-weight:600 !important;
-  line-height:1.05 !important;
-  letter-spacing:-.02em !important;
-  font-variant-numeric:tabular-nums !important;
+  font-weight:600;
+  line-height:1.05;
+  letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
 }
 body .impact-display-inner > .impact-label:last-child{
-  grid-area:unit !important;
-  align-self:end !important;
+  grid-area:unit;
+  align-self:end;
   padding-bottom:4px !important;
-  font-family:var(--font-ui) !important;
+  font-family:var(--font-ui);
   font-size:12px !important;
-  font-weight:500 !important;
-  line-height:1.2 !important;
-  color:var(--label-secondary) !important;
+  font-weight:500;
+  line-height:1.2;
+  color:var(--label-secondary);
 }
 
 /* チャットに実際にコピーされるプレビューを、同じ枠・同じ文字で表示。 */
 body .copy-preview-card{
-  width:100% !important;
-  margin:0 0 var(--final-section-gap) !important;
-  border:1px solid var(--border) !important;
-  border-radius:12px !important;
-  background:#fff !important;
-  box-shadow:none !important;
-  overflow:hidden !important;
-  box-sizing:border-box !important;
+  width:100%;
+  margin:0 0 var(--final-section-gap);
+  box-sizing:border-box;
 }
 body .copy-preview-card .collapsible-header{
-  min-height:56px !important;
-  padding:0 16px !important;
-  border:0 !important;
-  background:#fff !important;
+  border:0;
 }
 body .copy-preview-card .collapsible-header-title{
-  font-family:var(--font-ui) !important;
-  font-size:17px !important;
-  font-weight:600 !important;
-  line-height:1.25 !important;
+  font-family:var(--font-ui);
 }
 body .copy-preview-card .collapsible-content-inner{
-  border:0 !important;
-  background:#fff !important;
+  border:0;
 }
 body .copy-preview-card .preview-text-box{
-  margin:0 !important;
-  padding:12px 16px !important;
-  border:0 !important;
-  border-top:1px solid var(--separator-soft) !important;
-  border-radius:0 !important;
-  background:rgba(118,118,128,.04) !important;
-  color:var(--label-secondary) !important;
-  font-family:var(--font-num) !important;
-  font-size:14px !important;
-  line-height:1.55 !important;
+  margin:0;
+  font-family:var(--font-num);
 }
 @keyframes copyPreviewFlash{
   0%{box-shadow:inset 0 0 0 0 rgba(var(--signal-rgb),0)}
@@ -4247,8 +3455,8 @@ body .copy-preview-card.flash{
 
 /* ===== 2026-08-24 最終調整: 今から固定 / フッター / コピー完了フラッシュ ===== */
 body .footer, body #page-calc .footer, body #page-landing .footer, body #page-switch .footer, body.landing-active #page-landing .footer{
-  color:rgba(60,60,67,.28) !important;
-  font-weight:400 !important;
+  color:rgba(60,60,67,.28);
+  font-weight:400;
 }
 
 /* hidden互換コントロールはレイアウトに一切参加させない */
@@ -4264,12 +3472,9 @@ body #time-input-group[hidden]{
 }
 body #page-calc .members-table, body #page-landing #l-result-inner, body #page-switch #sw-result-inner{
   width:100% !important;
-  box-sizing:border-box !important;
-  border:0 !important;
-  outline:0 !important;
-}
-body #page-calc .members-table.flash, body #page-landing #l-result-inner.flash, body #page-switch #sw-result-inner.flash{
-  animation:copyTargetFlash var(--motion-signal-dur) ease !important;
+  box-sizing:border-box;
+  border:0;
+  outline:0;
 }
 
 /* ===== split from index.html ===== */
@@ -4322,14 +3527,6 @@ body #page-calc .members-table.flash, body #page-landing #l-result-inner.flash, 
 }
 .clock-quick-menu-item:last-child{ border-bottom:0; }
 .clock-quick-menu-item:active{ background:rgba(118,118,128,.08); }
-.clock-quick-menu-copy{
-  display:flex;
-  flex:1;
-  min-width:0;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-}
 .clock-quick-menu-title{ white-space:nowrap; }
 .clock-quick-menu-value{
   overflow:hidden;
@@ -4362,91 +3559,36 @@ body #page-calc .members-table.flash, body #page-landing #l-result-inner.flash, 
 .device-sync-select-wrap select{
   flex:1;
   min-width:0;
-  color:var(--label-secondary, #6e6e73) !important;
-  font-size:16px !important;
-  font-weight:500 !important;
+  color:var(--label-secondary, #6e6e73);
+  font-size:16px;
+  font-weight:500;
   text-align:right;
   text-align-last:right;
 }
 /* 「…」は見た目は裸、タップ領域のみ十分確保 */
-body .app-settings-button, body.landing-active .app-settings-button{
-  width:44px !important;
-  min-width:44px !important;
-  height:44px !important;
-  min-height:44px !important;
-  right:-4px !important;
-  top:-13px !important;
-}
 
 /* ===== split from index.html ===== */
 
 /* ===== 2026-08-24 UI仕上げ：時計を浮かせる／補助カードを弱める ===== */
-body .clock, body.landing-active .clock{
-  background:rgba(255,255,255,.96) !important;
-  border:1px solid rgba(60,60,67,.06) !important;
-  border-radius:18px !important;
-  box-shadow:0 12px 28px rgba(28,28,30,.11), 0 3px 8px rgba(28,28,30,.06) !important;
-  padding:10px 18px 12px !important;
-}
 body .clock:active, body.landing-active .clock:active{
   box-shadow:0 8px 20px rgba(28,28,30,.09), 0 2px 5px rgba(28,28,30,.05) !important;
 }
 /* …は円や背景を持たず、文字だけ */
-body .app-settings-button, body.landing-active .app-settings-button{
-  border:0 !important;
-  border-radius:0 !important;
-  background:transparent !important;
-  box-shadow:none !important;
-}
 /* 集結主一覧は補助情報として一段弱く */
-body #page-calc > .collapsible-card:first-of-type{
-  border:1px solid rgba(60,60,67,.07) !important;
-  border-radius:12px !important;
-  background:rgba(255,255,255,.58) !important;
-  box-shadow:none !important;
-}
-body #page-calc > .collapsible-card:first-of-type .member-row, body #page-calc > .collapsible-card:first-of-type .member-row-wrapper, body #page-calc > .collapsible-card:first-of-type .button-controls{
-  background:transparent !important;
-}
 body #page-calc .member-identity-row .name-text{
-  font-size:17px !important;
-  font-weight:600 !important;
+  font-size:17px;
+  font-weight:600;
 }
-body #page-calc .member-departure-status, body #page-calc .member-departure-countdown-value{
-  font-size:14px !important;
-  font-weight:500 !important;
+body #page-calc .member-departure-status{
+  font-size:14px;
+  font-weight:500;
 }
 /* 貼り付けプレビューも主役より弱く */
-body .copy-preview-card{
-  border:1px solid rgba(60,60,67,.07) !important;
-  border-radius:12px !important;
-  background:rgba(255,255,255,.58) !important;
-  box-shadow:none !important;
-}
-body .copy-preview-card .collapsible-header{
-  min-height:50px !important;
-  background:transparent !important;
-  padding:0 14px !important;
-}
-body .copy-preview-card .collapsible-header-title{
-  color:var(--label-secondary) !important;
-  font-size:15px !important;
-  font-weight:500 !important;
-}
-body .copy-preview-card .collapsible-arrow{
-  color:rgba(60,60,67,.45) !important;
-}
-body .copy-preview-card .collapsible-content-inner{ background:transparent !important; }
-body .copy-preview-card .preview-text-box{
-  background:rgba(118,118,128,.025) !important;
-  color:rgba(60,60,67,.72) !important;
-  font-size:13px !important;
-}
 /* 端末同期メニューは「端末同期：マリン」の一文表示 */
 .clock-quick-menu-value{
-  color:inherit !important;
-  font-size:inherit !important;
-  font-weight:inherit !important;
+  color:inherit;
+  font-size:inherit;
+  font-weight:inherit;
 }
 /* iPhone 初回案内 */
 .ios-home-guide{
@@ -4480,42 +3622,24 @@ body[data-theme="mint"]{
   --bg-light:#F1F6F3; --bg-lighter:#F5F8F6; --bg-blue-light:#EAF5F2; --signal:#8FBDB1; --signal-rgb:143,189,177;
   --btn-disabled:#C5C1BC; --text-tertiary:rgba(95,81,75,.20);
 }
-body[data-theme="caramel"]{
-  --bg:#FBF8F3; --card-bg:#FFFDFC; --blue-primary:#806A5B; --blue-hover:#705C4F; --blue-active:#604E43; --blue-text:#806A5B;
-  --accent-soft:rgba(207,185,160,.34); --border:#E7DED4; --text-primary:#3D3732; --text-secondary:#766B62; --text-muted:#91867C;
-  --bg-light:#F3EEE8; --bg-lighter:#F7F3EE; --bg-blue-light:#F2EAE1; --signal:#B99370; --signal-rgb:185,147,112;
-  --btn-disabled:#C9BEB4; --text-tertiary:rgba(128,106,91,.20);
-}
 /* UTC時計：形は共通。テーマ差はよく見れば分かる程度 */
-body .header, body.landing-active .header{padding-top:24px!important;margin-bottom:22px!important;}
-body .clock, body.landing-active .clock{position:relative!important;width:calc(100% - 8px)!important;min-height:94px!important;margin:0 auto!important;padding:13px 16px 14px!important;border:1px solid rgba(60,60,67,.065)!important;border-radius:18px!important;background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(251,250,247,.95))!important;box-shadow:0 12px 28px rgba(30,28,25,.09),0 2px 7px rgba(30,28,25,.045)!important;overflow:hidden!important;}
-body .clock-time-line, body.landing-active .clock-time-line{display:flex!important;align-items:baseline!important;justify-content:center!important;gap:0!important;width:100%!important;line-height:1!important;}
-body #utc-now, body.landing-active #utc-now{font-size:clamp(48px,13.3vw,58px)!important;font-weight:650!important;letter-spacing:-.045em!important;line-height:.98!important;text-shadow:0 2px 5px rgba(30,28,25,.13)!important;color:#3C4A63!important;}
-body #utc-millis, body.landing-active #utc-millis{margin-left:3px!important;font-size:clamp(18px,5vw,22px)!important;font-weight:600!important;line-height:1!important;text-shadow:none!important;color:#59657A!important;}
-body .utc-label, body.landing-active .utc-label{margin-left:8px!important;font-size:13px!important;font-weight:600!important;line-height:1!important;text-shadow:none!important;color:#77736D!important;}
+body .header, body.landing-active .header{padding-top:24px;margin-bottom:22px;}
+body .clock, body.landing-active .clock{position:relative;width:calc(100% - 8px);min-height:94px;margin:0 auto;padding:13px 16px 14px;border:1px solid rgba(60,60,67,.065);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(251,250,247,.95));box-shadow:0 12px 28px rgba(30,28,25,.09),0 2px 7px rgba(30,28,25,.045);overflow:hidden;}
+body .clock-time-line, body.landing-active .clock-time-line{display:flex;align-items:baseline;justify-content:center;gap:0;width:100%;line-height:1;}
+body #utc-now, body.landing-active #utc-now{font-size:clamp(48px,13.3vw,58px);font-weight:650;letter-spacing:-.045em;line-height:.98;text-shadow:0 2px 5px rgba(30,28,25,.13);color:#3C4A63;}
+body #utc-millis, body.landing-active #utc-millis{margin-left:3px;font-size:clamp(18px,5vw,22px);font-weight:600;line-height:1;text-shadow:none;color:#59657A;}
+body .utc-label, body.landing-active .utc-label{margin-left:8px;font-size:13px;font-weight:600;line-height:1;text-shadow:none;color:#77736D;}
 body[data-theme="mint"] .clock{background:linear-gradient(180deg,#FFFEFC 0%,#FAFCFA 72%,rgba(207,232,224,.32) 100%)!important;border-color:rgba(95,81,75,.055)!important;box-shadow:0 12px 28px rgba(79,101,94,.075),0 2px 7px rgba(95,81,75,.035),inset 0 -1px 0 rgba(143,189,177,.12)!important;}
-body[data-theme="mint"] #utc-now{color:#504B47!important;}
-body[data-theme="mint"] #utc-millis{color:#716762!important;}
-body[data-theme="mint"] .utc-label{color:#718B84!important;}
 body[data-theme="mint"] .impact-time{color:#5F514B!important;}
-body[data-theme="caramel"] .clock{background:linear-gradient(180deg,#FFFEFC 0%,#FCF9F4 72%,rgba(207,185,160,.20) 100%)!important;border-color:rgba(128,106,91,.06)!important;box-shadow:0 12px 28px rgba(128,106,91,.075),0 2px 7px rgba(128,106,91,.035),inset 0 -1px 0 rgba(185,147,112,.10)!important;}
-body[data-theme="caramel"] #utc-now{color:#65584F!important;}
-body[data-theme="caramel"] #utc-millis{color:#887467!important;}
-body[data-theme="caramel"] .utc-label{color:#8D7D70!important;}
-body[data-theme="caramel"] .impact-time{color:#806A5B!important;}
 /* テーマ選択は「…」メニュー内で完結 */
 .quick-theme-panel{display:none;border-top:1px solid rgba(60,60,67,.08);background:rgba(248,248,248,.72);}
 .clock-quick-menu.theme-open .clock-quick-menu-main{display:none;}
 .clock-quick-menu.theme-open .quick-theme-panel{display:block;}
 .quick-theme-head{display:flex;align-items:center;min-height:48px;padding:0 12px;border-bottom:1px solid rgba(60,60,67,.08);font-size:15px;font-weight:650;color:var(--label-strong,#1c1c1e);}
-.quick-theme-back{width:32px!important;min-width:32px!important;min-height:32px!important;margin:0 4px 0 -6px!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;color:var(--label-secondary,#6e6e73)!important;font-size:25px!important;font-weight:300!important;line-height:1!important;}
-.quick-theme-choice{display:flex;align-items:center;width:100%;min-height:48px;margin:0!important;padding:0 14px!important;border:0!important;border-bottom:1px solid rgba(60,60,67,.07)!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;color:var(--label-strong,#1c1c1e)!important;font-size:15px!important;font-weight:500!important;text-align:left!important;}
-.quick-theme-choice:last-child{border-bottom:0!important}
-.quick-theme-choice::before{content:"";width:12px;height:12px;margin-right:10px;border-radius:50%;border:1px solid rgba(60,60,67,.10);background:#F5F4F1;}
-.quick-theme-choice[data-theme-choice="mint"]::before{background:linear-gradient(135deg,#CFE8E0 0 58%,#6B5650 59%)}
-.quick-theme-choice[data-theme-choice="caramel"]::before{background:linear-gradient(135deg,#E8DDD0 0 58%,#9C7C62 59%)}
+.quick-theme-back{width:32px;min-width:32px;min-height:32px;margin:0 4px 0 -6px;padding:0;border:0;background:transparent;box-shadow:none;color:var(--label-secondary,#6e6e73);font-size:25px;font-weight:300;line-height:1;}
+.quick-theme-choice{display:flex;align-items:center;width:100%;min-height:48px;margin:0;padding:0 14px;border:0;border-bottom:1px solid rgba(60,60,67,.07);border-radius:0;background:transparent;box-shadow:none;color:var(--label-strong,#1c1c1e);font-size:15px;font-weight:500;text-align:left;}
+.quick-theme-choice:last-child{border-bottom:0}
 .quick-theme-choice::after{content:"";margin-left:auto;width:6px;height:10px;border-right:2px solid transparent;border-bottom:2px solid transparent;transform:rotate(45deg)}
-.quick-theme-choice[aria-checked="true"]::after{border-color:var(--blue-primary)}
 
 /* ===== split from index.html ===== */
 
@@ -4544,77 +3668,48 @@ body[data-theme="mint"]{
   --pro-accent-soft:#F1F6F3;
   --pro-result:#725F54;
 }
-body[data-theme="caramel"]{
-  --blue-primary:#796455;
-  --blue-hover:#6B594C;
-  --blue-active:#5D4E43;
-  --blue-text:#796455;
-  --accent-soft:rgba(207,184,158,.16);
-  --signal:#D1B69B;
-  --signal-rgb:209,182,155;
-  --pro-accent:#796455;
-  --pro-accent-soft:#F6F0EA;
-  --pro-result:#826A59;
-}
 
 /* 文字色：黒・紺・茶の混在をなくす */
 body .l-setting-name, body .departure-setting-name, body #page-switch .sw-row-label, body .name-text, body .collapsible-header-title, body .quick-theme-choice, body .clock-quick-menu-title{
-  color:var(--pro-ink) !important;
+  color:var(--pro-ink);
 }
-body .impact-label, body .utc-label, body .footer, body .departure-after-text, body #page-switch .sw-row-suffix{
-  color:var(--pro-ink-soft) !important;
+body .impact-label, body .utc-label, body .footer, body .departure-after-text{
+  color:var(--pro-ink-soft);
 }
-body[data-theme="mint"] .impact-time, body[data-theme="mint"] .member-departure-countdown-value, body[data-theme="mint"] .member-departure-status.counting, body[data-theme="mint"] #add-member{
-  color:var(--pro-accent) !important;
-}
-body[data-theme="caramel"] .impact-time, body[data-theme="caramel"] .member-departure-countdown-value, body[data-theme="caramel"] .member-departure-status.counting, body[data-theme="caramel"] #add-member{
+body[data-theme="mint"] .impact-time, body[data-theme="mint"] .member-departure-status.counting, body[data-theme="mint"] #add-member{
   color:var(--pro-accent) !important;
 }
 
 /* UTC時計：単色。色の発光はやめ、テーマごとの差は境界線と文字にだけ入れる */
 body .clock, body.landing-active .clock{
-  min-height:94px !important;
-  padding:10px 16px !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  border-radius:18px !important;
-  background:#FFFFFF !important;
-  border:1px solid rgba(60,60,67,.07) !important;
-  box-shadow:0 2px 7px rgba(28,28,30,.045),0 10px 24px rgba(28,28,30,.055) !important;
+  min-height:94px;
+  padding:10px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:18px;
+  background:#FFFFFF;
+  border:1px solid rgba(60,60,67,.07);
+  box-shadow:0 2px 7px rgba(28,28,30,.045),0 10px 24px rgba(28,28,30,.055);
 }
 body[data-theme="mint"] .clock, body[data-theme="mint"].landing-active .clock{
   background:#FBFCFA !important;
   border-color:#DCE9E4 !important;
   box-shadow:0 2px 7px rgba(28,28,30,.04),0 10px 24px rgba(28,28,30,.05) !important;
 }
-body[data-theme="caramel"] .clock, body[data-theme="caramel"].landing-active .clock{
-  background:#FCFAF7 !important;
-  border-color:#EAE0D6 !important;
-  box-shadow:0 2px 7px rgba(28,28,30,.04),0 10px 24px rgba(28,28,30,.05) !important;
-}
-body[data-theme="mint"] .clock::before, body[data-theme="mint"] .clock::after, body[data-theme="caramel"] .clock::before, body[data-theme="caramel"] .clock::after{
+body[data-theme="mint"] .clock::before, body[data-theme="mint"] .clock::after{
   display:none !important;
   content:none !important;
 }
 body[data-theme="mint"] #utc-now{color:#5C514B !important;}
 body[data-theme="mint"] #utc-millis{color:#776B65 !important;}
 body[data-theme="mint"] .utc-label{color:#788A84 !important;}
-body[data-theme="caramel"] #utc-now{color:#62574F !important;}
-body[data-theme="caramel"] #utc-millis{color:#817168 !important;}
-body[data-theme="caramel"] .utc-label{color:#8B7A6D !important;}
 
 /* 計算開始：テーマ色を全面に塗らず、少しだけ雰囲気を変える */
-body[data-theme="mint"] .btn-primary, body[data-theme="mint"] button.aligned-box, body[data-theme="mint"] #action-btn, body[data-theme="mint"] #l-action-btn, body[data-theme="mint"] #sw-action-btn{
+body[data-theme="mint"] .btn-primary, body[data-theme="mint"] #action-btn, body[data-theme="mint"] #l-action-btn, body[data-theme="mint"] #sw-action-btn{
   background:#F1F6F3 !important;
   border-color:#66564D !important;
   color:#66564D !important;
-  box-shadow:none !important;
-}
-body[data-theme="caramel"] .btn-primary, body[data-theme="caramel"] button.aligned-box, body[data-theme="caramel"] #action-btn, body[data-theme="caramel"] #l-action-btn, body[data-theme="caramel"] #sw-action-btn{
-  background:#F6F0EA !important;
-  border-color:#796455 !important;
-  color:#796455 !important;
   box-shadow:none !important;
 }
 
@@ -4622,36 +3717,36 @@ body[data-theme="caramel"] .btn-primary, body[data-theme="caramel"] button.align
 body #page-calc .impact-display, body #page-landing #l-result .impact-display, body #page-switch #sw-result .impact-display{
   padding:0 !important;
   margin:0 !important;
-  background:transparent !important;
+  background:transparent;
 }
 body #page-calc .impact-display-inner, body #page-landing #l-result .impact-display-inner, body #page-switch #sw-result .impact-display-inner{
   min-height:96px !important;
   margin:0 !important;
   padding:12px 8px !important;
-  display:flex !important;
-  flex-wrap:wrap !important;
-  align-content:center !important;
-  align-items:baseline !important;
-  justify-content:center !important;
-  column-gap:7px !important;
-  row-gap:2px !important;
+  display:flex;
+  flex-wrap:wrap;
+  align-content:center;
+  align-items:baseline;
+  justify-content:center;
+  column-gap:7px;
+  row-gap:2px;
 }
 body #page-calc .impact-display-inner .impact-label:first-child, body #page-landing #l-result .impact-display-inner .impact-label:first-child, body #page-switch #sw-result .impact-display-inner .impact-label:first-child{
-  flex:0 0 100% !important;
-  text-align:center !important;
+  flex:0 0 100%;
+  text-align:center;
   margin:0 0 1px !important;
   font-size:13px !important;
-  font-weight:600 !important;
+  font-weight:600;
 }
 body .impact-time{
-  color:var(--pro-result) !important;
+  color:var(--pro-result);
 }
 
 /* コピー対象の光：上下左右同じ余白。テーマ色はごく薄く */
 body #page-landing #l-result-inner, body #page-switch #sw-result-inner{
   padding:4px 8px !important;
-  border:0 !important;
-  border-radius:10px !important;
+  border:0;
+  border-radius:10px;
 }
 @keyframes proCopyFlash{
   0%,100%{box-shadow:0 0 0 0 rgba(var(--signal-rgb),0),0 0 0 rgba(var(--signal-rgb),0);}
@@ -4664,14 +3759,13 @@ body #page-calc .members-table.flash, body #page-landing #l-result-inner.flash, 
 
 /* 集結主：1 マリン / 出発まで残り / 23.5秒 の視覚階層 */
 body .member-identity-row{
-  min-height:56px !important;
-  padding:0 10px 0 14px !important;
-  gap:8px !important;
+  min-height:56px;
+  padding:0 10px 0 14px;
+  gap:8px;
 }
 body .member-row-wrapper{
   counter-increment:member-row;
 }
-body #players{counter-reset:member-row;}
 body .member-identity-row::before{
   content:counter(member-row);
   flex:0 0 22px;
@@ -4683,22 +3777,22 @@ body .member-identity-row::before{
   text-align:center;
 }
 body .name-text{
-  font-size:16px !important;
-  font-weight:650 !important;
+  font-size:16px;
+  font-weight:650;
 }
 body .member-departure-inline{
-  margin-left:auto !important;
+  margin-left:auto;
 }
 body .member-departure-status{
-  padding:0 !important;
-  gap:5px !important;
-  min-height:auto !important;
-  border-radius:0 !important;
-  background:transparent !important;
-  box-shadow:none !important;
-  color:var(--pro-ink-soft) !important;
-  font-size:13px !important;
-  font-weight:600 !important;
+  padding:0;
+  gap:5px;
+  min-height:auto;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  color:var(--pro-ink-soft);
+  font-size:13px;
+  font-weight:600;
 }
 body .member-departure-status.counting::before{
   content:"出発まで残り";
@@ -4708,86 +3802,48 @@ body .member-departure-status.counting::before{
   font-size:11px;
   font-weight:500;
 }
-body .member-departure-countdown-value{
-  font-size:14px !important;
-  font-weight:700 !important;
-  color:var(--pro-accent) !important;
-}
 body .member-settings-toggle{
-  background:transparent !important;
-  color:var(--pro-ink-soft) !important;
+  background:transparent;
+  color:var(--pro-ink-soft);
 }
 body .member-row{
-  border-bottom-color:var(--pro-line) !important;
+  border-bottom-color:var(--pro-line);
 }
 
 /* プレビュー：ヘッダーを1段軽く、集結主一覧と同じ行感覚へ */
-body .copy-preview-card{
-  border:1px solid rgba(79,70,64,.09) !important;
-  border-radius:12px !important;
-  background:rgba(255,255,255,.66) !important;
-  box-shadow:none !important;
-}
-body .copy-preview-card .collapsible-header{
-  min-height:44px !important;
-  padding:0 14px !important;
-  background:transparent !important;
-}
 body .copy-preview-card .collapsible-header-title{
-  color:var(--pro-ink-soft) !important;
-  font-size:14px !important;
-  font-weight:550 !important;
-  letter-spacing:0 !important;
-}
-body .copy-preview-card .collapsible-arrow{
-  color:var(--pro-ink-faint) !important;
-  font-size:14px !important;
+  letter-spacing:0;
 }
 body .copy-preview-card .preview-text-box{
-  padding:10px 14px 12px !important;
-  border:0 !important;
-  border-top:1px solid var(--pro-line) !important;
-  border-radius:0 !important;
-  background:transparent !important;
-  color:var(--pro-ink-soft) !important;
-  font-size:13px !important;
-  line-height:1.55 !important;
+  border-radius:0;
 }
 
 /* テーマ選択：リアル画像/絵文字/斜め二分割なし。小さい色見本だけ */
 .quick-theme-choice::before{
-  width:14px !important;
-  height:14px !important;
-  flex:0 0 14px !important;
-  margin-right:11px !important;
-  border:1px solid rgba(79,70,64,.12) !important;
-  border-radius:50% !important;
-  background:#F5F2EA !important;
-  box-shadow:inset 0 -2px 0 rgba(190,173,146,.18) !important;
+  width:14px;
+  height:14px;
+  flex:0 0 14px;
+  margin-right:11px;
+  border:1px solid rgba(79,70,64,.12);
+  border-radius:50%;
+  background:#F5F2EA;
+  box-shadow:inset 0 -2px 0 rgba(190,173,146,.18);
 }
 .quick-theme-choice[data-theme-choice="mint"]::before{
   background:#DCEBE6 !important;
   border-color:#756057 !important;
   box-shadow:inset 0 -2px 0 rgba(102,86,77,.18) !important;
 }
-.quick-theme-choice[data-theme-choice="caramel"]::before{
-  background:#EADFD3 !important;
-  border-color:#B3957D !important;
-  box-shadow:inset 0 -3px 0 rgba(179,149,125,.34) !important;
-}
-.quick-theme-choice[aria-checked="true"]::after{
-  border-color:var(--pro-accent) !important;
-}
 .quick-theme-head, .quick-theme-choice{
-  min-height:46px !important;
+  min-height:46px;
 }
 
 /* 区切り線・chevronを同じ薄さに */
 body .l-chevron, body .sw-chevron, body .departure-edit-trigger, body .clock-quick-menu-chevron{
-  color:var(--pro-ink-faint) !important;
+  color:var(--pro-ink-faint);
 }
 body .l-setting-row, body .departure-setting-row, body #page-switch .sw-row{
-  border-bottom-color:var(--pro-line) !important;
+  border-bottom-color:var(--pro-line);
 }
 
 
@@ -4811,35 +3867,21 @@ body #page-calc .departure-settings-card, body #page-landing .landing-settings-c
   min-height:var(--three-tab-settings-h) !important;
   margin:0 0 var(--three-tab-button-gap) !important;
   padding:0 !important;
-  overflow:hidden !important;
+  overflow:hidden;
 }
 
 /* 1行目・2行目・3行目を完全に同じピッチへ。 */
 body #page-calc .departure-setting-row, body #page-calc .departure-schedule-row, body #page-landing .l-setting-row, body #page-landing .l-wave-options, body #page-switch .sw-row, body #page-switch .departure-setting-row{
   height:var(--three-tab-row-h) !important;
   min-height:var(--three-tab-row-h) !important;
-  max-height:var(--three-tab-row-h) !important;
+  max-height:var(--three-tab-row-h);
   margin-top:0 !important;
   margin-bottom:0 !important;
 }
 
 /* 計算開始は3タブで同じY座標・同じ高さ。 */
-body #page-calc #action-btn, body #page-landing #l-action-btn, body #page-switch #sw-action-btn{
-  height:48px !important;
-  min-height:48px !important;
-  margin-top:0 !important;
-  margin-bottom:0 !important;
-}
 
 /* 結果の開始位置も同じ。 */
-body #page-calc > #impact-display, body #page-landing > #l-result, body #page-switch > #sw-result{
-  margin-top:var(--three-tab-result-gap) !important;
-  margin-bottom:0 !important;
-}
-body #page-calc .impact-display-inner, body #page-landing #l-result .impact-display-inner, body #page-switch #sw-result .impact-display-inner{
-  min-height:var(--three-tab-result-h) !important;
-  height:var(--three-tab-result-h) !important;
-}
 
 /* 王城決戦：計算前も結果1段分を予約し、集結主一覧が計算後に下へ跳ねない。
    計算後は実際の結果がその予約領域を使う。 */
@@ -4850,75 +3892,25 @@ body #page-calc > #impact-display[style*="display: block"] + .collapsible-card{
   margin-top:0 !important;
 }
 
-/* スイッチ：同様に、計算前後でプレビューの開始位置を動かさない。 */
-body #page-switch > #sw-result[style*="display: none"] + .copy-preview-card{
-  margin-top:calc(var(--three-tab-result-gap) + var(--three-tab-result-h)) !important;
-}
 body #page-switch > #sw-result[style*="display: block"] + .copy-preview-card{
   margin-top:0 !important;
 }
 
 /* 結果表示内のラベル/時刻は各タブで同じ中央位置。 */
-body #page-calc .impact-display, body #page-landing #l-result .impact-display, body #page-switch #sw-result .impact-display{
-  padding:0 !important;
-}
 
 
 /* ===== 2026-08-25 UI polish =====
    2行タブは空の3行目を予約せず、最後の入力行から計算開始までの間隔を統一。
    プレビューは全タブで同じコンパクトなヘッダー／単一chevronにする。 */
-body #page-calc .departure-settings-card, body #page-switch .switch-settings-card{
-  height:calc(var(--three-tab-row-h) * 2) !important;
-  min-height:calc(var(--three-tab-row-h) * 2) !important;
-}
-body #page-landing .landing-settings-card{
-  height:calc(var(--three-tab-row-h) * 3) !important;
-  min-height:calc(var(--three-tab-row-h) * 3) !important;
-}
 
 /* 最終入力行 → 計算開始 の間隔 */
-body #page-calc .departure-settings-card, body #page-landing .landing-settings-card, body #page-switch .switch-settings-card{
-  margin-bottom:18px !important;
-}
 
 /* チャット貼り付け用プレビュー：高さ・上下余白・文字を全タブ共通化 */
-body .copy-preview-card .collapsible-header{
-  min-height:40px !important;
-  height:40px !important;
-  padding:0 12px !important;
-  background:transparent !important;
-}
-body .copy-preview-card .collapsible-header-title{
-  font-size:14px !important;
-  line-height:1.2 !important;
-  font-weight:550 !important;
-}
-body .copy-preview-card .collapsible-arrow{
-  width:18px !important;
-  height:18px !important;
-  flex:0 0 18px !important;
-  font-size:0 !important;
-  transform:none;
-}
-body .copy-preview-card .collapsible-arrow::after{
-  width:7px !important;
-  height:7px !important;
-  margin:0 !important;
-  border-right:2px solid currentColor !important;
-  border-bottom:2px solid currentColor !important;
-  transform:rotate(45deg) !important;
-}
 body .copy-preview-card .collapsible-arrow.is-open{
   transform:rotate(180deg) !important;
 }
-body .copy-preview-card .preview-text-box{
-  padding:8px 12px 10px !important;
-}
 
 /* 集結主の連番：0にならないよう実際の行でカウントする */
-body #players{ counter-reset:member-index !important; }
-body #players .member-row-wrapper{ counter-increment:none !important; }
-body #players .member-identity-row{ counter-increment:member-index !important; }
 
 /* 王城決戦：着弾時刻と入力済み集結主を同じsignalで光らせる */
 body #page-calc #impact-display.flash, body #page-calc .members-table.flash{
@@ -4935,36 +3927,15 @@ body #page-calc #impact-display.flash, body #page-calc .members-table.flash{
 }
 
 /* Palette tokens: flavor names are intentionally not shown in UI. */
-body[data-theme="mint"]{
-  --theme-accent:#88BFB5; --theme-accent-rgb:136,191,181;
-  --theme-soft:#EAF4F1; --theme-line:#D8E7E2;
-}
-body[data-theme="cookies"]{
-  --theme-accent:#8FA9B2; --theme-accent-rgb:143,169,178;
-  --theme-soft:#EEF3F4; --theme-line:#DDE6E8;
-}
-body[data-theme="truffle"]{
-  --theme-accent:#8A7061; --theme-accent-rgb:138,112,97;
-  --theme-soft:#F2EEEA; --theme-line:#E5DDD7;
-}
-body[data-theme]{
-  --blue-primary:var(--theme-accent) !important;
-  --blue-hover:var(--theme-accent) !important;
-  --blue-active:var(--theme-accent) !important;
-  --blue-text:var(--theme-accent) !important;
-  --signal:var(--theme-accent) !important;
-  --signal-rgb:var(--theme-accent-rgb) !important;
-  --accent-soft:var(--theme-soft) !important;
-}
 
 /* Clock: keep size, narrow the glow to the digits only. */
 body .clock, body.landing-active .clock{
-  background:var(--card-bg) !important;
-  border-color:var(--theme-line, var(--border)) !important;
-  box-shadow:0 2px 6px rgba(28,28,30,.035),0 8px 18px rgba(28,28,30,.04) !important;
+  background:var(--card-bg);
+  border-color:var(--theme-line, var(--border));
+  box-shadow:0 2px 6px rgba(28,28,30,.035),0 8px 18px rgba(28,28,30,.04);
 }
 body #utc-now, body.landing-active #utc-now{
-  text-shadow:0 2px 4px rgba(var(--theme-accent-rgb,143,169,178),.10) !important;
+  text-shadow:0 2px 4px rgba(var(--theme-accent-rgb,143,169,178),.10);
 }
 
 /* Settings -> button: no invisible third row. Same relative rhythm in all tabs. */
@@ -4975,19 +3946,16 @@ body #page-calc .departure-setting-row, body #page-calc .departure-schedule-row,
 
 /* Calculate buttons: same dimensions, slightly quieter and tighter. */
 body #page-calc #action-btn, body #page-landing #l-action-btn, body #page-switch #sw-action-btn{
-  width:calc(100% - 32px) !important;height:44px !important;min-height:44px !important;
-  margin:0 auto var(--compact-gap) !important;padding:0 16px !important;
-  border:1.25px solid var(--theme-accent, var(--blue-primary)) !important;
-  background:var(--theme-soft, var(--accent-soft)) !important;color:var(--text-secondary) !important;
-  border-radius:10px !important;box-shadow:none !important;font-size:16px !important;
+  width:calc(100% - 32px);height:44px;min-height:44px;
+  margin:0 auto var(--compact-gap);padding:0 16px;
+  border:1.25px solid var(--theme-accent, var(--blue-primary));
+  background:var(--theme-soft, var(--accent-soft));color:var(--text-secondary);
+  border-radius:10px;box-shadow:none;font-size:16px;
 }
 
 /* Result: compact, equal internal whitespace, only result receives calculation glow. */
 body #page-calc > #impact-display, body #page-landing > #l-result, body #page-switch > #sw-result{margin-top:0 !important;margin-bottom:var(--compact-gap) !important;}
-body #page-calc .impact-display, body #page-landing #l-result .impact-display, body #page-switch #sw-result .impact-display{padding:9px 0 !important;border-top:1px solid var(--border) !important;}
-body #page-calc .impact-display-inner, body #page-landing #l-result .impact-display-inner, body #page-switch #sw-result .impact-display-inner{height:var(--compact-result-h) !important;min-height:var(--compact-result-h) !important;row-gap:2px !important;}
-body .impact-display-inner > .impact-time{font-size:30px !important;line-height:1 !important;}
-body .impact-display-inner > .impact-label:first-child{font-size:12px !important;}
+body #page-calc .impact-display-inner, body #page-landing #l-result .impact-display-inner, body #page-switch #sw-result .impact-display-inner{height:var(--compact-result-h) !important;min-height:var(--compact-result-h) !important;row-gap:2px;}
 body .impact-display-inner > .impact-label:last-child{padding-bottom:2px !important;}
 body #page-calc #impact-display.flash, body #page-landing #l-result-inner.flash, body #page-switch #sw-result-inner.flash{animation:resultSoftGlow .8s ease !important;}
 @keyframes resultSoftGlow{0%,100%{box-shadow:0 0 0 0 rgba(var(--theme-accent-rgb),0)}40%,70%{box-shadow:0 0 0 1px rgba(var(--theme-accent-rgb),.28),0 0 10px rgba(var(--theme-accent-rgb),.11)}}
@@ -4996,47 +3964,28 @@ body #page-calc #impact-display.flash, body #page-landing #l-result-inner.flash,
 body #page-calc > #impact-display:not([style*="display: block"]) + .collapsible-card, body #page-switch > #sw-result[style*="display: none"] + .copy-preview-card{margin-top:0 !important;}
 
 /* Member numbering and active editing glow. */
-body #players{counter-reset:member-index !important;}
-body #players .member-row-wrapper{counter-increment:none !important;}
-body #players .member-identity-row{counter-increment:member-index !important;}
-body #players .member-identity-row::before{content:counter(member-index) !important;min-width:18px !important;font-size:12px !important;font-weight:500 !important;color:var(--text-muted) !important;}
-body #players .member-row-wrapper.is-editing .member-row{
-  background:rgba(var(--theme-accent-rgb),.055) !important;
-  box-shadow:inset 0 0 0 1px rgba(var(--theme-accent-rgb),.18),0 0 8px rgba(var(--theme-accent-rgb),.07) !important;
-}
+body #players{counter-reset:member-index;}
+body #players .member-row-wrapper{counter-increment:none;}
+body #players .member-identity-row{counter-increment:member-index;}
+body #players .member-identity-row::before{content:counter(member-index);min-width:18px;font-size:12px;font-weight:500;color:var(--text-muted);}
 
 /* Preview: one centered chevron, identical 52px header in every tab. */
-body .copy-preview-card{margin-bottom:var(--compact-gap) !important;background:var(--card-bg) !important;}
-body .copy-preview-card .collapsible-header{height:52px !important;min-height:52px !important;padding:0 14px !important;background:transparent !important;}
-body .copy-preview-card .collapsible-header-title{font-size:14px !important;font-weight:550 !important;line-height:1.2 !important;}
-body .copy-preview-card .collapsible-arrow{display:inline-flex !important;align-items:center !important;justify-content:center !important;width:20px !important;height:20px !important;flex:0 0 20px !important;font-size:0 !important;transform:none !important;}
-body .copy-preview-card .collapsible-arrow::before{display:none !important;content:none !important;}
-body .copy-preview-card .collapsible-arrow::after{content:"" !important;display:block !important;width:7px !important;height:7px !important;margin:0 !important;border:0 !important;border-right:1.75px solid currentColor !important;border-bottom:1.75px solid currentColor !important;transform:rotate(45deg) !important;transform-origin:center !important;}
+body .copy-preview-card{margin-bottom:var(--compact-gap);}
+body .copy-preview-card .collapsible-arrow{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;flex:0 0 20px;font-size:0;transform:none;}
+body .copy-preview-card .collapsible-arrow::before{display:none;content:none;}
+body .copy-preview-card .collapsible-arrow::after{content:"";display:block;width:7px;height:7px;margin:0;border:0;border-right:1.75px solid currentColor;border-bottom:1.75px solid currentColor;transform:rotate(45deg);transform-origin:center;}
 body .copy-preview-card .collapsible-arrow.is-open::after{transform:rotate(225deg) !important;}
-body .copy-preview-card .preview-text-box{padding:8px 14px 10px !important;}
 
 /* Theme panel: vertical, icon-only mode + 3-color palettes; labels stay accessible only. */
-.quick-theme-panel{background:var(--card-bg) !important;}
-.theme-mode-group, .theme-palette-group{display:flex;flex-direction:column;}
-.theme-palette-group{border-top:1px solid var(--border);padding-top:4px;}
-.quick-mode-choice, .quick-theme-choice{position:relative;display:flex !important;align-items:center !important;justify-content:flex-start !important;width:100% !important;height:48px !important;min-height:48px !important;margin:0 !important;padding:0 14px !important;border:0 !important;border-bottom:1px solid var(--border) !important;border-radius:0 !important;background:transparent !important;box-shadow:none !important;color:var(--text-primary) !important;}
-.quick-mode-choice svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
-.quick-mode-choice[aria-checked="true"], .quick-theme-choice[aria-checked="true"]{background:rgba(var(--theme-accent-rgb),.06) !important;}
-.quick-mode-choice::after, .quick-theme-choice::after{content:"" !important;position:absolute;right:17px;width:6px;height:10px;border-right:2px solid transparent;border-bottom:2px solid transparent;transform:rotate(45deg);}
-.quick-mode-choice[aria-checked="true"]::after, .quick-theme-choice[aria-checked="true"]::after{border-color:var(--theme-accent) !important;}
-.quick-theme-choice::before{display:none !important;content:none !important;}
+.quick-theme-panel{background:var(--card-bg);}
+.quick-theme-choice{position:relative;display:flex;align-items:center;justify-content:flex-start;width:100%;height:48px;min-height:48px;margin:0;padding:0 14px;border:0;border-bottom:1px solid var(--border);border-radius:0;background:transparent;box-shadow:none;color:var(--text-primary);}
+.quick-theme-choice[aria-checked="true"]{background:rgba(var(--theme-accent-rgb),.06);}
+.quick-theme-choice::after{content:"";position:absolute;right:17px;width:6px;height:10px;border-right:2px solid transparent;border-bottom:2px solid transparent;transform:rotate(45deg);}
+.quick-theme-choice[aria-checked="true"]::after{border-color:var(--theme-accent);}
+.quick-theme-choice::before{display:none;content:none;}
 .theme-palette{display:inline-flex;align-items:center;height:22px;}
 .theme-palette i{display:block;width:22px;height:22px;border-radius:50%;border:1px solid rgba(60,60,67,.09);margin-left:-5px;}
 .theme-palette i:first-child{margin-left:0;}
-.palette-mint .theme-palette i:nth-child(1){background:#CBE7E1}
-.palette-mint .theme-palette i:nth-child(2){background:#8FBDB1}
-.palette-mint .theme-palette i:nth-child(3){background:#5F4D45}
-.palette-cookies .theme-palette i:nth-child(1){background:#F0EEE9}
-.palette-cookies .theme-palette i:nth-child(2){background:#CBD6DA}
-.palette-cookies .theme-palette i:nth-child(3){background:#4A4A4A}
-.palette-truffle .theme-palette i:nth-child(1){background:#F3EEE8}
-.palette-truffle .theme-palette i:nth-child(2){background:#A68B79}
-.palette-truffle .theme-palette i:nth-child(3){background:#5B4538}
 
 /* ===== split from index.html ===== */
 
@@ -5082,19 +4031,19 @@ body[data-theme="truffle"]{
   color-scheme:light;
 }
 body[data-theme]{
-  --blue-primary:var(--theme-accent) !important;
-  --blue-hover:var(--theme-accent) !important;
-  --blue-active:var(--theme-accent) !important;
-  --blue-text:var(--theme-accent) !important;
-  --signal:var(--theme-accent) !important;
-  --signal-rgb:var(--theme-accent-rgb) !important;
-  --accent-soft:var(--theme-soft) !important;
+  --blue-primary:var(--theme-accent);
+  --blue-hover:var(--theme-accent);
+  --blue-active:var(--theme-accent);
+  --blue-text:var(--theme-accent);
+  --signal:var(--theme-accent);
+  --signal-rgb:var(--theme-accent-rgb);
+  --accent-soft:var(--theme-soft);
   background:var(--bg) !important;
   color:var(--text-primary) !important;
 }
 
 /* Main times use the same strong color inside each theme. */
-body[data-theme] #utc-now, body[data-theme] .impact-time, body[data-theme] .time-text, body[data-theme] .utc-clock-overlay-time-line, body[data-theme] .utc-clock-overlay-countdown-value, body[data-theme] .member-departure-countdown-value, body[data-theme] .clock-quick-menu-value{
+body[data-theme] #utc-now, body[data-theme] .impact-time, body[data-theme] .utc-clock-overlay-time-line, body[data-theme] .utc-clock-overlay-countdown-value, body[data-theme] .clock-quick-menu-value{
   color:var(--time-primary) !important;
   -webkit-text-fill-color:var(--time-primary) !important;
 }
@@ -5115,8 +4064,8 @@ body[data-theme] .clock, body[data-theme].landing-active .clock{
 /* Result: compact rectangle around the actual result + soft calculation glow. */
 body #page-calc .impact-display, body #page-landing #l-result .impact-display, body #page-switch #sw-result .impact-display{
   padding:5px 0 !important;
-  border-top:1px solid var(--border) !important;
-  background:transparent !important;
+  border-top:1px solid var(--border);
+  background:transparent;
 }
 body #page-calc .impact-display-inner, body #page-landing #l-result .impact-display-inner, body #page-switch #sw-result .impact-display-inner{
   width:calc(100% - 32px) !important;
@@ -5124,10 +4073,10 @@ body #page-calc .impact-display-inner, body #page-landing #l-result .impact-disp
   min-height:68px !important;
   margin:0 auto !important;
   padding:7px 12px !important;
-  border:1px solid transparent !important;
-  border-radius:12px !important;
-  background:transparent !important;
-  box-sizing:border-box !important;
+  border:1px solid transparent;
+  border-radius:12px;
+  background:transparent;
+  box-sizing:border-box;
 }
 body #page-calc #impact-display.flash .impact-display-inner, body #page-landing #l-result-inner.flash .impact-display-inner, body #page-switch #sw-result-inner.flash .impact-display-inner{
   animation:compactResultGlow .8s ease !important;
@@ -5136,67 +4085,63 @@ body #page-calc #impact-display.flash .impact-display-inner, body #page-landing 
   0%,100%{border-color:transparent;box-shadow:0 0 0 rgba(var(--theme-accent-rgb),0);}
   35%,70%{border-color:rgba(var(--theme-accent-rgb),.38);box-shadow:0 0 9px rgba(var(--theme-accent-rgb),.12);}
 }
-body .impact-display-inner > .impact-label:first-child{font-size:12px !important;line-height:1.1 !important;}
-body .impact-display-inner > .impact-time{font-size:30px !important;line-height:1 !important;}
+body .impact-display-inner > .impact-label:first-child{font-size:12px !important;line-height:1.1;}
+body .impact-display-inner > .impact-time{font-size:30px !important;line-height:1;}
 
 /* Preview = thin one-row header, not a floating card. */
 body .copy-preview-card{
-  border-radius:12px !important;
-  box-shadow:0 1px 4px rgba(28,28,30,.035) !important;
-  overflow:hidden !important;
+  overflow:hidden;
 }
 body .copy-preview-card .collapsible-header{
-  height:54px !important;min-height:54px !important;
-  padding:0 14px !important;
-  background:transparent !important;
+  height:54px !important;
 }
-body .copy-preview-card .collapsible-header-title{font-size:14px !important;font-weight:550 !important;line-height:1 !important;}
-body .copy-preview-card .collapsible-arrow{align-self:center !important;margin:0 !important;}
-body .copy-preview-card .preview-text-box{padding:9px 14px 11px !important;background:transparent !important;border:0 !important;}
+body .copy-preview-card .collapsible-header-title{line-height:1;}
+body .copy-preview-card .collapsible-arrow{align-self:center;margin:0;}
+body .copy-preview-card .preview-text-box{border:0;}
 
 /* Active member row only receives a very soft theme glow. */
 body #players .member-row-wrapper.is-editing .member-row{
-  background:rgba(var(--theme-accent-rgb),.045) !important;
-  box-shadow:inset 0 0 0 1px rgba(var(--theme-accent-rgb),.16),0 0 7px rgba(var(--theme-accent-rgb),.055) !important;
+  background:rgba(var(--theme-accent-rgb),.045);
+  box-shadow:inset 0 0 0 1px rgba(var(--theme-accent-rgb),.16),0 0 7px rgba(var(--theme-accent-rgb),.055);
 }
 
 /* Exclusive theme selector: five vertical choices. */
 .theme-choice-list{display:flex;flex-direction:column;}
-.theme-choice-list .quick-theme-choice{height:48px !important;min-height:48px !important;}
+.theme-choice-list .quick-theme-choice{height:48px;min-height:48px;}
 .theme-symbol{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
-.quick-theme-choice[aria-checked="true"]{background:rgba(var(--theme-accent-rgb),.055) !important;}
-.quick-theme-choice[aria-checked="true"]::after{border-color:var(--theme-accent) !important;}
-.palette-mint .theme-palette i:nth-child(1){background:#EAF3F0 !important}
-.palette-mint .theme-palette i:nth-child(2){background:#8FBDB1 !important}
-.palette-mint .theme-palette i:nth-child(3){background:#5F4D45 !important}
-.palette-cookies .theme-palette i:nth-child(1){background:#F3F6F7 !important}
-.palette-cookies .theme-palette i:nth-child(2){background:#B7CBD4 !important}
-.palette-cookies .theme-palette i:nth-child(3){background:#56616A !important}
-.palette-truffle .theme-palette i:nth-child(1){background:#F3EFEC !important}
-.palette-truffle .theme-palette i:nth-child(2){background:#B8A397 !important}
-.palette-truffle .theme-palette i:nth-child(3){background:#665247 !important}
+.quick-theme-choice[aria-checked="true"]{background:rgba(var(--theme-accent-rgb),.055);}
+.quick-theme-choice[aria-checked="true"]::after{border-color:var(--theme-accent);}
+.palette-mint .theme-palette i:nth-child(1){background:#EAF3F0}
+.palette-mint .theme-palette i:nth-child(2){background:#8FBDB1}
+.palette-mint .theme-palette i:nth-child(3){background:#5F4D45}
+.palette-cookies .theme-palette i:nth-child(1){background:#F3F6F7}
+.palette-cookies .theme-palette i:nth-child(2){background:#B7CBD4}
+.palette-cookies .theme-palette i:nth-child(3){background:#56616A}
+.palette-truffle .theme-palette i:nth-child(1){background:#F3EFEC}
+.palette-truffle .theme-palette i:nth-child(2){background:#B8A397}
+.palette-truffle .theme-palette i:nth-child(3){background:#665247}
 
 body .app-settings-button, body.landing-active .app-settings-button{
-  top:-9px !important;
-  right:4px !important;
-  width:36px !important;
-  min-width:36px !important;
-  height:36px !important;
-  min-height:36px !important;
-  padding:0 !important;
-  border:0 !important;
-  border-radius:0 !important;
-  background:transparent !important;
-  box-shadow:none !important;
-  color:rgba(60,60,67,.58) !important;
-  font-size:20px !important;
-  font-weight:600 !important;
+  top:-9px;
+  right:4px;
+  width:36px;
+  min-width:36px;
+  height:36px;
+  min-height:36px;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  color:rgba(60,60,67,.58);
+  font-size:20px;
+  font-weight:600;
 }
 body .app-settings-button::before, body .app-settings-button::after, body.landing-active .app-settings-button::before, body.landing-active .app-settings-button::after{
-  display:none !important;
-  content:none !important;
-  background:none !important;
-  box-shadow:none !important;
+  display:none;
+  content:none;
+  background:none;
+  box-shadow:none;
 }
 body .app-settings-button:hover, body .app-settings-button:focus, body .app-settings-button:active, body.landing-active .app-settings-button:hover, body.landing-active .app-settings-button:focus, body.landing-active .app-settings-button:active{
   background:transparent !important;
@@ -5206,13 +4151,13 @@ body .app-settings-button:hover, body .app-settings-button:focus, body .app-sett
 
 /* 集結主一覧：主役ではないので外枠を弱くし、面の主張を減らす */
 body #page-calc > .collapsible-card:first-of-type{
-  border:1px solid rgba(60,60,67,.08) !important;
-  border-radius:10px !important;
-  background:rgba(255,255,255,.62) !important;
-  box-shadow:none !important;
+  border:1px solid rgba(60,60,67,.08);
+  border-radius:10px;
+  background:rgba(255,255,255,.62);
+  box-shadow:none;
 }
 body #page-calc > .collapsible-card:first-of-type .member-row, body #page-calc > .collapsible-card:first-of-type .member-row-wrapper, body #page-calc > .collapsible-card:first-of-type .button-controls{
-  background:transparent !important;
+  background:transparent;
 }
 
 /* チャット貼り付け用プレビュー：カード感を一段落として、本文より目立たせない */
@@ -5220,31 +4165,31 @@ body .copy-preview-card{
   border:1px solid rgba(60,60,67,.08) !important;
   border-radius:10px !important;
   background:rgba(255,255,255,.56) !important;
-  box-shadow:none !important;
+  box-shadow:none;
 }
 body .copy-preview-card .collapsible-header{
   min-height:40px !important;
   padding:0 14px !important;
-  background:transparent !important;
+  background:transparent;
 }
 body .copy-preview-card .collapsible-header-title{
-  color:rgba(60,60,67,.66) !important;
+  color:rgba(60,60,67,.66);
   font-size:15px !important;
-  font-weight:500 !important;
+  font-weight:500;
 }
 body .copy-preview-card .collapsible-arrow{
-  color:rgba(60,60,67,.28) !important;
+  color:rgba(60,60,67,.28);
 }
 body .copy-preview-card .collapsible-content-inner{
   background:transparent !important;
 }
 body .copy-preview-card .preview-text-box{
-  padding:10px 14px !important;
-  border-top:1px solid rgba(60,60,67,.06) !important;
-  background:rgba(118,118,128,.025) !important;
-  color:rgba(60,60,67,.68) !important;
-  font-size:13px !important;
-  line-height:1.5 !important;
+  padding:10px 14px;
+  border-top:1px solid rgba(60,60,67,.06);
+  background:rgba(118,118,128,.025);
+  color:rgba(60,60,67,.68);
+  font-size:13px;
+  line-height:1.5;
 }
 
 /* 結果表示：上下の余白を同量にして、光った時の囲みのバランスを揃える */
@@ -5267,76 +4212,76 @@ body #page-calc .members-table.flash, body #page-landing #l-result-inner.flash, 
 
 body #page-landing .setting-row,
 body #page-switch .setting-row {
-  display: grid !important;
-  grid-template-columns: max-content 1fr !important;
-  align-items: center !important;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-items: center;
   min-height: 64px !important;
   margin: 0 16px !important;
   padding: 0 !important;
-  border-bottom: 1px solid var(--separator-soft) !important;
+  border-bottom: 1px solid var(--separator-soft);
 }
 
 body #page-landing .setting-label,
 body #page-switch .setting-label {
-  grid-column: 1 !important;
-  justify-self: start !important;
-  font-size: 17px !important;
-  font-weight: 600 !important;
-  white-space: nowrap !important;
+  grid-column: 1;
+  justify-self: start;
+  font-size: 17px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 body #page-landing .setting-control,
 body #page-switch .setting-control {
-  grid-column: 2 !important;
-  justify-self: end !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-  min-height: 44px !important;
+  grid-column: 2;
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 44px;
 }
 
 body #page-landing .setting-chevron,
 body #page-switch .setting-chevron {
-  flex: 0 0 auto !important;
-  width: 28px !important;
-  min-width: 28px !important;
-  height: 44px !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  border: 0 !important;
-  background: transparent !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 28px !important;
-  line-height: 1 !important;
+  flex: 0 0 auto;
+  width: 28px;
+  min-width: 28px;
+  height: 44px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  line-height: 1;
 }
 
 body #page-landing .setting-control,
 body #page-switch .setting-control {
-  gap: 8px !important;
-  font-size: 17px !important;
-  font-weight: 500 !important;
-  white-space: nowrap !important;
+  gap: 8px;
+  font-size: 17px;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 body #page-landing .setting-control .inline-select,
 body #page-switch .setting-control .inline-select {
-  font-size: 17px !important;
-  line-height: 1 !important;
-  text-align: right !important;
+  font-size: 17px;
+  line-height: 1;
+  text-align: right;
 }
 
 body #page-landing .setting-control .departure-after-text,
 body #page-switch .setting-control .departure-after-text {
-  margin: 0 !important;
-  font-size: 17px !important;
-  line-height: 1 !important;
+  margin: 0;
+  font-size: 17px;
+  line-height: 1;
 }
 
 body #page-landing .setting-row:last-child,
 body #page-switch .setting-row:last-child {
-  border-bottom: none !important;
+  border-bottom: none;
 }
 
 body #page-landing .landing-settings-card,
@@ -5346,23 +4291,11 @@ body #page-switch .switch-settings-card {
   padding: 0 !important;
 }
 
-body #page-landing .landing-action,
-body #page-switch .switch-action {
-  margin-top: 0 !important;
-  margin-bottom: 24px !important;
-}ー
-
-body #page-landing .result,
-body #page-switch .result {
-  margin-top: 24px !important;
-  margin-left: 16px !important;
-  margin-right: 16px !important;
-}
 
 body #page-landing .setting-chevron::before,
 body #page-landing .setting-chevron::after,
 body #page-switch .setting-chevron::before,
 body #page-switch .setting-chevron::after {
-  content: none !important;
-  display: none !important;
+  content: none;
+  display: none;
 }

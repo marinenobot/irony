@@ -70,21 +70,21 @@
 
   <!-- モード設定 -->
   <div class="mode-card departure-settings-card">
-    <div class="departure-setting-row" id="rally-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="集結時間を編集">
-      <span class="departure-setting-name">集結時間</span>
-      <span class="departure-setting-control">
+    <div class="setting-row departure-setting-row" id="rally-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="集結時間を編集">
+      <span class="setting-label departure-setting-name">集結時間</span>
+      <span class="setting-control departure-setting-control">
         <select id="rally-min" class="inline-select" tabindex="-1"></select>
-        <button type="button" class="departure-chevron departure-edit-trigger" data-editor="rally" aria-label="集結時間を編集">›</button>
+        <button type="button" class="setting-chevron departure-chevron departure-edit-trigger" data-editor="rally" aria-label="集結時間を編集">›</button>
       </span>
     </div>
 
-    <div id="departure-schedule-row" class="departure-setting-row departure-schedule-row">
-      <span class="departure-setting-name departure-schedule-label">今から</span>
+    <div id="departure-schedule-row" class="setting-row departure-setting-row departure-schedule-row">
+      <span class="setting-label departure-setting-name departure-schedule-label">今から</span>
 
-      <span id="prep-input-group" class="departure-setting-control" role="button" tabindex="0" aria-haspopup="dialog" aria-label="準備時間を編集">
+      <span id="prep-input-group" class="setting-control departure-setting-control" role="button" tabindex="0" aria-haspopup="dialog" aria-label="準備時間を編集">
         <select id="prep-time" class="inline-select" tabindex="-1"></select>
         <span id="after-prep" class="departure-after-text">後</span>
-        <button type="button" class="departure-chevron departure-edit-trigger" data-editor="prep" aria-label="準備時間を編集">›</button>
+        <button type="button" class="setting-chevron departure-chevron departure-edit-trigger" data-editor="prep" aria-label="準備時間を編集">›</button>
       </span>
 
       <span id="time-input-group" hidden aria-hidden="true">
