@@ -1413,7 +1413,7 @@ function applyEditorValue(editorType, value){
     swRallyMinSel.dispatchEvent(new Event('change'));
   }else if(editorType === 'switch-from-now'){
     const seconds = Math.max(1, value || 30);
-    swFromNowInput.value = String(seconds);
+    ensureSelectOption(swFromNowInput, seconds, `${seconds}秒`);
     swFromNowInput.dispatchEvent(new Event('change'));
   }else if(editorType === 'clock'){
     const hours = String(value?.hh ?? 0).padStart(2, '0');
