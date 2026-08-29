@@ -2755,7 +2755,7 @@ body #page-calc > #impact-display, body #page-landing > #l-result{
   margin:0 0 var(--space-4) !important;
 }
 body #page-calc > .collapsible-card, body #page-calc > .collapsible-card + .collapsible-card{
-  margin:0 0 var(--space-4) !important;
+  margin:0 0 var(--compact-gap) !important;
 }
 
 /* ===== #page-switch: 他タブと同じ余白密度に揃える（追加のみ、既存ルールは無変更） ===== */
@@ -2766,7 +2766,7 @@ body #page-switch > #sw-result{
   margin:0 0 var(--space-4) !important;
 }
 body #page-switch > .collapsible-card{
-  margin:0 0 var(--space-4) !important;
+  margin:0 0 var(--compact-gap) !important;
 }
 body #page-switch .sw-row-control{
   display:inline-flex;
@@ -3505,8 +3505,8 @@ body #page-calc .members-table, body #page-landing #l-result-inner, body #page-s
   transform:translateY(-6px) scale(.985);
   transform-origin:top right;
   transition:opacity .16s ease, transform .16s ease, visibility 0s .16s;
-  -webkit-backdrop-filter:blur(18px) saturate(1.25);
-  backdrop-filter:blur(18px) saturate(1.25);
+  -webkit-backdrop-filter:blur(18px);
+  backdrop-filter:blur(18px);
 }
 .clock-quick-menu.show{
   opacity:1;
@@ -3598,27 +3598,145 @@ body #page-calc .member-departure-status{
   font-size:inherit;
   font-weight:inherit;
 }
-/* iPhone 初回案内 */
-.ios-home-guide{
-  position:fixed; inset:0; z-index:30000;
-  display:flex; align-items:center; justify-content:center;
-  padding:24px; background:rgba(0,0,0,.22);
-  opacity:0; visibility:hidden; transition:opacity .16s ease, visibility 0s .16s;
-  -webkit-backdrop-filter:blur(5px); backdrop-filter:blur(5px);
+/* 自動再生デモ：実際の画面の上に指アイコンと小窓の模擬表示だけを重ねる（設定・同期状態は変更しない） */
+.demo-finger{
+  position:fixed;
+  z-index:20002;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, rgba(255,255,255,.9), rgba(255,255,255,.35) 60%, rgba(255,255,255,0) 72%);
+  border:2px solid rgba(255,255,255,.85);
+  box-shadow:0 4px 18px rgba(0,0,0,.35);
+  pointer-events:none;
+  opacity:0;
+  transform:translate(-50%,-50%) scale(1);
+  transition:left .5s cubic-bezier(.4,0,.2,1), top .5s cubic-bezier(.4,0,.2,1), opacity .25s ease;
 }
-.ios-home-guide.show{ opacity:1; visibility:visible; transition:opacity .16s ease; }
-.ios-home-guide-card{
-  width:min(330px,100%); padding:22px 20px 16px;
-  border:1px solid rgba(60,60,67,.08); border-radius:18px;
-  background:rgba(255,255,255,.98); box-shadow:0 18px 46px rgba(0,0,0,.17);
-  text-align:center; color:var(--label-strong);
+.demo-finger.show{ opacity:1; }
+.demo-finger.tap{ animation:demoFingerTap .45s ease; }
+@keyframes demoFingerTap{
+  0%,100%{ transform:translate(-50%,-50%) scale(1); }
+  40%{ transform:translate(-50%,-50%) scale(.72); }
 }
-.ios-home-guide-card h2{ margin:0 0 12px; font-size:18px; font-weight:700; }
-.ios-home-guide-card p{ margin:0; font-size:15px; line-height:1.55; }
-.ios-home-guide-card .ios-home-guide-steps{ margin-top:10px; color:var(--label-secondary); }
-.ios-home-guide-card button{
-  width:100%; min-height:44px; margin:18px 0 0; border:0; border-radius:12px;
-  background:var(--accent-soft); color:var(--action-primary); font-size:16px; font-weight:700; box-shadow:none;
+.demo-mini-clock{
+  position:fixed;
+  z-index:20000;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  border-radius:16px;
+  background:#1c1c1e;
+  box-shadow:0 14px 34px rgba(0,0,0,.4);
+  opacity:0;
+  overflow:hidden;
+  pointer-events:none;
+  transition:top .5s cubic-bezier(.4,0,.2,1), left .5s cubic-bezier(.4,0,.2,1), width .5s cubic-bezier(.4,0,.2,1), height .5s cubic-bezier(.4,0,.2,1), border-radius .5s ease, opacity .25s ease;
+}
+.demo-mini-clock.show{ opacity:1; }
+.demo-mini-time{
+  color:#fff;
+  font-family:var(--font-num);
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+  font-size:clamp(14px, 7vw, 22px);
+  letter-spacing:-.02em;
+}
+.demo-mini-countdown{
+  display:flex;
+  align-items:baseline;
+  gap:4px;
+  color:#fff;
+}
+.demo-mini-name{ font-size:11px; font-weight:700; }
+.demo-mini-label{ font-size:10px; color:#9a9aa0; }
+.demo-mini-value{
+  font-family:var(--font-num);
+  font-size:17px;
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+}
+.demo-mini-unit{ font-size:10px; color:#9a9aa0; }
+.demo-sync-list{
+  position:fixed;
+  z-index:20000;
+  min-width:120px;
+  border-radius:14px;
+  background:rgba(255,255,255,.98);
+  border:1px solid rgba(60,60,67,.10);
+  box-shadow:0 12px 34px rgba(30,28,25,.14), 0 2px 8px rgba(30,28,25,.08);
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(-6px) scale(.97);
+  transform-origin:top right;
+  transition:opacity .18s ease, transform .18s ease;
+}
+.demo-sync-list.show{ opacity:1; transform:translateY(0) scale(1); }
+.demo-sync-list-item{
+  padding:12px 16px;
+  font-size:14px;
+  font-weight:600;
+  color:var(--text-primary);
+  white-space:nowrap;
+}
+.demo-caption{
+  position:fixed;
+  left:50%;
+  bottom:max(28px, calc(env(safe-area-inset-bottom) + 14px));
+  z-index:20001;
+  transform:translateX(-50%) translateY(6px);
+  margin:0;
+  max-width:min(320px, calc(100vw - 48px));
+  padding:8px 16px;
+  border-radius:999px;
+  background:rgba(28,28,30,.82);
+  color:#fff;
+  font-size:12.5px;
+  font-weight:500;
+  text-align:center;
+  line-height:1.4;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .25s ease, transform .25s ease;
+}
+.demo-caption.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+.demo-skip{
+  position:fixed;
+  top:max(14px, env(safe-area-inset-top));
+  right:14px;
+  z-index:20002;
+  background:rgba(120,120,128,.16);
+  border:0;
+  border-radius:999px;
+  color:var(--text-secondary, #6b6b70);
+  font-size:12.5px;
+  font-weight:600;
+  padding:7px 14px;
+  min-height:0;
+  width:auto;
+  margin:0;
+  cursor:pointer;
+}
+.demo-replay{
+  position:fixed;
+  left:50%;
+  bottom:max(32px, calc(env(safe-area-inset-bottom) + 18px));
+  transform:translateX(-50%);
+  z-index:20002;
+  background:var(--blue-primary);
+  color:#fff;
+  border:0;
+  border-radius:999px;
+  font-size:14px;
+  font-weight:600;
+  padding:10px 20px;
+  min-height:0;
+  width:auto;
+  margin:0;
+  box-shadow:0 8px 22px rgba(0,0,0,.18);
+  cursor:pointer;
 }
 
 /* ===== split from index.html ===== */
@@ -3751,9 +3869,8 @@ body .impact-time{
 }
 
 /* コピー対象の光：上下左右同じ余白。テーマ色はごく薄く */
-body #page-landing #l-result-inner, body #page-switch #sw-result-inner{
-  padding:0 8px !important;
-  border:0;
+body #page-calc #impact-display, body #page-landing #l-result-inner, body #page-switch #sw-result-inner{
+  padding:12px 8px !important;
   border-radius:10px;
 }
 @keyframes proCopyFlash{
@@ -4057,7 +4174,7 @@ body[data-theme]{
 }
 
 /* Main times use the same strong color inside each theme. */
-body[data-theme] #utc-now, body[data-theme] .impact-time, body[data-theme] .utc-clock-overlay-time-line, body[data-theme] .utc-clock-overlay-countdown-value, body[data-theme] .clock-quick-menu-value{
+body[data-theme] #utc-now, body[data-theme] .impact-time, body[data-theme] .clock-quick-menu-value{
   color:var(--time-primary) !important;
   -webkit-text-fill-color:var(--time-primary) !important;
 }
@@ -4133,7 +4250,7 @@ body #players .member-row-wrapper.is-editing .member-row{
 .palette-truffle .theme-palette i:nth-child(3){background:#665247}
 
 body .app-settings-button, body.landing-active .app-settings-button{
-  top:-9px;
+  top:-16px;
   right:4px;
   width:36px;
   min-width:36px;
@@ -4141,10 +4258,10 @@ body .app-settings-button, body.landing-active .app-settings-button{
   min-height:36px;
   padding:0;
   border:0;
-  border-radius:0;
-  background:transparent;
+  border-radius:50%;
+  background:rgba(60,60,67,.07);
   box-shadow:none;
-  color:rgba(60,60,67,.58);
+  color:rgba(60,60,67,.75);
   font-size:20px;
   font-weight:600;
 }
@@ -4211,7 +4328,7 @@ body .copy-preview-card .preview-text-box{
 
 /* 結果表示：上下の余白を同量にして、光った時の囲みのバランスを揃える */
 body #page-calc .impact-display, body #page-landing #l-result .impact-display, body #page-switch #sw-result .impact-display{
-  padding:12px 0 !important;
+  padding:0 !important;
 }
 
 /* コピー完了フラッシュ：外側に均等に広がる、少し控えめな光 */
