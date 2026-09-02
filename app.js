@@ -357,9 +357,9 @@ const utcPipContext = utcPipCanvas?.getContext('2d');
 let utcPipWindow = null;
 let utcVideoPipStream = null;
 
-/* PiPの比率。3 = 3:1。もっと平たくしたい場合は 4 などに変える */
-const UTC_PIP_ASPECT = 3;
-const UTC_PIP_BASE_HEIGHT = 300;
+/* PiPの比率。5.5 = 5.5:1 の細い横長バー。もっと平たくしたい場合は 6 などに変える */
+const UTC_PIP_ASPECT = 5.5;
+const UTC_PIP_BASE_HEIGHT = 180;
 const UTC_PIP_HOLD_MS = 700;
 const UTC_PIP_FONT = '-apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif';
 
@@ -433,16 +433,16 @@ function drawPipLine(ctx, parts, centerX, centerY, maxWidth){
 
 /* 各サイズ・位置はキャンバスの高さ(H)に対する比率。比率を変えれば全体が追従する */
 const UTC_PIP_LAYOUT = {
-  sideMargin:0.05,      // 左右の余白（Hに対する比率）
-  timeSize:0.62,        // 通常時の時刻
-  unitSize:0.18,        // 通常時のUTC
-  timeMillisSize:0.34,  // 通常時の時刻の小数部分
-  timeY:0.53,
-  labelSize:0.14,       // カウントダウン1行目
-  labelY:0.23,
-  valueSize:0.60,       // カウントダウンの数字
+  sideMargin:0.02,      // 左右の余白（Hに対する比率）
+  timeSize:0.85,        // 通常時の時刻
+  unitSize:0.20,        // 通常時のUTC
+  timeMillisSize:0.42,  // 通常時の時刻の小数部分
+  timeY:0.5,
+  labelSize:0.16,       // カウントダウン1行目
+  labelY:0.22,
+  valueSize:0.56,       // カウントダウンの数字
   secondSize:0.16,      // 「秒」
-  valueY:0.66
+  valueY:0.68
 };
 
 function drawUtcVideoFrame(timeText, millisText, departureData){
@@ -452,7 +452,7 @@ function drawUtcVideoFrame(timeText, millisText, departureData){
   const H = utcPipCanvas.height;
   const L = UTC_PIP_LAYOUT;
   const inner = W - H * L.sideMargin * 2;
-  ctx.fillStyle = '#101012';
+  ctx.fillStyle = '#1B2430';
   ctx.fillRect(0, 0, W, H);
   ctx.textBaseline = 'middle';
   if(departureData){
@@ -598,9 +598,9 @@ async function openUtcPipWindow(){
         utcPipWindow.focus();
         return true;
       }
-      utcPipWindow = await window.documentPictureInPicture.requestWindow({width:280, height:Math.round(280 / UTC_PIP_ASPECT)});
+      utcPipWindow = await window.documentPictureInPicture.requestWindow({width:240, height:Math.round(240 / UTC_PIP_ASPECT)});
       utcPipWindow.document.head.innerHTML = `<meta charset="UTF-8"><style>
-        *{box-sizing:border-box} body{display:flex;align-items:center;justify-content:center;width:100vw;height:100vh;margin:0;background:#101012;color:#fff;font-family:${UTC_PIP_FONT};overflow:hidden;font-variant-numeric:tabular-nums}
+        *{box-sizing:border-box} body{display:flex;align-items:center;justify-content:center;width:100vw;height:100vh;margin:0;background:#1B2430;color:#fff;font-family:${UTC_PIP_FONT};overflow:hidden;font-variant-numeric:tabular-nums}
         [hidden]{display:none!important}
         .pip-line{display:flex;align-items:baseline;justify-content:center;gap:6px;white-space:nowrap}
         #utc-pip-time{font-size:9.5vh;font-weight:600;letter-spacing:-.02em}
@@ -1106,7 +1106,7 @@ const DEFAULT_DEPARTURE_PRESETS = Object.freeze({
   'switch-rally':[...SWITCH_MARCH_SECONDS],
   'switch-from-now':[10, 20, 30, 45, 60]
 });
-const DEPARTURE_NO_CUSTOM_KINDS = new Set(['switch-rally']);
+const DEPARTURE_NO_CUSTOM_KINDS = new Set();
 const DEPARTURE_PRESET_KIND_BY_EDITOR = Object.freeze({
   rally:'castle-rally',
   'landing-rally':'landing-rally',
@@ -1127,8 +1127,36 @@ const DEPARTURE_EDITOR_TITLES = Object.freeze({
   'switch-from-now':'30秒後を編集'
 });
 
+const DEPARTURE_PRESET_STORAGE_PREFIX = 'departurePresets:';
+
 function loadDeparturePresets(kind){
+  try{
+    const raw = localStorage.getItem(DEPARTURE_PRESET_STORAGE_PREFIX + kind);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      if(Array.isArray(parsed)){
+        const values = parsed
+          .map(value => parseInt(value, 10))
+          .filter(value => Number.isFinite(value) && value >= 0);
+        if(values.length) return values;
+      }
+    }
+  }catch(error){}
   return [...(DEFAULT_DEPARTURE_PRESETS[kind] || [])];
+}
+
+function saveDeparturePresets(kind, values){
+  try{
+    localStorage.setItem(DEPARTURE_PRESET_STORAGE_PREFIX + kind, JSON.stringify(values));
+  }catch(error){}
+}
+
+function addDeparturePreset(kind, value){
+  const values = loadDeparturePresets(kind);
+  if(values.includes(value)) return;
+  const descending = values.length > 1 && values[0] > values[values.length - 1];
+  const next = [...values, value].sort((a, b) => descending ? b - a : a - b);
+  saveDeparturePresets(kind, next);
 }
 
 function departurePresetLabel(kind, value){
@@ -1162,11 +1190,16 @@ function createWheelHtml(id, values, selectedValue, unit, pad = false){
 
 function createPresetHtml(kind, items){
   const rows = items.map(item =>
-    `<button type="button" class="departure-preset-option" data-value="${item.value}">${item.label}</button>`
+    `<div class="departure-preset-row" data-value="${item.value}">
+      <span class="departure-preset-delete" aria-hidden="true">削除</span>
+      <button type="button" class="departure-preset-option" data-value="${item.value}">${item.label}</button>
+    </div>`
   ).join('');
   const customRow = DEPARTURE_NO_CUSTOM_KINDS.has(kind)
     ? ''
-    : `<button type="button" class="departure-preset-option" data-role="custom">その他…</button>`;
+    : `<div class="departure-preset-row departure-preset-row-static">
+      <button type="button" class="departure-preset-option" data-role="custom">その他…</button>
+    </div>`;
   return rows + customRow;
 }
 
@@ -1199,9 +1232,103 @@ function renderDeparturePresetSection(){
   syncDeparturePresetSelection();
 }
 
+let presetSwipeGuardUntil = 0;
+
+function resetPresetSwipe(rowEl){
+  const button = rowEl.querySelector('.departure-preset-option');
+  if(button){
+    button.style.transition = 'transform .2s ease';
+    button.style.transform = 'translateX(0)';
+  }
+  rowEl.classList.remove('swiping');
+}
+
+function deleteDeparturePresetRow(rowEl){
+  const value = parseInt(rowEl.dataset.value, 10);
+  const kind = currentDeparturePresetKind;
+  if(!kind || !Number.isFinite(value)) return false;
+  const remaining = loadDeparturePresets(kind).filter(item => item !== value);
+  if(!remaining.length) return false;
+  saveDeparturePresets(kind, remaining);
+  rowEl.style.transition = 'all .25s ease';
+  rowEl.style.opacity = '0';
+  rowEl.style.height = '0';
+  rowEl.style.overflow = 'hidden';
+  setTimeout(renderDeparturePresetSection, 250);
+  return true;
+}
+
+function attachPresetSwipe(rowEl){
+  const button = rowEl.querySelector('.departure-preset-option');
+  if(!button) return;
+
+  let startX = 0;
+  let startY = 0;
+  let currentX = 0;
+  let isDragging = false;
+  let swipeActivated = false;
+
+  rowEl.addEventListener('touchstart', event => {
+    departurePresetListEl.querySelectorAll('.departure-preset-row').forEach(other => {
+      if(other !== rowEl) resetPresetSwipe(other);
+    });
+    startX = event.touches[0].clientX;
+    startY = event.touches[0].clientY;
+    currentX = startX;
+    isDragging = true;
+    swipeActivated = false;
+  }, {passive:true});
+
+  rowEl.addEventListener('touchmove', event => {
+    if(!isDragging) return;
+    currentX = event.touches[0].clientX;
+    const dx = currentX - startX;
+    const dy = event.touches[0].clientY - startY;
+
+    if(!swipeActivated){
+      if(Math.abs(dx) >= 30 && Math.abs(dx) > Math.abs(dy)){
+        swipeActivated = true;
+        rowEl.classList.add('swiping');
+        button.style.transition = 'none';
+      }else{
+        return;
+      }
+    }
+
+    event.preventDefault();
+
+    let diff = dx;
+    if(diff > 0) diff = 0;
+    if(diff < -80) diff = -80;
+    button.style.transform = `translateX(${diff}px)`;
+  }, {passive:false});
+
+  rowEl.addEventListener('touchend', () => {
+    if(!isDragging || !swipeActivated){
+      isDragging = false;
+      swipeActivated = false;
+      resetPresetSwipe(rowEl);
+      return;
+    }
+    presetSwipeGuardUntil = Date.now() + 350;
+    if(currentX - startX >= -50 || !deleteDeparturePresetRow(rowEl)){
+      resetPresetSwipe(rowEl);
+    }
+    isDragging = false;
+    swipeActivated = false;
+  });
+
+  rowEl.addEventListener('touchcancel', () => {
+    isDragging = false;
+    swipeActivated = false;
+    resetPresetSwipe(rowEl);
+  });
+}
+
 function initializeDeparturePresetRows(){
   departurePresetListEl.querySelectorAll('.departure-preset-option').forEach(option => {
     option.addEventListener('click', () => {
+      if(Date.now() < presetSwipeGuardUntil) return;
       if(option.dataset.role === 'custom'){
         showDepartureCustomView();
         return;
@@ -1211,6 +1338,7 @@ function initializeDeparturePresetRows(){
       closeDepartureEditor();
     });
   });
+  departurePresetListEl.querySelectorAll('.departure-preset-row:not(.departure-preset-row-static)').forEach(attachPresetSwipe);
 }
 
 function getDepartureEditorValue(){
@@ -1235,8 +1363,13 @@ function getDepartureEditorValue(){
     const seconds = parseInt(document.getElementById('departure-edit-landing-diff-sec')?.dataset.value) || 0;
     return minutes * 60 + seconds;
   }
+  if(currentDepartureEditor === 'switch-rally'){
+    return parseInt(document.getElementById('departure-edit-switch-rally')?.dataset.value) || 0;
+  }
   if(currentDepartureEditor === 'switch-from-now'){
-    return parseInt(document.getElementById('departure-edit-switch-from-now')?.dataset.value) || 0;
+    const minutes = parseInt(document.getElementById('departure-edit-switch-from-now-min')?.dataset.value) || 0;
+    const seconds = parseInt(document.getElementById('departure-edit-switch-from-now-sec')?.dataset.value) || 0;
+    return minutes * 60 + seconds;
   }
   if(currentDepartureEditor === 'clock'){
     return {
@@ -1313,14 +1446,19 @@ function buildDepartureCustomFields(editorType){
     departureEditFields.innerHTML =
       createWheelHtml('departure-edit-landing-diff-min', Array.from({length:61}, (_, index) => index), Math.min(60, Math.floor(totalSeconds / 60)), '分') +
       createWheelHtml('departure-edit-landing-diff-sec', Array.from({length:60}, (_, index) => index), totalSeconds % 60, '秒', true);
-  }else if(editorType === 'switch-from-now'){
-    const totalSeconds = Math.max(1, parseInt(swFromNowInput.value) || 30);
+  }else if(editorType === 'switch-rally'){
+    const seconds = parseInt(swRallyMinSel.value) || SWITCH_MARCH_SECONDS[0];
     departureEditFields.innerHTML = createWheelHtml(
-      'departure-edit-switch-from-now',
-      Array.from({length:300}, (_, index) => index + 1),
-      Math.min(300, totalSeconds),
+      'departure-edit-switch-rally',
+      Array.from({length:180}, (_, index) => index + 1),
+      Math.min(180, seconds),
       '秒'
     );
+  }else if(editorType === 'switch-from-now'){
+    const totalSeconds = Math.max(1, parseInt(swFromNowInput.value) || 30);
+    departureEditFields.innerHTML =
+      createWheelHtml('departure-edit-switch-from-now-min', Array.from({length:11}, (_, index) => index), Math.min(10, Math.floor(totalSeconds / 60)), '分') +
+      createWheelHtml('departure-edit-switch-from-now-sec', Array.from({length:60}, (_, index) => index), totalSeconds % 60, '秒', true);
   }else{ // 'clock'
     departureEditFields.innerHTML =
       createWheelHtml('departure-edit-clock-hh', Array.from({length:24}, (_, index) => index), parseInt(departureHhSel.value) || 0, '時', true) +
@@ -1409,11 +1547,11 @@ function applyEditorValue(editorType, value){
     localStorage.setItem('landingDiffSeconds', String(totalSeconds));
   }else if(editorType === 'switch-rally'){
     const seconds = value || SWITCH_MARCH_SECONDS[0];
-    ensureSelectOption(swRallyMinSel, seconds, `${seconds}秒`);
+    ensureSelectOption(swRallyMinSel, seconds, marchLabel(seconds));
     swRallyMinSel.dispatchEvent(new Event('change'));
   }else if(editorType === 'switch-from-now'){
     const seconds = Math.max(1, value || 30);
-    ensureSelectOption(swFromNowInput, seconds, `${seconds}秒`);
+    ensureSelectOption(swFromNowInput, seconds, marchLabel(seconds));
     swFromNowInput.dispatchEvent(new Event('change'));
   }else if(editorType === 'clock'){
     const hours = String(value?.hh ?? 0).padStart(2, '0');
@@ -1460,7 +1598,12 @@ document.getElementById('departure-preset-cancel').addEventListener('click', clo
 document.querySelector('.departure-edit-backdrop').addEventListener('click', closeDepartureEditor);
 
 document.getElementById('departure-edit-save').addEventListener('click', () => {
-  applyEditorValue(currentDepartureEditor, getDepartureEditorValue());
+  const value = getDepartureEditorValue();
+  const kind = currentDeparturePresetKind;
+  if(kind && typeof value === 'number' && value > 0){
+    addDeparturePreset(kind, value);
+  }
+  applyEditorValue(currentDepartureEditor, value);
   closeDepartureEditor();
 });
 
@@ -1891,7 +2034,10 @@ actionBtn.addEventListener('click',()=>{
     // 自動コピー
     const txt = document.getElementById('copy').textContent;
     const impactTarget = document.getElementById('impact-display');
-    [impactTarget].forEach(target => {
+    const flashTargets = impactTarget
+      ? Array.from(impactTarget.querySelectorAll('.impact-display-inner')).filter(el => el.offsetParent !== null)
+      : [];
+    flashTargets.forEach(target => {
       if(!target) return;
       target.classList.remove('flash');
       void target.offsetWidth;
@@ -2352,13 +2498,14 @@ document.querySelectorAll('.page-tab-btn').forEach(btn => {
     } else {
       text = `${rallyMin}分集結お願いします。🙇‍♂️\n【${timeStr} UTC】着弾\u3000`;
     }
-    const inner = document.getElementById('l-result-inner');
-
     function flash(){
-      inner.classList.remove('flash');
-      void inner.offsetWidth;
-      inner.classList.add('flash');
-      setTimeout(()=>inner.classList.remove('flash'), 800);
+      const inners = Array.from(document.querySelectorAll('#l-result .impact-display-inner')).filter(el => el.offsetParent !== null);
+      inners.forEach(inner => {
+        inner.classList.remove('flash');
+        void inner.offsetWidth;
+        inner.classList.add('flash');
+        setTimeout(()=>inner.classList.remove('flash'), 800);
+      });
     }
 
     if(navigator.clipboard && navigator.clipboard.writeText){
@@ -2472,12 +2619,13 @@ document.querySelectorAll('.page-tab-btn').forEach(btn => {
   }
 
   function flashSwitchResult(){
-    const result = document.getElementById('sw-result-inner');
-    if(!result) return;
-    result.classList.remove('flash');
-    void result.offsetWidth;
-    result.classList.add('flash');
-    setTimeout(()=>result.classList.remove('flash'), 800);
+    const results = Array.from(document.querySelectorAll('#sw-result .impact-display-inner')).filter(el => el.offsetParent !== null);
+    results.forEach(result => {
+      result.classList.remove('flash');
+      void result.offsetWidth;
+      result.classList.add('flash');
+      setTimeout(()=>result.classList.remove('flash'), 800);
+    });
   }
 
   // 計算ボタン：計算＋プレビュー生成＋自動コピー
