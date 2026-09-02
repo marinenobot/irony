@@ -703,6 +703,10 @@ body.modal-open .member-row-wrapper{
 #l-result-inner.flash{
   animation:tableFlashEffect var(--motion-signal-dur) ease;
 }
+/* ===== Tab1 (王城決戦) スコープ限定 ===== */
+#page-calc #impact-display .impact-display{ display:block; }
+/* ===== /Tab1 ===== */
+
 /* ===== Tab2 (着弾時刻発行) スコープ限定 ===== */
 #page-landing .mode-card{
   padding:12px !important;
@@ -1826,7 +1830,6 @@ body, body.landing-active{
 
   #page-calc .departure-result{
     margin-top:14px;
-    padding:13px 14px;
   }
 
   #page-calc > .collapsible-card{
@@ -2532,7 +2535,7 @@ body .button-controls .control-btn:hover, body .button-controls .control-btn:act
 }
 
 /* --- 結果表示 --- */
-body .impact-time, body #page-calc .departure-result .impact-time{
+body .impact-time{
   font-feature-settings:"tnum" 1;
 }
 
@@ -3395,7 +3398,7 @@ body .impact-display, body #page-calc .impact-display, body #page-landing #l-res
   border-radius:0;
   background:transparent;
 }
-body .impact-display-inner, body #page-calc .departure-result .impact-display-inner, body #page-landing #l-result .impact-display-inner, body #page-switch #sw-result .impact-display-inner{
+body .impact-display-inner, body #page-landing #l-result .impact-display-inner, body #page-switch #sw-result .impact-display-inner{
   display:grid;
   grid-template-columns:max-content max-content;
   grid-template-areas:"label label" "time unit";
