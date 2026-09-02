@@ -700,9 +700,6 @@ body.modal-open .member-row-wrapper{
   border-radius:var(--radius);
   transition:all 0.3s ease;
 }
-#l-result-inner.flash{
-  animation:tableFlashEffect var(--motion-signal-dur) ease;
-}
 /* ===== Tab1 (王城決戦) スコープ限定 ===== */
 #page-calc #impact-display .impact-display{ display:block; }
 /* ===== /Tab1 ===== */
@@ -1591,6 +1588,30 @@ body.departure-edit-open{
   border-radius:14px;
   background:#fff;
 }
+.departure-preset-row{
+  position:relative;
+  overflow:hidden;
+  background:#fff;
+}
+.departure-preset-delete{
+  position:absolute;
+  top:0;
+  right:0;
+  bottom:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:80px;
+  background:#ff3b30;
+  color:#fff;
+  font-size:15px;
+  font-weight:600;
+}
+.departure-preset-row .departure-preset-option{
+  position:relative;
+  z-index:1;
+  transition:transform .2s ease;
+}
 .departure-preset-option{
   display:flex;
   align-items:center;
@@ -1609,7 +1630,7 @@ body.departure-edit-open{
   box-shadow:none;
   transform:none;
 }
-.departure-preset-option:last-child{
+.departure-preset-row:last-child .departure-preset-option{
   border-bottom:0;
 }
 .departure-preset-option::after{
@@ -1660,40 +1681,40 @@ body.departure-edit-open{
   position:relative;
   flex:1;
   min-width:0;
-  height:220px;
+  height:264px;
   overflow:hidden;
 }
 .departure-wheel-group::before{
   content:'';
   position:absolute;
   z-index:0;
-  top:88px;
+  top:110px;
   left:0;
   right:0;
   height:44px;
-  border-top:1px solid #dedee2;
-  border-bottom:1px solid #dedee2;
-  background:#f2f2f4;
+  border-top:1px solid var(--separator-soft);
+  border-bottom:1px solid var(--separator-soft);
+  background:var(--surface-secondary);
   pointer-events:none;
 }
 .departure-wheel{
   position:relative;
   z-index:1;
-  height:220px;
+  height:264px;
   overflow-x:hidden;
   overflow-y:auto;
   scroll-snap-type:y mandatory;
   overscroll-behavior:contain;
   -webkit-overflow-scrolling:touch;
   scrollbar-width:none;
-  mask-image:linear-gradient(to bottom, transparent 0, #000 28%, #000 72%, transparent 100%);
-  -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 28%, #000 72%, transparent 100%);
+  mask-image:linear-gradient(to bottom, transparent 0, #000 15%, #000 85%, transparent 100%);
+  -webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 15%, #000 85%, transparent 100%);
 }
 .departure-wheel::-webkit-scrollbar{
   display:none;
 }
 .departure-wheel-spacer{
-  height:88px;
+  height:110px;
   pointer-events:none;
 }
 .departure-wheel-option{
@@ -1708,7 +1729,7 @@ body.departure-edit-open{
   border:0;
   border-radius:0;
   background:transparent;
-  color:var(--text-secondary);
+  color:var(--label-secondary);
   font-family:var(--font-num);
   font-size:20px;
   font-weight:500;
@@ -1723,7 +1744,7 @@ body.departure-edit-open{
   transform:none;
 }
 .departure-wheel-option.selected{
-  color:var(--text-primary);
+  color:var(--label-strong);
   font-size:23px;
   font-weight:700;
 }
@@ -3880,7 +3901,7 @@ body #page-calc #impact-display, body #page-landing #l-result-inner, body #page-
   0%,100%{box-shadow:0 0 0 0 rgba(var(--signal-rgb),0),0 0 0 rgba(var(--signal-rgb),0);}
   32%,72%{box-shadow:0 0 0 1px rgba(var(--signal-rgb),.62),0 0 9px rgba(var(--signal-rgb),.12);}
 }
-body #page-calc .members-table.flash, body #page-landing #l-result-inner.flash, body #page-switch #sw-result-inner.flash{
+body #page-calc .members-table.flash{
   animation:proCopyFlash var(--motion-signal-dur) ease !important;
   border-color:transparent !important;
 }
@@ -4041,7 +4062,7 @@ body .copy-preview-card .collapsible-arrow.is-open{
 /* 集結主の連番：0にならないよう実際の行でカウントする */
 
 /* 王城決戦：着弾時刻と入力済み集結主を同じsignalで光らせる */
-body #page-calc #impact-display.flash, body #page-calc .members-table.flash{
+body #page-calc .members-table.flash{
   animation:copyTargetFlash var(--motion-signal-dur) ease !important;
 }
 
@@ -4091,7 +4112,7 @@ body #page-calc #action-btn:active, body #page-landing #l-action-btn:active, bod
 body #page-calc > #impact-display, body #page-landing > #l-result, body #page-switch > #sw-result{margin-top:0 !important;margin-bottom:var(--compact-gap) !important;}
 body #page-calc .impact-display-inner, body #page-landing #l-result .impact-display-inner, body #page-switch #sw-result .impact-display-inner{height:var(--compact-result-h) !important;min-height:var(--compact-result-h) !important;row-gap:2px;}
 body .impact-display-inner > .impact-label:last-child{padding-bottom:2px !important;}
-body #page-calc #impact-display.flash, body #page-landing #l-result-inner.flash, body #page-switch #sw-result-inner.flash{animation:resultSoftGlow .8s ease !important;}
+body .impact-display-inner.flash{animation:resultSoftGlow .8s ease !important;}
 @keyframes resultSoftGlow{0%,100%{box-shadow:0 0 0 0 rgba(var(--theme-accent-rgb),0)}40%,70%{box-shadow:0 0 0 1px rgba(var(--theme-accent-rgb),.28),0 0 10px rgba(var(--theme-accent-rgb),.11)}}
 
 /* Remove pre-reserved result space: content follows naturally before calculation. */
@@ -4331,7 +4352,7 @@ body .copy-preview-card .preview-text-box{
 
 /* 結果表示：上下の余白を同量にして、光った時の囲みのバランスを揃える */
 body #page-calc .impact-display, body #page-landing #l-result .impact-display, body #page-switch #sw-result .impact-display{
-  padding:0 !important;
+  padding:10px 0 0 !important;
 }
 
 /* コピー完了フラッシュ：外側に均等に広がる、少し控えめな光 */
