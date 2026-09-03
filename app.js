@@ -629,7 +629,7 @@ async function openUtcPipWindow(){
 /* タップ：まずPiPを試し、非対応の端末では画面内表示に切り替える */
 async function handleUtcClockTap(){
   if(await openUtcPipWindow()) return;
-  showToast('PiPを開始できません。iPhoneの「設定 → 一般 → ピクチャ・イン・ピクチャ」を確認してください');
+  showToast('この端末では画面内小窓で表示します');
   openUtcClockOverlay();
 }
 

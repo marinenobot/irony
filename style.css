@@ -3048,6 +3048,63 @@ body .utc-clock-overlay-countdown-suffix{
   font-weight:600;
 }
 
+/* PiP非対応端末のfallback。画面内の小窓として残す。 */
+body .utc-clock-overlay{
+  inset:auto 12px calc(12px + env(safe-area-inset-bottom)) auto;
+  width:min(244px, calc(100vw - 24px));
+  padding:0;
+  background:transparent;
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+}
+body.utc-overlay-open{
+  overflow:auto;
+}
+body .utc-clock-overlay.show{
+  pointer-events:none;
+}
+body .utc-clock-overlay-card{
+  width:100%;
+  padding:14px 34px 14px 14px;
+  border-radius:16px;
+  pointer-events:auto;
+  transform:translateY(8px) scale(.98);
+}
+body .utc-clock-overlay.show .utc-clock-overlay-card{
+  transform:none;
+}
+body .utc-clock-overlay-label{
+  display:none;
+}
+body #utc-overlay-time{
+  font-size:28px;
+}
+body #utc-overlay-millis{
+  font-size:16px;
+}
+body .utc-clock-overlay-unit{
+  margin-left:4px;
+  font-size:11px;
+}
+body .utc-clock-overlay-countdown{
+  gap:3px;
+  margin-top:8px;
+}
+body .utc-clock-overlay-countdown-row{
+  flex-wrap:wrap;
+  gap:3px 5px;
+}
+body .utc-clock-overlay-countdown-value{
+  font-size:24px;
+}
+body .utc-clock-overlay-close{
+  top:6px;
+  right:6px;
+  width:26px;
+  min-width:26px;
+  min-height:26px;
+}
+
 /* チャット貼り付け用プレビュー：文字と上下余白を少し詰める */
 body .preview-text-box{
   padding:6px 16px;
