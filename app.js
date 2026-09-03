@@ -307,7 +307,7 @@ quickPipBtn?.addEventListener('click', ()=>{
 });
 quickShortcutBtn?.addEventListener('click', ()=>{
   setClockQuickMenu(false);
-  alert('PiPを使う場合は、Safariで開くショートカットをホーム画面に追加してください。\\n\\n通常の「ホーム画面に追加」ではPiPが使えない場合があります。');
+  location.href = 'https://www.icloud.com/shortcuts/cb29f0952c1c485993dfd116fa56f929';
 });
 const themeOptions = Array.from(document.querySelectorAll('[data-theme-choice]'));
 const quickThemeBack = document.getElementById('quick-theme-back');
