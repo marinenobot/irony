@@ -310,12 +310,11 @@ const THEME_KEY = 'rallyThemeV3';
 function normalizeTheme(theme){
   if(theme === 'caramel') return 'truffle';
   if(theme === 'default') return 'light';
-  return ['light','mint','cookies','truffle'].includes(theme) ? theme : 'light';
+  return ['light','mint','cookies','truffle','dark'].includes(theme) ? theme : 'light';
 }
 function applyTheme(theme,persist=true){
   const selected=normalizeTheme(theme);
   document.body.setAttribute('data-theme',selected);
-  document.body.removeAttribute('data-mode');
   themeOptions.forEach(btn=>btn.setAttribute('aria-checked',btn.dataset.themeChoice===selected?'true':'false'));
   if(persist) localStorage.setItem(THEME_KEY,selected);
   updateThemeMeta();
@@ -324,7 +323,7 @@ function updateThemeMeta(){
   const meta=document.querySelector('meta[name="theme-color"]');
   if(!meta) return;
   const selected=document.body.getAttribute('data-theme');
-  const colors={light:'#F7F6F3',mint:'#F7F8F6',cookies:'#F6F8F9',truffle:'#F8F6F3'};
+  const colors={light:'#F7F6F3',mint:'#F7F8F6',cookies:'#F6F8F9',truffle:'#F8F6F3',dark:'#101014'};
   meta.setAttribute('content',colors[selected] || colors.light);
 }
 function openThemeMenu(){ clockQuickMenu?.classList.add('theme-open'); }
@@ -678,12 +677,11 @@ function updateMemberRowHighlights(){
       row.classList.remove('pet-active');
     }
     const beforeMarch = row.querySelector('.march-select')?.value;
-    refreshMemberAutoMarch(row, {save:false, updateTime:false});
+    refreshMemberAutoMarch(row, {save:false});
     if(beforeMarch !== row.querySelector('.march-select')?.value) marchChanged = true;
   });
   if(marchChanged){
     saveSettings();
-    updateLandingTimeOptions();
   }
 }
 
@@ -852,159 +850,15 @@ function refreshMemberAutoMarch(row, options = {}){
   }
 
   if(options.save !== false) saveSettings();
-  if(options.updateTime !== false) updateLandingTimeOptions();
   return autoSeconds;
 }
 
 function refreshAllMemberAutoMarchTimes(options = {}){
   document.querySelectorAll('#players .member-row').forEach(row => {
-    refreshMemberAutoMarch(row, {save:false, updateTime:false});
+    refreshMemberAutoMarch(row, {save:false});
   });
   if(options.save !== false) saveSettings();
-  if(options.updateTime !== false) updateLandingTimeOptions();
 }
-
-
-/* ======= 着弾指定のデフォルト時刻 ======= */
-function updateLandingTimeOptions(){
-  const now = new Date();
-  const hhSel = document.getElementById('hh');
-  const mmSel = document.getElementById('mm');
-  const ssSel = document.getElementById('ss');
-  const rallyMinSel = document.getElementById('rally-min');
-
-  const rallyMin = parseInt(rallyMinSel.value) || 5;
-
-  let maxMarch = 0;
-  document.querySelectorAll('.march-select').forEach(sel => {
-    const march = parseInt(sel.value) || 0;
-    if(march > maxMarch) maxMarch = march;
-  });
-
-  const minTime = new Date(now.getTime() + rallyMin * 60 * 1000 + maxMarch * 1000);
-
-  // デフォルト着弾時刻 = 現在時刻 + 集結時間（ただしminTime未満にはならない）
-  const defaultTime = new Date(now.getTime() + rallyMin * 60 * 1000);
-  const targetTime = defaultTime < minTime ? minTime : defaultTime;
-
-  // 1秒単位で選択できるようにする
-  let targetH = targetTime.getUTCHours();
-  let targetM = targetTime.getUTCMinutes();
-  let targetS = targetTime.getUTCSeconds();
-
-  // 繰り上がり処理
-  if(targetS >= 60){
-    targetS = 0;
-    targetM += 1;
-  }
-  if(targetM >= 60){
-    targetM = 0;
-    targetH += 1;
-  }
-  if(targetH >= 24){
-    targetH = 0;
-  }
-
-  // autoSetLandingTime() が記憶した値を優先、なければ targetH/M/S
-  const autoH = hhSel.dataset.autoH !== undefined ? parseInt(hhSel.dataset.autoH) : null;
-  const autoM = mmSel.dataset.autoM !== undefined ? parseInt(mmSel.dataset.autoM) : null;
-  const autoS = ssSel.dataset.autoS !== undefined ? parseInt(ssSel.dataset.autoS) : null;
-  const currentH = autoH !== null ? autoH : (parseInt(hhSel.value) >= 0 ? parseInt(hhSel.value) : targetH);
-  const currentM = autoM !== null ? autoM : (parseInt(mmSel.value) >= 0 ? parseInt(mmSel.value) : targetM);
-  const currentS = autoS !== null ? autoS : (parseInt(ssSel.value) >= 0 ? parseInt(ssSel.value) : targetS);
-  // 一度使ったら消す（ユーザーが手動変更したら上書きしない）
-  delete hhSel.dataset.autoH; delete mmSel.dataset.autoM; delete ssSel.dataset.autoS;
-
-  // 時（0-23）- minTime以降の時間のみ表示
-  let hhHTML='';
-  let validHours = [];
-  for(let i=0;i<24;i++){ 
-    let hasValidTime = false;
-    for(let m=0; m<60; m++){
-      for(let s=0; s<60; s++){
-        const testTime = new Date(now);
-        testTime.setUTCHours(i, m, s, 0);
-        if(testTime < now) testTime.setUTCDate(testTime.getUTCDate() + 1);
-        if(testTime >= minTime){
-          hasValidTime = true;
-          break;
-        }
-      }
-      if(hasValidTime) break;
-    }
-    if(hasValidTime){
-      validHours.push(i);
-      const v=String(i).padStart(2,'0'); 
-      hhHTML+=`<option value="${v}">${v}</option>`;
-    }
-  }
-  hhSel.innerHTML=hhHTML;
-
-  let selectedH = validHours.includes(currentH) ? currentH : validHours[0];
-  hhSel.value=String(selectedH).padStart(2,'0');
-
-  // 分（1分刻み）- 選択された時に応じてフィルタ
-  let mmHTML='';
-  let validMinutes = [];
-  for(let i=0;i<60;i++){
-    let hasValidTime = false;
-    for(let s=0; s<60; s++){
-      const testTime = new Date(now);
-      testTime.setUTCHours(selectedH, i, s, 0);
-      if(testTime < now) testTime.setUTCDate(testTime.getUTCDate() + 1);
-      if(testTime >= minTime){
-        hasValidTime = true;
-        break;
-      }
-    }
-    if(hasValidTime){
-      validMinutes.push(i);
-      const v=String(i).padStart(2,'0');
-      mmHTML+=`<option value="${v}">${v}</option>`;
-    }
-  }
-  mmSel.innerHTML=mmHTML;
-
-  let selectedM = validMinutes.includes(currentM) ? currentM : validMinutes[0];
-  if(selectedM !== undefined){
-    mmSel.value=String(selectedM).padStart(2,'0');
-  }
-
-  // 秒（1秒刻み）- 選択された時と分に応じてフィルタ
-  let ssHTML='';
-  let validSeconds = [];
-  selectedM = parseInt(mmSel.value) || 0;
-  for(let i=0;i<60;i++){
-    const v=String(i).padStart(2,'0');
-    const testTime = new Date(now);
-    testTime.setUTCHours(selectedH, selectedM, i, 0);
-    if(testTime < now) testTime.setUTCDate(testTime.getUTCDate() + 1);
-
-    if(testTime >= minTime){
-      validSeconds.push(i);
-      ssHTML+=`<option value="${v}">${v}</option>`;
-    }
-  }
-  ssSel.innerHTML=ssHTML;
-
-  let selectedS = validSeconds.includes(currentS) ? currentS : validSeconds[0];
-  if(selectedS !== undefined){
-    ssSel.value=String(selectedS).padStart(2,'0');
-  }
-}
-updateLandingTimeOptions();
-
-// 時刻ドロップダウンのイベントリスナー
-document.getElementById('hh').addEventListener('focus', updateLandingTimeOptions);
-document.getElementById('mm').addEventListener('focus', updateLandingTimeOptions);
-document.getElementById('ss').addEventListener('focus', updateLandingTimeOptions);
-document.getElementById('hh').addEventListener('click', updateLandingTimeOptions);
-document.getElementById('mm').addEventListener('click', updateLandingTimeOptions);
-document.getElementById('ss').addEventListener('click', updateLandingTimeOptions);
-document.getElementById('hh').addEventListener('change', updateLandingTimeOptions);
-document.getElementById('mm').addEventListener('change', updateLandingTimeOptions);
-document.getElementById('ss').addEventListener('change', updateLandingTimeOptions);
-document.getElementById('rally-min').addEventListener('change', updateLandingTimeOptions);
 
 /* ======= モード切替 ======= */
 const rallyMinSel=document.getElementById('rally-min');
@@ -1016,14 +870,11 @@ function updateRallyMinOptions(){
   const options = [{v:5, l:'5分'}, {v:10, l:'10分'}];
   const html = options.map(o => `<option value="${o.v}">${o.l}</option>`).join('');
   rallyMinSel.innerHTML = html;
-  rallyMinTimeSel.innerHTML = html;
 
   if(options.some(o => o.v == currentVal)){
     rallyMinSel.value = currentVal;
-    rallyMinTimeSel.value = currentVal;
   }else{
     rallyMinSel.value = options[0].v;
-    rallyMinTimeSel.value = options[0].v;
   }
 }
 
@@ -1039,14 +890,7 @@ function updatePrepTimeOptions(){
   prepTimeSel.value = String(selectedVal);
 }
 
-function syncRallyMinValues(){
-  const val = rallyMinSel.value;
-  rallyMinTimeSel.value = val;
-}
-
 const prepTimeSel = document.getElementById('prep-time');
-const prepInputGroup = document.getElementById('prep-input-group');
-const rallyMinTimeSel = document.getElementById('rally-min-time');
 
 /* 各メンバーの行軍時間を履歴から復元 */
 function restoreMarchTimesFromHistory(){
@@ -1075,10 +919,8 @@ function restoreMarchTimesFromHistory(){
 function updateMode(){
   updateAllMarchOptions(10, 300);
   restoreMarchTimesFromHistory();
-  prepInputGroup.style.display='flex';
   updateRallyMinOptions();
   updatePrepTimeOptions();
-  syncRallyMinValues();
 }
 
 /* ======= 出発時刻：時間編集ボトムシート ======= */
@@ -1088,9 +930,6 @@ const departurePresetSection = document.getElementById('departure-preset-section
 const departurePresetListEl = document.getElementById('departure-preset-list');
 const departureCustomSection = document.getElementById('departure-custom-section');
 const departureEditFields = document.getElementById('departure-edit-fields');
-const departureHhSel = document.getElementById('hh');
-const departureMmSel = document.getElementById('mm');
-const departureSsSel = document.getElementById('ss');
 const landingRallyMinSel = document.getElementById('l-rally-min');
 const landingPrepTimeSel = document.getElementById('l-from-now');
 const landingDiffMinSel = document.getElementById('l-diff-min');
@@ -1106,7 +945,6 @@ const DEFAULT_DEPARTURE_PRESETS = Object.freeze({
   'switch-rally':[...SWITCH_MARCH_SECONDS],
   'switch-from-now':[10, 20, 30, 45, 60]
 });
-const DEPARTURE_NO_CUSTOM_KINDS = new Set();
 const DEPARTURE_PRESET_KIND_BY_EDITOR = Object.freeze({
   rally:'castle-rally',
   'landing-rally':'landing-rally',
@@ -1195,9 +1033,7 @@ function createPresetHtml(kind, items){
       <button type="button" class="departure-preset-option" data-value="${item.value}">${item.label}</button>
     </div>`
   ).join('');
-  const customRow = DEPARTURE_NO_CUSTOM_KINDS.has(kind)
-    ? ''
-    : `<div class="departure-preset-row departure-preset-row-static">
+  const customRow = `<div class="departure-preset-row departure-preset-row-static">
       <button type="button" class="departure-preset-option" data-role="custom">その他…</button>
     </div>`;
   return rows + customRow;
@@ -1371,13 +1207,6 @@ function getDepartureEditorValue(){
     const seconds = parseInt(document.getElementById('departure-edit-switch-from-now-sec')?.dataset.value) || 0;
     return minutes * 60 + seconds;
   }
-  if(currentDepartureEditor === 'clock'){
-    return {
-      hh: parseInt(document.getElementById('departure-edit-clock-hh')?.dataset.value) || 0,
-      mm: parseInt(document.getElementById('departure-edit-clock-mm')?.dataset.value) || 0,
-      ss: parseInt(document.getElementById('departure-edit-clock-ss')?.dataset.value) || 0
-    };
-  }
   return null;
 }
 
@@ -1459,11 +1288,6 @@ function buildDepartureCustomFields(editorType){
     departureEditFields.innerHTML =
       createWheelHtml('departure-edit-switch-from-now-min', Array.from({length:11}, (_, index) => index), Math.min(10, Math.floor(totalSeconds / 60)), '分') +
       createWheelHtml('departure-edit-switch-from-now-sec', Array.from({length:60}, (_, index) => index), totalSeconds % 60, '秒', true);
-  }else{ // 'clock'
-    departureEditFields.innerHTML =
-      createWheelHtml('departure-edit-clock-hh', Array.from({length:24}, (_, index) => index), parseInt(departureHhSel.value) || 0, '時', true) +
-      createWheelHtml('departure-edit-clock-mm', Array.from({length:60}, (_, index) => index), parseInt(departureMmSel.value) || 0, '分', true) +
-      createWheelHtml('departure-edit-clock-ss', Array.from({length:60}, (_, index) => index), parseInt(departureSsSel.value) || 0, '秒', true);
   }
   initializeDepartureWheels();
 }
@@ -1530,7 +1354,6 @@ function applyEditorValue(editorType, value){
   }else if(editorType === 'rally'){
     const minutes = value || 1;
     ensureSelectOption(rallyMinSel, minutes, `${minutes}分`);
-    ensureSelectOption(rallyMinTimeSel, minutes, `${minutes}分`);
     rallyMinSel.dispatchEvent(new Event('change'));
   }else if(editorType === 'prep'){
     const totalSeconds = value || 0;
@@ -1553,17 +1376,9 @@ function applyEditorValue(editorType, value){
     const seconds = Math.max(1, value || 30);
     ensureSelectOption(swFromNowInput, seconds, marchLabel(seconds));
     swFromNowInput.dispatchEvent(new Event('change'));
-  }else if(editorType === 'clock'){
-    const hours = String(value?.hh ?? 0).padStart(2, '0');
-    const minutes = String(value?.mm ?? 0).padStart(2, '0');
-    const seconds = String(value?.ss ?? 0).padStart(2, '0');
-    ensureSelectOption(departureHhSel, hours, hours);
-    ensureSelectOption(departureMmSel, minutes, minutes);
-    ensureSelectOption(departureSsSel, seconds, seconds);
   }
 
   saveSettings();
-  updateLandingTimeOptions();
 }
 
 function wireDepartureRowTrigger(el, editorType){
@@ -1621,7 +1436,6 @@ function deleteThisRow(el){
       wrapper.remove();
       generateCopyMessage();
       saveSettings();
-      updateLandingTimeOptions();
     }, 300);
   }
 }
@@ -1735,7 +1549,6 @@ function attachSwipeToRow(row){
         wrapper.remove();
         generateCopyMessage();
         saveSettings();
-        updateLandingTimeOptions();
       }, 300);
     } else {
       wrapper.classList.remove('swiping');
@@ -1804,7 +1617,6 @@ function attachRowEvents(row){
 
   row.querySelector('.march-select').addEventListener('change', function(){
     saveSettings();
-    updateLandingTimeOptions();
   });
 
   row.querySelectorAll('.coord-input').forEach(input => {
@@ -1841,7 +1653,7 @@ function attachRowEvents(row){
     const willOpen = settings.hidden;
     settings.hidden = !willOpen;
     toggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-    if(willOpen) refreshMemberAutoMarch(row, {save:false, updateTime:false});
+    if(willOpen) refreshMemberAutoMarch(row, {save:false});
   }
 
   /* 名前は編集したいので、名前部分のタップでは開閉しない */
@@ -1899,9 +1711,8 @@ function addMemberRow(name = '', marchSec = null, memberSettings = {}){
   generateMarchOptions(row.querySelector('.march-select'), marchSec, minSec, maxSec);
   attachRowEvents(row);
   attachSwipeToRow(row);
-  refreshMemberAutoMarch(row, {save:false, updateTime:false});
+  refreshMemberAutoMarch(row, {save:false});
   saveSettings();
-  updateLandingTimeOptions();
   return row;
 }
 
@@ -1952,6 +1763,35 @@ function showToast(text='✓ コピーしました'){
   toast.textContent = text;
   toast.classList.add('show');
   setTimeout(()=>toast.classList.remove('show'),1500);
+}
+
+async function copyText(text){
+  try{
+    await navigator.clipboard.writeText(text);
+    return true;
+  }catch(error){
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    try{
+      return document.execCommand('copy');
+    }catch(error){
+      return false;
+    }finally{
+      textarea.remove();
+    }
+  }
+}
+
+function flashResults(selector){
+  document.querySelectorAll(`${selector} .impact-display-inner`).forEach(target => {
+    if(target.offsetParent === null) return;
+    target.classList.remove('flash');
+    void target.offsetWidth;
+    target.classList.add('flash');
+    setTimeout(()=>target.classList.remove('flash'), 800);
+  });
 }
 
 /* ======= 出発時刻計算 ======= */
@@ -2033,24 +1873,8 @@ actionBtn.addEventListener('click',()=>{
     
     // 自動コピー
     const txt = document.getElementById('copy').textContent;
-    const impactTarget = document.getElementById('impact-display');
-    const flashTargets = impactTarget
-      ? Array.from(impactTarget.querySelectorAll('.impact-display-inner')).filter(el => el.offsetParent !== null)
-      : [];
-    flashTargets.forEach(target => {
-      if(!target) return;
-      target.classList.remove('flash');
-      void target.offsetWidth;
-      target.classList.add('flash');
-      setTimeout(()=>target.classList.remove('flash'),800);
-    });
-    
-    try{ await navigator.clipboard.writeText(txt); }
-    catch(e){
-      const ta=document.createElement('textarea');
-      ta.value=txt; document.body.appendChild(ta); ta.select();
-      document.execCommand('copy'); document.body.removeChild(ta);
-    }
+    flashResults('#impact-display');
+    await copyText(txt);
     showToast();
   }, 500);
 });
@@ -2091,8 +1915,6 @@ function recordHistory(name, marchSec){
   }
 
   const normalizedName = name.trim().replace(/\s+/g, ' ');
-  const currentHasPet = isPetActiveForMember(normalizedName);
-
   // 同じ名前・同じ秒数の重複チェック（ペット状態は無視）
   const existingIndex = history[key].findIndex(item => 
     item.name.toLowerCase() === normalizedName.toLowerCase() && 
@@ -2102,8 +1924,7 @@ function recordHistory(name, marchSec){
   const entry = {
     name: normalizedName,
     marchSec: marchSec,
-    lastUsed: Date.now(),
-    hasPet: currentHasPet
+    lastUsed: Date.now()
   };
 
   if(existingIndex >= 0){
@@ -2131,7 +1952,7 @@ function getSuggestions(inputText){
   return LIVE_MEMBER_ROSTER
     .filter(name => name.toLocaleLowerCase('ja-JP').includes(normalizedInput))
     .filter(name => !used.has(name.toLocaleLowerCase('ja-JP')))
-    .map(name => ({name, marchSec:null, roster:true}))
+    .map(name => ({name, marchSec:null}))
     .slice(0, 24);
 }
 
@@ -2268,12 +2089,9 @@ function loadSettings(){
   try{
     const d=JSON.parse(raw);
 
-    updateRallyMinOptions();
-    updatePrepTimeOptions();
     if(d.rallyMin){
       const savedRally = ['5', '10'].includes(String(d.rallyMin)) ? String(d.rallyMin) : '5';
       rallyMinSel.value=savedRally;
-      rallyMinTimeSel.value=savedRally;
     }
     if(d.prepTime !== undefined) prepTimeSel.value=String(d.prepTime);
 
@@ -2291,27 +2109,15 @@ function loadSettings(){
         generateMarchOptions(row.querySelector('.march-select'), m.march, minSec, maxSec);
         attachRowEvents(row);
         attachSwipeToRow(row);
-        refreshMemberAutoMarch(row, {save:false, updateTime:false});
+        refreshMemberAutoMarch(row, {save:false});
       });
     }
-    updateMode();
   }catch(e){}
 }
 ['rally-min','prep-time']
 .forEach(id=>{
   const el=document.getElementById(id);
   if(el) ['change','input'].forEach(ev=>el.addEventListener(ev,saveSettings));
-});
-
-// rally-min と rally-min-time を同期
-document.getElementById('rally-min').addEventListener('change', function(){
-  rallyMinTimeSel.value = this.value;
-  updateLandingTimeOptions();
-});
-document.getElementById('rally-min-time').addEventListener('change', function(){
-  rallyMinSel.value = this.value;
-  updateLandingTimeOptions();
-  saveSettings();
 });
 
 // 旧形式で分かれていた履歴を1つに統合
@@ -2337,10 +2143,9 @@ function migrateHistoryData(){
   saveHistory({all: unified});
 }
 
+updateMode();
 loadSettings();
 migrateHistoryData();
-updateMode(); // 初期表示（loadSettingsでデータがない場合のため）
-document.querySelectorAll('#players .member-row').forEach(attachRowEvents);
 updateMemberRowHighlights(); // ペット発動中の行ハイライト初期化
 
 window.addEventListener('scroll', hideAutocomplete, {passive:true});
@@ -2396,13 +2201,7 @@ if(previewInner){
     const previewText = document.getElementById('preview-text');
     const text = previewText ? previewText.textContent : '';
     if(!text) return;
-    try{ await navigator.clipboard.writeText(text); }
-    catch(e){
-      const ta=document.createElement('textarea');
-      ta.value=text; document.body.appendChild(ta); ta.select();
-      document.execCommand('copy'); document.body.removeChild(ta);
-    }
-    showToast();
+    if(await copyText(text)) showToast();
   });
 }
 
@@ -2490,7 +2289,7 @@ document.querySelectorAll('.page-tab-btn').forEach(btn => {
   landingDiffSecSel.addEventListener('change', saveLandingDiff);
 
   // コピー共通処理
-  function doCopy(timeStr, timeStr2){
+  async function doCopy(timeStr, timeStr2){
     const rallyMin = parseInt(document.getElementById('l-rally-min').value) || 1;
     let text;
     if(timeStr2){
@@ -2498,27 +2297,9 @@ document.querySelectorAll('.page-tab-btn').forEach(btn => {
     } else {
       text = `${rallyMin}分集結お願いします。🙇‍♂️\n【${timeStr} UTC】着弾\u3000`;
     }
-    function flash(){
-      const inners = Array.from(document.querySelectorAll('#l-result .impact-display-inner')).filter(el => el.offsetParent !== null);
-      inners.forEach(inner => {
-        inner.classList.remove('flash');
-        void inner.offsetWidth;
-        inner.classList.add('flash');
-        setTimeout(()=>inner.classList.remove('flash'), 800);
-      });
-    }
-
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text).then(()=>{ flash(); showToast('✓ コピーしました'); });
-    } else {
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      flash();
-      showToast('✓ コピーしました');
+    if(await copyText(text)){
+      flashResults('#l-result');
+      showToast();
     }
   }
 
@@ -2586,7 +2367,7 @@ document.querySelectorAll('.page-tab-btn').forEach(btn => {
     return `${pad2(date.getUTCHours())}:${pad2(date.getUTCMinutes())}:${pad2(date.getUTCSeconds())}`;
   }
 
-  function buildSwitchPreview(baseMarch, impactDate, entries){
+  function buildSwitchPreview(impactDate, entries){
     const lines = [];
     lines.push('今からスイッチします🙌');
     lines.push('自分の行軍秒数を確認して、該当時刻に1軍で出発してください。');
@@ -2598,34 +2379,6 @@ document.querySelectorAll('.page-tab-btn').forEach(btn => {
     lines.push('━━━━━━━━━━━');
     lines.push(`着弾時刻：${formatSwitchUtc(impactDate)} UTC`);
     return lines.join('\n');
-  }
-
-  async function copySwitchText(text){
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      try{ await navigator.clipboard.writeText(text); return true; }
-      catch(e){ /* フォールバックへ */ }
-    }
-    try{
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      return true;
-    }catch(e){
-      return false;
-    }
-  }
-
-  function flashSwitchResult(){
-    const results = Array.from(document.querySelectorAll('#sw-result .impact-display-inner')).filter(el => el.offsetParent !== null);
-    results.forEach(result => {
-      result.classList.remove('flash');
-      void result.offsetWidth;
-      result.classList.add('flash');
-      setTimeout(()=>result.classList.remove('flash'), 800);
-    });
   }
 
   // 計算ボタン：計算＋プレビュー生成＋自動コピー
@@ -2657,16 +2410,16 @@ document.querySelectorAll('.page-tab-btn').forEach(btn => {
       document.getElementById('sw-result').style.display = 'block';
 
       // 5. チャット貼り付け用プレビューを生成
-      const previewMsg = buildSwitchPreview(baseMarch, impact, entries);
+      const previewMsg = buildSwitchPreview(impact, entries);
       const previewText = document.getElementById('sw-preview-text');
       if(previewText) previewText.textContent = previewMsg;
 
       btn.textContent = originalLabel;
       btn.disabled = false;
-      flashSwitchResult();
+      flashResults('#sw-result');
 
       // 6. プレビュー全文を自動でクリップボードにコピー
-      const copied = await copySwitchText(previewMsg);
+      const copied = await copyText(previewMsg);
       if(copied) showToast('✓ コピーしました');
     }, 600);
   });
@@ -2678,7 +2431,7 @@ document.querySelectorAll('.page-tab-btn').forEach(btn => {
       const previewText = document.getElementById('sw-preview-text');
       const text = previewText ? previewText.textContent : '';
       if(!text) return;
-      const copied = await copySwitchText(text);
+      const copied = await copyText(text);
       if(copied) showToast('✓ コピーしました');
     });
   }
@@ -2708,27 +2461,6 @@ document.querySelectorAll('.page-tab-btn').forEach(btn => {
     });
   }
 })();
-
-/* ======= PWA: Service Worker登録 ======= */
-if('serviceWorker' in navigator){
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then(reg => {
-        console.log('Service Worker登録成功:', reg.scope);
-        // 定期的に更新をチェック
-        setInterval(() => reg.update(), 60000);
-      })
-      .catch(err => console.log('Service Worker登録失敗:', err));
-  });
-  
-  // 新しいサービスワーカーがアクティブになったら自動リロード
-  let refreshing = false;
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if(refreshing) return;
-    refreshing = true;
-    window.location.reload();
-  });
-}
 
 /* ======= ペット通知システム ======= */
 const petNotificationTimers = {};
@@ -3027,4 +2759,3 @@ window.addEventListener('load', function() {
     requestAnimationFrame(() => { play(); });
   }
 })();
-

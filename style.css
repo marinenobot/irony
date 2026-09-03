@@ -22,18 +22,14 @@
   --bg-lighter:#F7F7FA;
   --bg-blue-light:#F2F2F7;
   --red-error:#B3453D;
-  --red-error-hover:#963A33;
   --red-error-bg:rgba(179, 69, 61, 0.1);
   --btn-disabled:#C7C7CC;
   --text-tertiary:rgba(0,0,0,0.08);
   /* Radius: 0を基本にしつつ、操作要素とカードだけ小さな丸みを許可 */
   --radius:0;
-  --radius-control:10px;
-  --radius-control-sm:8px;
   --radius-card:12px;
   /* Shadow: 常設カード用の控えめな影と、一時的に浮くオーバーレイ用の2種類のみ */
   --shadow:0 1px 3px rgba(0,0,0,0.05);
-  --shadow-rest:0 1px 2px rgba(0,0,0,0.04), 0 6px 16px rgba(0,0,0,0.04);
   --shadow-overlay:0 8px 24px rgba(0,0,0,0.18);
   --member-settings-icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='3' fill='none' stroke='black' stroke-width='2'/%3E%3Cpath d='M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.09A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3v-4h.09A1.7 1.7 0 0 0 4.6 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3h4v.09A1.7 1.7 0 0 0 15.4 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.14.38.36.72.66 1 .3.27.68.41 1.08.4H21v4h-.09A1.7 1.7 0 0 0 19.4 15Z' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   --spacing:12px;
@@ -49,9 +45,6 @@
      タブ下から「計算開始」までの縦位置をここだけで揃える */
   --settings-row-height:56px;
   --settings-top-gap:6px;
-  --settings-bottom-gap:24px;
-  --settings-rows-max:3;
-  --settings-area-height:calc(var(--settings-row-height) * var(--settings-rows-max));
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{
@@ -239,12 +232,6 @@ button:focus{
   background:#fff;
   border-radius:0;
   border:1px solid #ddd;
-}
-#time-input-group{
-  margin-right:4px;
-}
-.hidden{
-  display:none;
 }
 .aligned-box{
   width:100%;
@@ -2118,67 +2105,6 @@ body .mode-card, body .collapsible-card, body #page-calc .mode-card, body #page-
   overflow:hidden;
 }
 
-/* --- 設定行（集結時間・準備時間など） --- */
-body #page-calc .departure-setting-row, body #page-landing .l-setting-row, body #page-landing .l-wave-options, body #page-switch .departure-setting-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  min-height:50px;
-  margin:0 16px;
-  padding:0;
-  border-bottom:1px solid var(--ios-separator);
-}
-body #page-landing .l-wave-options{
-  min-height:50px;
-  border-bottom:0;
-}
-body #page-calc .departure-setting-name, body #page-landing .l-setting-name{
-  color:var(--ios-label);
-  font-family:var(--font-ui);
-  font-size:17px;
-  font-weight:600;
-  letter-spacing:-.01em;
-}
-body #page-calc .departure-setting-control select, body #page-calc .departure-after-text, body #page-landing .l-setting-control select{
-  color:var(--ios-secondary);
-  font-family:var(--font-ui);
-  font-size:17px;
-  font-weight:400;
-  letter-spacing:-.01em;
-}
-body #page-landing .l-setting-control select[class*="time"]{
-  font-family:var(--font-num);
-  font-size:17px;
-  font-variant-numeric:tabular-nums;
-}
-
-/* --- シェブロン（iOS標準の細い「>」） --- */
-body #page-calc .departure-chevron, body #page-landing .l-chevron, body #page-switch .departure-chevron{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:20px;
-  min-width:20px;
-  min-height:44px;
-  color:var(--ios-tertiary);
-  font-size:0;
-  background:transparent;
-}
-body #page-calc .departure-chevron::after, body #page-landing .l-chevron::after, body #page-switch .departure-chevron::after{
-  content:"";
-  display:block;
-  width:7px;
-  height:7px;
-  border-right:2px solid currentColor;
-  border-bottom:2px solid currentColor;
-  border-radius:1px;
-  transform:rotate(-45deg);
-}
-body #page-calc .departure-chevron:hover, body #page-calc .departure-chevron:focus, body #page-calc .departure-chevron:active, body #page-landing .l-chevron:hover, body #page-landing .l-chevron:focus, body #page-landing .l-chevron:active, body #page-switch .departure-chevron:hover, body #page-switch .departure-chevron:focus, body #page-switch .departure-chevron:active{
-  color:var(--ios-tint);
-  background:transparent;
-}
-
 /* --- 主ボタン（計算開始） --- */
 body #page-calc .departure-action, body #page-landing .landing-action{
   align-items:center;
@@ -2674,7 +2600,6 @@ body .departure-edit-header h3{
 }
 
 /* ===== モバイル表示の最終上書き層：これも独自の色/角丸は持たず、共通トークンへエイリアス ===== */
-/* --space-1〜5・--radius-control・--control-heightは基本:rootの値をそのまま継承するため、ここでは再宣言しない */
 :root{
   --radius-section:var(--radius-card);
   --surface-primary:var(--card-bg);
@@ -2685,7 +2610,6 @@ body .departure-edit-header h3{
   --label-secondary:var(--text-secondary);
   --label-tertiary:var(--text-muted);
   --action-primary:var(--blue-primary);
-  --action-primary-pressed:var(--blue-active);
   --danger-soft:var(--red-error-bg);
   --danger-text:var(--red-error);
 }
@@ -2842,7 +2766,7 @@ body #page-calc .departure-setting-control, body #page-landing .l-setting-contro
   border-radius:0;
   background:transparent;
 }
-body #time-input-group, body #prep-input-group{
+body #prep-input-group{
   margin-right:0;
 }
 body #page-calc .departure-setting-control select, body #page-calc .departure-after-text, body #page-landing .l-setting-control select, body #page-switch .departure-setting-control select, body .inline-select, body select, body input:not([type="checkbox"]){
@@ -3029,31 +2953,6 @@ body .impact-display-inner > .impact-time{
 }
 
 /* ==========================================================================
-   3タブ（王城決戦・着弾時刻・スイッチ）レイアウト統一
-   タブ下から「計算開始」ボタンまでの縦位置を、コンテンツ量が違っても揃える。
-   数値は :root の --settings-* 変数だけで管理し、タブごとの個別margin/paddingは持たせない。
-   既存の重複ルールが !important で散在しているため、ここで最終的に一括上書きする。
-   ========================================================================== */
-body .page-tabs, body.landing-active .page-tabs{
-  margin:0 4px var(--settings-top-gap) 4px;
-}
-
-/* 設定エリア（mode-card）：内側の余白を0にし、行の高さだけで積み上げる。
-   コンテンツが少ないタブは min-height で不足分を空白として補い、
-   常に3行分の高さ（--settings-area-height）で揃える */
-
-/* 各設定行の行高を3タブ共通で64pxに */
-body #page-calc .departure-setting-row, body #page-landing .l-setting-row, body #page-landing .l-wave-options, body #page-switch .sw-row, body #page-switch .departure-setting-row{
-  min-height:var(--settings-row-height) !important;
-  align-items:center;
-}
-
-/* ボタン（計算開始）：高さ・角丸・配色を3タブ共通の1ルールにまとめる */
-body #page-calc .departure-action, body #page-landing .landing-action, body #page-switch .switch-action{
-  display:block;
-}
-
-/* ==========================================================================
    時計ヘッダー：「現在時刻」「タップでオーバーレイ」の文言をやめ、
    時計の右側にモノクロの小窓（PiP）アイコンだけを添える
    ========================================================================== */
@@ -3180,73 +3079,6 @@ body .app-settings-button::before, body.landing-active .app-settings-button::bef
 }
 
 /* ==========================================================================
-   3タブ共通の入力行レイアウト。
-   ラベル＝1列目の左端、値＋chevron＝2列目の右端。
-   位置は個別のmargin/paddingではなく、この1ブロックだけで決める。
-   ========================================================================== */
-:root{
-  --row-inset:16px;
-  --row-gap:8px;
-  --row-chevron-w:28px;
-}
-body #page-calc .departure-setting-row, body #page-calc .departure-schedule-row, body #page-landing .l-setting-row, body #page-landing .l-wave-options, body #page-switch .sw-row{
-  display:grid;
-  grid-template-columns:max-content 1fr;
-  align-items:center;
-  gap:0 var(--row-gap);
-  min-height:var(--settings-row-height) !important;
-  margin:0 var(--row-inset) !important;
-  padding:0 !important;
-  border-top:0;
-  border-bottom:1px solid var(--separator-soft);
-}
-body #page-calc .departure-setting-name, body #page-landing .l-setting-name, body #page-switch .sw-row-label{
-  grid-column:1;
-  justify-self:start;
-  color:var(--label-strong);
-  font-size:17px;
-  font-weight:600;
-  white-space:nowrap;
-}
-body #page-calc .departure-setting-control, body #page-landing .l-setting-control, body #page-switch .sw-row-control{
-  grid-column:2;
-  justify-self:end;
-  display:inline-flex;
-  align-items:center;
-  justify-content:flex-end;
-  gap:var(--row-gap);
-  min-width:0;
-  min-height:var(--control-height);
-  margin:0 !important;
-  padding:0 !important;
-}
-body #page-calc .departure-setting-control select, body #page-landing .l-setting-control select, body #page-switch .sw-row-control select{
-  text-align:right;
-  text-align-last:right;
-}
-body #page-calc .departure-chevron, body #page-landing .l-chevron, body #page-switch .sw-chevron{
-  flex:0 0 var(--row-chevron-w);
-  width:var(--row-chevron-w);
-  min-width:var(--row-chevron-w);
-  min-height:var(--control-height);
-  margin:0;
-  padding:0;
-  color:var(--label-tertiary);
-  font-size:0;
-  background:transparent;
-}
-body #page-calc .departure-chevron::after, body #page-landing .l-chevron::after, body #page-switch .sw-chevron::after{
-  content:"";
-  display:block;
-  width:7px;
-  height:7px;
-  border-right:2px solid currentColor;
-  border-bottom:2px solid currentColor;
-  border-radius:1px;
-  transform:rotate(-45deg);
-}
-
-/* ==========================================================================
    集結一覧：ヘッダーなしの一覧＋行タップで開く詳細
    ========================================================================== */
 
@@ -3266,8 +3098,8 @@ body .member-identity-row{ cursor:pointer; }
 
 /* 閉：› ／ 開：⌄ */
 body .member-settings-toggle{
-  width:var(--row-chevron-w);
-  min-width:var(--row-chevron-w);
+  width:28px;
+  min-width:28px;
 }
 body .member-settings-toggle::before{
   margin:0;
@@ -3307,175 +3139,6 @@ body #page-switch .departure-setting-control select{
 
 
 
-/* ==========================================================================\n   FINAL UI ALIGNMENT OVERRIDES — 2026-08-24\n   3タブの文字・行・ボタン・結果・コピー対象の見た目をここだけで確定する。\n   計算ロジックには触れない。\n   ========================================================================== */
-:root{
-  --final-row-height:56px;
-  --final-section-gap:16px;
-  --final-row-inset:16px;
-  --final-chevron-w:28px;
-}
-
-/* 入力行数が違うタブに空白行を足さない。最後の入力行から同じ余白でボタンへ。 */
-body #page-calc .mode-card, body #page-landing .mode-card, body #page-switch .mode-card{
-  min-height:0 !important;
-  height:auto !important;
-  margin:0 0 var(--final-section-gap) !important;
-  padding:0 !important;
-}
-
-/* スイッチ2行目も、他の入力行と同じグリッドへ含める。 */
-body #page-calc .departure-setting-row, body #page-calc .departure-schedule-row, body #page-landing .l-setting-row, body #page-landing .l-wave-options, body #page-switch .sw-row, body #page-switch .departure-setting-row{
-  display:grid;
-  grid-template-columns:max-content 1fr;
-  align-items:center;
-  min-height:var(--final-row-height) !important;
-  margin:0 var(--final-row-inset) !important;
-  padding:0 !important;
-  border-top:0;
-  border-bottom:1px solid var(--separator-soft);
-}
-body #page-calc .departure-settings-card > div:last-of-type, body #page-landing .landing-settings-card > div:last-of-type, body #page-switch .switch-settings-card > div:last-of-type{
-  border-bottom:0;
-}
-
-/* 左ラベルは全タブ同じサイズ・太さ。 */
-body #page-calc .departure-setting-name, body #page-landing .l-setting-name, body #page-switch .sw-row-label, body #page-switch .departure-setting-name{
-  grid-column:1;
-  justify-self:start;
-  font-family:var(--font-ui);
-  font-size:17px !important;
-  font-weight:600;
-  line-height:1.25;
-  letter-spacing:-.01em;
-  color:var(--label-strong);
-  white-space:nowrap;
-}
-
-/* 右の値エリアは全タブ同じ基準。 */
-body #page-calc .departure-setting-control, body #page-landing .l-setting-control, body #page-switch .sw-row-control, body #page-switch .departure-setting-control{
-  grid-column:2;
-  justify-self:end;
-  display:inline-flex;
-  align-items:center;
-  justify-content:flex-end;
-  gap:8px;
-  min-height:44px !important;
-  margin:0 !important;
-  padding:0 !important;
-}
-
-/* 値の文字サイズを統一。Safariのnative select矢印は表示しない。 */
-body #page-calc .departure-setting-control select, body #page-landing .l-setting-control select, body #page-switch .sw-row-control select, body #page-switch .departure-setting-control select{
-  -webkit-appearance:none;
-  appearance:none;
-  background-image:none;
-  border:0;
-  box-shadow:none;
-  min-height:44px !important;
-  padding:0 !important;
-  font-family:var(--font-ui);
-  font-size:17px !important;
-  font-weight:700;
-  line-height:1.25;
-  letter-spacing:-.01em;
-  color:var(--text-primary);
-  text-align:right;
-  text-align-last:right;
-}
-body #page-calc .departure-after-text{
-  font-family:var(--font-ui);
-  font-size:15px;
-  font-weight:500;
-  line-height:1.25;
-  color:var(--label-secondary);
-}
-
-/* 共通chevron。 */
-body #page-calc .departure-chevron, body #page-landing .l-chevron, body #page-switch .sw-chevron{
-  flex:0 0 var(--final-chevron-w);
-  width:var(--final-chevron-w);
-  min-width:var(--final-chevron-w);
-  min-height:44px;
-  margin:0;
-  padding:0;
-}
-
-/* 計算開始：最後の入力行から16px。3タブ同じ寸法。 */
-body #page-calc .departure-action, body #page-landing .landing-action, body #page-switch .switch-action{
-  font-family:var(--font-ui);
-  font-weight:700;
-  line-height:1.2;
-}
-
-/* 結果表示：タイトル・時刻・UTCの文字基準を3タブ共通化。 */
-body #page-calc > #impact-display, body #page-landing > #l-result, body #page-switch > #sw-result{
-  width:100% !important;
-  margin:0 0 var(--final-section-gap) !important;
-  box-sizing:border-box;
-}
-body .impact-display, body #page-calc .impact-display, body #page-landing #l-result .impact-display, body #page-switch #sw-result .impact-display{
-  padding:16px 0 0 !important;
-  border-top:1px solid var(--border);
-  border-radius:0;
-  background:transparent;
-}
-body .impact-display-inner, body #page-landing #l-result .impact-display-inner, body #page-switch #sw-result .impact-display-inner{
-  display:grid;
-  grid-template-columns:max-content max-content;
-  grid-template-areas:"label label" "time unit";
-  justify-content:center;
-  align-items:end;
-  column-gap:8px;
-  row-gap:4px;
-  margin:0 !important;
-}
-body .impact-display-inner > .impact-label:first-child{
-  grid-area:label;
-  font-family:var(--font-ui);
-  font-size:13px !important;
-  font-weight:500;
-  line-height:1.2;
-  color:var(--label-secondary);
-}
-body .impact-display-inner > .impact-time{
-  grid-area:time;
-  font-family:var(--font-num);
-  font-size:32px !important;
-  font-weight:600;
-  line-height:1.05;
-  letter-spacing:-.02em;
-  font-variant-numeric:tabular-nums;
-}
-body .impact-display-inner > .impact-label:last-child{
-  grid-area:unit;
-  align-self:end;
-  padding-bottom:4px !important;
-  font-family:var(--font-ui);
-  font-size:12px !important;
-  font-weight:500;
-  line-height:1.2;
-  color:var(--label-secondary);
-}
-
-/* チャットに実際にコピーされるプレビューを、同じ枠・同じ文字で表示。 */
-body .copy-preview-card{
-  width:100%;
-  margin:0 0 var(--final-section-gap);
-  box-sizing:border-box;
-}
-body .copy-preview-card .collapsible-header{
-  border:0;
-}
-body .copy-preview-card .collapsible-header-title{
-  font-family:var(--font-ui);
-}
-body .copy-preview-card .collapsible-content-inner{
-  border:0;
-}
-body .copy-preview-card .preview-text-box{
-  margin:0;
-  font-family:var(--font-num);
-}
 @keyframes copyPreviewFlash{
   0%{box-shadow:inset 0 0 0 0 rgba(var(--signal-rgb),0)}
   35%,70%{box-shadow:inset 0 0 0 2px rgba(var(--signal-rgb),.95),0 0 16px rgba(var(--signal-rgb),.25)}
@@ -3491,17 +3154,6 @@ body .footer, body #page-calc .footer, body #page-landing .footer, body #page-sw
   font-weight:400;
 }
 
-/* hidden互換コントロールはレイアウトに一切参加させない */
-body #time-input-group[hidden]{
-  display:none !important;
-}
-
-/* コピー完了の光はレイアウトを動かさない inset shadow で統一 */
-@keyframes copyTargetFlash{
-  0%{ box-shadow:inset 0 0 0 0 rgba(var(--signal-rgb),0), 0 0 0 rgba(var(--signal-rgb),0); }
-  35%,70%{ box-shadow:inset 0 0 0 2px rgba(var(--signal-rgb),.95), 0 0 16px rgba(var(--signal-rgb),.24); }
-  100%{ box-shadow:inset 0 0 0 0 rgba(var(--signal-rgb),0), 0 0 0 rgba(var(--signal-rgb),0); }
-}
 body #page-calc .members-table, body #page-landing #l-result-inner, body #page-switch #sw-result-inner{
   width:100% !important;
   box-sizing:border-box;
@@ -3801,9 +3453,7 @@ body{
   --pro-ink-soft:#6F6862;
   --pro-ink-faint:#97908A;
   --pro-line:rgba(79,70,64,.12);
-  --pro-card:#FFFFFF;
   --pro-accent:var(--blue-primary);
-  --pro-accent-soft:rgba(60,74,99,.07);
   --pro-result:var(--blue-text);
 }
 body[data-theme="mint"]{
@@ -3815,7 +3465,6 @@ body[data-theme="mint"]{
   --signal:#A8CDC3;
   --signal-rgb:168,205,195;
   --pro-accent:#66564D;
-  --pro-accent-soft:#F1F6F3;
   --pro-result:#725F54;
 }
 
@@ -3996,74 +3645,8 @@ body .l-setting-row, body .departure-setting-row, body #page-switch .sw-row{
 }
 
 
-/* ==========================================================================
-   2026-08-25 final vertical-grid alignment
-   3タブの「設定行 → 計算開始 → 結果」のY座標を共通化。
-   時計・タブ自体の位置/サイズには触れない。
-   ========================================================================== */
-:root{
-  --three-tab-row-h:56px;
-  --three-tab-settings-h:168px; /* 56px × 3行 */
-  --three-tab-button-gap:24px;
-  --three-tab-result-gap:12px;
-  --three-tab-result-h:104px;
-}
-
-/* 設定エリアは全タブ3行分を必ず確保。
-   王城決戦/スイッチの3行目は「空白行」として残るためボタンが上がらない。 */
-body #page-calc .departure-settings-card, body #page-landing .landing-settings-card, body #page-switch .switch-settings-card{
-  height:var(--three-tab-settings-h) !important;
-  min-height:var(--three-tab-settings-h) !important;
-  margin:0 0 var(--three-tab-button-gap) !important;
-  padding:0 !important;
-  overflow:hidden;
-}
-
-/* 1行目・2行目・3行目を完全に同じピッチへ。 */
-body #page-calc .departure-setting-row, body #page-calc .departure-schedule-row, body #page-landing .l-setting-row, body #page-landing .l-wave-options, body #page-switch .sw-row, body #page-switch .departure-setting-row{
-  height:var(--three-tab-row-h) !important;
-  min-height:var(--three-tab-row-h) !important;
-  max-height:var(--three-tab-row-h);
-  margin-top:0 !important;
-  margin-bottom:0 !important;
-}
-
-/* 計算開始は3タブで同じY座標・同じ高さ。 */
-
-/* 結果の開始位置も同じ。 */
-
-/* 王城決戦：計算前も結果1段分を予約し、集結主一覧が計算後に下へ跳ねない。
-   計算後は実際の結果がその予約領域を使う。 */
-body #page-calc > #impact-display:not([style*="display: block"]) + .collapsible-card{
-  margin-top:calc(var(--three-tab-result-gap) + var(--three-tab-result-h)) !important;
-}
-body #page-calc > #impact-display[style*="display: block"] + .collapsible-card{
-  margin-top:0 !important;
-}
-
-body #page-switch > #sw-result[style*="display: block"] + .copy-preview-card{
-  margin-top:0 !important;
-}
-
-/* 結果表示内のラベル/時刻は各タブで同じ中央位置。 */
-
-
-/* ===== 2026-08-25 UI polish =====
-   2行タブは空の3行目を予約せず、最後の入力行から計算開始までの間隔を統一。
-   プレビューは全タブで同じコンパクトなヘッダー／単一chevronにする。 */
-
-/* 最終入力行 → 計算開始 の間隔 */
-
-/* チャット貼り付け用プレビュー：高さ・上下余白・文字を全タブ共通化 */
 body .copy-preview-card .collapsible-arrow.is-open{
   transform:rotate(180deg) !important;
-}
-
-/* 集結主の連番：0にならないよう実際の行でカウントする */
-
-/* 王城決戦：着弾時刻と入力済み集結主を同じsignalで光らせる */
-body #page-calc .members-table.flash{
-  animation:copyTargetFlash var(--motion-signal-dur) ease !important;
 }
 
 /* ===== split from index.html ===== */
@@ -4185,6 +3768,16 @@ body[data-theme="truffle"]{
   --label-strong:#282421; --label-secondary:#706761; --label-tertiary:#A09790;
   color-scheme:light;
 }
+body[data-theme="dark"]{
+  --theme-accent:#8FA7FF; --theme-accent-rgb:143,167,255;
+  --theme-soft:#20263A; --theme-line:#34384A;
+  --bg:#101014; --card-bg:#1C1C22;
+  --text-primary:#F4F4F7; --text-secondary:#B4B6C0; --text-muted:#858894;
+  --border:#30323C; --bg-light:#17171D; --bg-lighter:#23242C;
+  --time-primary:#F7F7FA; --time-secondary:#AEB3C8;
+  --label-strong:#F4F4F7; --label-secondary:#B4B6C0; --label-tertiary:#858894;
+  color-scheme:dark;
+}
 body[data-theme]{
   --blue-primary:var(--theme-accent);
   --blue-hover:var(--theme-accent);
@@ -4233,10 +3826,6 @@ body #page-calc .impact-display-inner, body #page-landing #l-result .impact-disp
   background:transparent;
   box-sizing:border-box;
 }
-@keyframes compactResultGlow{
-  0%,100%{border-color:transparent;box-shadow:0 0 0 rgba(var(--theme-accent-rgb),0);}
-  35%,70%{border-color:rgba(var(--theme-accent-rgb),.38);box-shadow:0 0 9px rgba(var(--theme-accent-rgb),.12);}
-}
 body .impact-display-inner > .impact-label:first-child{font-size:12px !important;line-height:1.1;}
 body .impact-display-inner > .impact-time{font-size:30px !important;line-height:1;}
 
@@ -4262,7 +3851,6 @@ body #players .member-row-wrapper.is-editing .member-row{
 .theme-choice-list .quick-theme-choice{height:48px;min-height:48px;}
 .theme-symbol{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
 .quick-theme-choice[aria-checked="true"]{background:rgba(var(--theme-accent-rgb),.055);}
-.quick-theme-choice[aria-checked="true"]::after{border-color:var(--theme-accent);}
 .palette-mint .theme-palette i:nth-child(1){background:#EAF3F0}
 .palette-mint .theme-palette i:nth-child(2){background:#8FBDB1}
 .palette-mint .theme-palette i:nth-child(3){background:#5F4D45}
@@ -4349,6 +3937,88 @@ body .copy-preview-card .preview-text-box{
   font-size:13px;
   line-height:1.5;
 }
+body[data-theme="dark"] .page-tabs,
+body[data-theme="dark"].landing-active .page-tabs{
+  background:#24252D;
+}
+body[data-theme="dark"] .page-tab-btn,
+body[data-theme="dark"].landing-active .page-tab-btn{
+  color:var(--text-secondary);
+}
+body[data-theme="dark"] .page-tab-btn.active,
+body[data-theme="dark"].landing-active .page-tab-btn.active{
+  color:var(--text-primary);
+}
+body[data-theme="dark"] .app-settings-button,
+body[data-theme="dark"].landing-active .app-settings-button{
+  background:rgba(255,255,255,.08);
+  color:var(--text-secondary);
+}
+body[data-theme="dark"] .clock-quick-menu,
+body[data-theme="dark"] .quick-theme-panel{
+  background:rgba(28,28,34,.96);
+  border-color:var(--border);
+}
+body[data-theme="dark"] .quick-theme-head,
+body[data-theme="dark"] .clock-quick-menu-item,
+body[data-theme="dark"] .quick-theme-choice{
+  color:var(--text-primary);
+  border-color:var(--border);
+}
+body[data-theme="dark"] .quick-theme-back,
+body[data-theme="dark"] .clock-quick-menu-chevron{
+  color:var(--text-muted);
+}
+body[data-theme="dark"] .mode-card,
+body[data-theme="dark"] .collapsible-card,
+body[data-theme="dark"] .landing-settings-card,
+body[data-theme="dark"] #page-calc .mode-card,
+body[data-theme="dark"] #page-calc .collapsible-card{
+  background:var(--card-bg) !important;
+}
+body[data-theme="dark"] .copy-preview-card,
+body[data-theme="dark"] #page-calc > .collapsible-card:first-of-type{
+  background:rgba(28,28,34,.72) !important;
+  border-color:var(--border) !important;
+}
+body[data-theme="dark"] .copy-preview-card .collapsible-header-title,
+body[data-theme="dark"] .copy-preview-card .preview-text-box{
+  color:var(--text-secondary);
+}
+body[data-theme="dark"] .footer,
+body[data-theme="dark"] #page-calc .footer,
+body[data-theme="dark"] #page-landing .footer,
+body[data-theme="dark"] #page-switch .footer{
+  color:var(--text-muted);
+}
+body[data-theme="dark"] .device-settings-modal,
+body[data-theme="dark"] .device-settings-panel,
+body[data-theme="dark"] .departure-edit-modal{
+  background:var(--bg);
+}
+body[data-theme="dark"] .device-settings-group,
+body[data-theme="dark"] .departure-edit-sheet,
+body[data-theme="dark"] .departure-edit-fields,
+body[data-theme="dark"] .departure-preset-list,
+body[data-theme="dark"] .departure-preset-row,
+body[data-theme="dark"] .departure-preset-option,
+body[data-theme="dark"] .departure-sheet-cancel{
+  background:var(--card-bg);
+  color:var(--text-primary);
+}
+body[data-theme="dark"] .departure-wheel-group::before{
+  background:var(--bg-lighter);
+}
+body[data-theme="dark"] .device-settings-row,
+body[data-theme="dark"] .device-sync-select-wrap,
+body[data-theme="dark"] .device-sync-select-wrap select{
+  color:var(--text-primary);
+}
+body[data-theme="dark"] .demo-sync-list{
+  background:var(--card-bg);
+  border-color:var(--border);
+  color:var(--text-primary);
+}
 
 /* 結果表示：上下の余白を同量にして、光った時の囲みのバランスを揃える */
 body #page-calc .impact-display, body #page-landing #l-result .impact-display, body #page-switch #sw-result .impact-display{
@@ -4368,9 +4038,7 @@ body #page-calc .members-table.flash{
 
 /* ===== 王城決戦・着弾時刻・スイッチ 共通設定UI ===== */
 
-body #page-calc .setting-row,
-body #page-landing .setting-row,
-body #page-switch .setting-row {
+body .settings-card .setting-row {
   display: grid;
   grid-template-columns: max-content 1fr;
   align-items: center;
@@ -4380,17 +4048,31 @@ body #page-switch .setting-row {
   border-bottom: 1px solid var(--separator-soft);
 }
 
-body #page-landing .setting-label,
-body #page-switch .setting-label {
+body .settings-card .setting-label {
   grid-column: 1;
   justify-self: start;
+  color: var(--label-strong);
+  font-family: var(--font-ui);
   font-size: 17px;
   font-weight: 600;
+  letter-spacing: -.01em;
   white-space: nowrap;
 }
 
-body #page-landing .setting-control,
-body #page-switch .setting-control {
+body .settings-card .l-setting-name-help {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+body .settings-card .l-setting-name-help small {
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+body .settings-card .setting-control {
   grid-column: 2;
   justify-self: end;
   display: inline-flex;
@@ -4399,9 +4081,7 @@ body #page-switch .setting-control {
   min-height: 44px;
 }
 
-body #page-calc .setting-chevron,
-body #page-landing .setting-chevron,
-body #page-switch .setting-chevron {
+body .settings-card .setting-chevron {
   flex: 0 0 auto;
   width: 28px;
   min-width: 28px;
@@ -4418,42 +4098,34 @@ body #page-switch .setting-chevron {
   line-height: 1;
 }
 
-body #page-calc .setting-control,
-body #page-landing .setting-control,
-body #page-switch .setting-control {
+body .settings-card .setting-control {
   gap: 8px;
   font-size: 17px;
   font-weight: 500;
   white-space: nowrap;
 }
 
-body #page-landing .setting-control .inline-select,
-body #page-switch .setting-control .inline-select {
+body .settings-card .setting-control .inline-select {
   font-size: 17px;
   line-height: 1;
   text-align: right;
 }
 
-body #page-landing .setting-control .departure-after-text,
-body #page-switch .setting-control .departure-after-text {
+body .settings-card .setting-control .departure-after-text {
   margin: 0;
   font-size: 17px;
   line-height: 1;
 }
 
-body #page-landing .setting-row:last-child,
-body #page-switch .setting-row:last-child {
+body .settings-card .setting-row:last-child {
   border-bottom: none;
 }
 
-body #page-calc .departure-settings-card,
-body #page-landing .landing-settings-card,
-body #page-switch .switch-settings-card {
+body .settings-card {
   margin-top: 6px !important;
 }
 
-body #page-landing .landing-settings-card,
-body #page-switch .switch-settings-card {
+body .settings-card {
   padding: 0 !important;
 }
 
@@ -4463,12 +4135,38 @@ body.landing-active #page-landing .footer {
 }
 
 
-body #page-calc .setting-chevron::before,
-body #page-calc .setting-chevron::after,
-body #page-landing .setting-chevron::before,
-body #page-landing .setting-chevron::after,
-body #page-switch .setting-chevron::before,
-body #page-switch .setting-chevron::after {
+body .settings-card .setting-chevron::before,
+body .settings-card .setting-chevron::after {
   content: none;
   display: none;
+}
+
+body[data-theme="dark"] .clock-quick-menu-title,
+body[data-theme="dark"] .quick-theme-head,
+body[data-theme="dark"] .quick-theme-choice,
+body[data-theme="dark"] .device-settings-row,
+body[data-theme="dark"] .device-settings-row span{
+  color:var(--text-primary) !important;
+}
+body[data-theme="dark"] .clock-quick-menu,
+body[data-theme="dark"] .quick-theme-panel,
+body[data-theme="dark"] .device-settings-group,
+body[data-theme="dark"] .members-card,
+body[data-theme="dark"] .member-row-wrapper,
+body[data-theme="dark"] .member-row,
+body[data-theme="dark"] .button-controls{
+  background:var(--card-bg) !important;
+  border-color:var(--border) !important;
+}
+body[data-theme="dark"] .member-auto-settings,
+body[data-theme="dark"] .member-departure-status,
+body[data-theme="dark"] .member-settings-toggle,
+body[data-theme="dark"] #page-calc select{
+  background:var(--bg-lighter) !important;
+  color:var(--text-secondary) !important;
+}
+body[data-theme="dark"] .member-coordinates,
+body[data-theme="dark"] .coord-axis,
+body[data-theme="dark"] .collapsible-arrow{
+  color:var(--text-muted) !important;
 }

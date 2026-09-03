@@ -11,7 +11,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="集結計算機" />
 <link rel="apple-touch-icon" href="/icon.png" />
-<link rel="manifest" href="/manifest.json" />
 <link rel="icon" type="image/png" href="/icon.png" />
 <title>集結計算機</title>
 <meta property="og:title" content="集結計算機">
@@ -49,6 +48,9 @@
           <button type="button" class="quick-theme-choice palette-mint" data-theme-choice="mint" aria-checked="false" aria-label="ミント系"><span class="theme-palette" aria-hidden="true"><i></i><i></i><i></i></span></button>
           <button type="button" class="quick-theme-choice palette-cookies" data-theme-choice="cookies" aria-checked="false" aria-label="水色系"><span class="theme-palette" aria-hidden="true"><i></i><i></i><i></i></span></button>
           <button type="button" class="quick-theme-choice palette-truffle" data-theme-choice="truffle" aria-checked="false" aria-label="ブラウン系"><span class="theme-palette" aria-hidden="true"><i></i><i></i><i></i></span></button>
+          <button type="button" class="quick-theme-choice theme-dark" data-theme-choice="dark" aria-checked="false" aria-label="ダーク">
+            <svg class="theme-symbol" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.3 15.2A8.5 8.5 0 0 1 8.8 3.7a8.5 8.5 0 1 0 11.5 11.5Z"/></svg>
+          </button>
         </div>
       </div>
     </div>
@@ -69,7 +71,7 @@
   <div id="page-calc" class="page-content">
 
   <!-- モード設定 -->
-  <div class="mode-card departure-settings-card">
+  <div class="mode-card settings-card departure-settings-card">
     <div class="setting-row departure-setting-row" id="rally-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="集結時間を編集">
       <span class="setting-label departure-setting-name">集結時間</span>
       <span class="setting-control departure-setting-control">
@@ -83,18 +85,11 @@
 
       <span id="prep-input-group" class="setting-control departure-setting-control" role="button" tabindex="0" aria-haspopup="dialog" aria-label="準備時間を編集">
         <select id="prep-time" class="inline-select" tabindex="-1"></select>
-        <span id="after-prep" class="departure-after-text">後</span>
+        <span class="departure-after-text">後</span>
         <button type="button" class="setting-chevron departure-chevron departure-edit-trigger" data-editor="prep" aria-label="準備時間を編集">›</button>
       </span>
 
-      <span id="time-input-group" hidden aria-hidden="true">
-        <select id="hh" tabindex="-1"></select>
-        <select id="mm" tabindex="-1"></select>
-        <select id="ss" tabindex="-1"></select>
-      </span>
     </div>
-
-    <select id="rally-min-time" style="display:none" aria-hidden="true"></select>
   </div>
 
   <button id="action-btn" class="btn-primary departure-action">計算開始</button>
@@ -110,7 +105,7 @@
   </div>
 
   <!-- 集結主 -->
-  <div class="collapsible-card">
+  <div class="collapsible-card members-card">
         <div id="sec-members">
           <div id="players" class="members-list members-table">
             <div class="member-row-wrapper">
@@ -147,7 +142,7 @@
   </div>
 
   <!-- プレビュー -->
-  <div class="collapsible-card copy-preview-card" id="calc-copy-preview-card">
+  <div class="collapsible-card copy-preview-card">
     <button type="button" id="preview-toggle" class="collapsible-header">
       <span class="collapsible-header-title">チャット貼り付け用プレビュー</span>
       <span id="preview-arrow" class="collapsible-arrow" aria-hidden="true"></span>
@@ -164,7 +159,7 @@
 
   <!-- ページ2: 着弾時刻発行 -->
   <div id="page-landing" class="page-content active">
-    <div class="mode-card landing-settings-card">
+    <div class="mode-card settings-card landing-settings-card">
 
       <!-- 集結時間 -->
       <div class="setting-row l-setting-row" id="l-rally-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="集結時間を編集">
@@ -182,7 +177,7 @@
 
       <!-- 準備時間 -->
       <div class="setting-row l-setting-row" id="l-prep-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="準備時間を編集">
-        <span class="setting-label l-setting-name">準備時間</span>
+        <span class="setting-label l-setting-name l-setting-name-help">準備時間<small>最長行軍＋集結を出すまで</small></span>
         <span class="setting-control l-setting-control">
           <select id="l-from-now" class="inline-select" tabindex="-1">
             <option value="60" selected>1分</option>
@@ -256,7 +251,7 @@
 
   <!-- ページ3: スイッチ -->
   <div id="page-switch" class="page-content">
-    <div class="mode-card switch-settings-card">
+    <div class="mode-card settings-card switch-settings-card">
       <div class="setting-row sw-row" id="sw-rally-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="基準の行軍時間を編集">
         <span class="setting-label sw-row-label">基準の行軍時間</span>
         <span class="setting-control sw-row-control">
@@ -312,7 +307,7 @@
     </div>
 
     <!-- プレビュー -->
-    <div class="collapsible-card copy-preview-card" id="sw-copy-preview-card">
+    <div class="collapsible-card copy-preview-card">
       <button type="button" id="sw-preview-toggle" class="collapsible-header">
         <span class="collapsible-header-title">チャット貼り付け用プレビュー</span>
         <span id="sw-preview-arrow" class="collapsible-arrow" aria-hidden="true"></span>
