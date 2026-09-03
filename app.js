@@ -250,6 +250,7 @@ const quickDeviceMemberSelect = document.getElementById('quick-device-member-sel
 const appSettingsButton = document.getElementById('app-settings-button');
 const clockQuickMenu = document.getElementById('clock-quick-menu');
 const quickSyncBtn = document.getElementById('quick-sync-btn');
+const quickShortcutBtn = document.getElementById('quick-shortcut-btn');
 const quickPipBtn = document.getElementById('quick-pip-btn');
 const quickThemeBtn = document.getElementById('quick-theme-btn');
 const deviceSyncModal = document.getElementById('device-sync-modal');
@@ -303,6 +304,10 @@ quickSyncBtn?.addEventListener('click', openDeviceSync);
 quickPipBtn?.addEventListener('click', ()=>{
   setClockQuickMenu(false);
   document.getElementById('utc-clock-trigger')?.click();
+});
+quickShortcutBtn?.addEventListener('click', ()=>{
+  setClockQuickMenu(false);
+  alert('PiPを使う場合は、Safariで開くショートカットをホーム画面に追加してください。\\n\\n通常の「ホーム画面に追加」ではPiPが使えない場合があります。');
 });
 const themeOptions = Array.from(document.querySelectorAll('[data-theme-choice]'));
 const quickThemeBack = document.getElementById('quick-theme-back');

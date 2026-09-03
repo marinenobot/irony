@@ -3247,6 +3247,15 @@ body #page-calc .members-table, body #page-landing #l-result-inner, body #page-s
   transform:translateY(0) scale(1);
   transition:opacity .16s ease, transform .16s ease;
 }
+.clock-quick-menu-head{
+  min-height:42px;
+  padding:12px 14px 8px;
+  border-bottom:1px solid rgba(60,60,67,.08);
+  color:var(--label-secondary, #6e6e73);
+  font-size:14px;
+  font-weight:650;
+  text-align:center;
+}
 .clock-quick-menu-item{
   display:flex;
   align-items:center;
