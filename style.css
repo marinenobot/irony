@@ -2936,6 +2936,12 @@ body .preview-text-box, body .copy{
   font-size:14px;
   line-height:1.65;
 }
+body .switch-preview-text{
+  overflow-x:auto;
+  white-space:pre;
+  word-break:normal;
+  font-family:"SF Mono",Menlo,Consolas,monospace;
+}
 
 @media (max-width:380px){
 body .header, body.landing-active .header{
@@ -3041,13 +3047,6 @@ body .utc-clock-overlay-countdown-value{
   letter-spacing:-.02em;
   font-variant-numeric:tabular-nums;
 }
-body .utc-clock-overlay-countdown-suffix{
-  color:#9a9aa0;
-  font-family:var(--font-ui);
-  font-size:13px;
-  font-weight:600;
-}
-
 /* PiP非対応端末のfallback。画面内の小窓として残す。 */
 body .utc-clock-overlay{
   inset:auto 12px calc(12px + env(safe-area-inset-bottom)) auto;
@@ -3391,7 +3390,6 @@ body #page-calc .member-departure-status{
   font-weight:700;
   font-variant-numeric:tabular-nums;
 }
-.demo-mini-unit{ font-size:10px; color:#9a9aa0; }
 .demo-sync-list{
   position:fixed;
   z-index:20000;

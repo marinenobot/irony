@@ -9,6 +9,7 @@ let firebaseRosterUnsubscribe = null;
 
 /* ======= スイッチモードの行軍秒数一覧（時間編集ボトムシートと共有） ======= */
 const SWITCH_MARCH_SECONDS = Object.freeze([55,50,45,40,39,36,35,33,32,30]);
+const FROM_NOW_SECONDS = Object.freeze([30,40,60,80,90]);
 const swRallyMinSel = document.getElementById('sw-rally-min');
 const swFromNowInput = document.getElementById('sw-from-now');
 
@@ -144,7 +145,7 @@ function updateDeviceRegistrationUi(){
 
 function clearDeviceCountdown(options = {}){
   currentRemoteDeparture = null;
-  /* 時間切れのときだけ、0.0秒の残り表示をしばらく残す */
+  /* 時間切れのときだけ、0秒の残り表示をしばらく残す */
   if(!options.keepPipHold) utcPipLastDeparture = null;
 }
 
@@ -372,9 +373,12 @@ if(utcPipCanvas){
   utcPipCanvas.height = UTC_PIP_BASE_HEIGHT;
 }
 
-/* 「21.4秒」のように秒＋小数1桁で表す */
+/* 60秒以上は分秒、59秒以下は秒だけで表す */
 function formatRemainingSeconds(totalMs){
-  return (Math.max(0, totalMs) / 1000).toFixed(1);
+  const totalSeconds = Math.max(0, Math.ceil(totalMs / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return minutes ? `${minutes}分${pad2(seconds)}秒` : `${seconds}秒`;
 }
 
 function getUtcPipDepartureData(){
@@ -386,7 +390,7 @@ function getUtcPipDepartureData(){
   }
   if(!utcPipLastDeparture) return null;
   const remainingMs = utcPipLastDeparture.departureTime - firebaseNow();
-  /* 0秒になっても少しの間は 0.0秒 を出したままにする */
+  /* 0秒になっても少しの間は残り表示を出したままにする */
   if(remainingMs <= -UTC_PIP_HOLD_MS){
     utcPipLastDeparture = null;
     return null;
@@ -468,8 +472,7 @@ function drawUtcVideoFrame(timeText, millisText, departureData){
     ], W / 2, H * L.labelY, inner);
     drawPipLine(ctx, [
       {text:'残り　', size:H * L.secondSize, weight:500, color:'#9a9aa0'},
-      {text:departureData.countdown, size:H * L.valueSize, weight:900, color:'#ffffff'},
-      {text:'秒', size:H * L.secondSize, weight:600, color:'#9a9aa0'}
+      {text:departureData.countdown, size:H * L.valueSize, weight:900, color:'#ffffff'}
     ], W / 2, H * L.valueY, inner);
     return;
   }
@@ -620,7 +623,7 @@ async function openUtcPipWindow(){
       
 
 </style>`;
-      utcPipWindow.document.body.innerHTML = '<div><div id="utc-pip-normal" class="pip-line"><span id="utc-pip-time">--:--:--</span><span class="pip-unit">UTC</span></div><div id="utc-pip-countdown" class="pip-cd" hidden><div class="pip-cd-head"><b id="utc-pip-countdown-name"></b><span>出発時刻</span><span id="utc-pip-countdown-time">--:--:--</span><span>UTC</span></div><div class="pip-cd-value-row"><span class="pip-cd-label">残り</span><span class="pip-cd-value"><span id="utc-pip-countdown-value">0.0</span><small>秒</small></span></div></div></div>';
+      utcPipWindow.document.body.innerHTML = '<div><div id="utc-pip-normal" class="pip-line"><span id="utc-pip-time">--:--:--</span><span class="pip-unit">UTC</span></div><div id="utc-pip-countdown" class="pip-cd" hidden><div class="pip-cd-head"><b id="utc-pip-countdown-name"></b><span>出発時刻</span><span id="utc-pip-countdown-time">--:--:--</span><span>UTC</span></div><div class="pip-cd-value-row"><span class="pip-cd-label">残り</span><span class="pip-cd-value"><span id="utc-pip-countdown-value">0秒</span></span></div></div></div>';
       utcPipWindow.addEventListener('pagehide', () => { utcPipWindow = null; });
       tickUTC();
       return true;
@@ -715,7 +718,7 @@ function updateMemberDepartureCountdowns(){
       status.classList.add('departed');
       return;
     }
-    status.textContent = `${formatRemainingSeconds(remainingMs)}秒`;
+    status.textContent = formatRemainingSeconds(remainingMs);
     status.classList.add('counting');
   });
 }
@@ -885,11 +888,8 @@ function updateRallyMinOptions(){
 function updatePrepTimeOptions(){
   const currentVal = parseInt(prepTimeSel.value);
   const selectedVal = Number.isFinite(currentVal) ? currentVal : 30;
-  let html = '';
-  for(let seconds = 0; seconds <= 600; seconds++){
-    html += `<option value="${seconds}">${marchLabel(seconds)}</option>`;
-  }
-  if(selectedVal > 600) html += `<option value="${selectedVal}">${marchLabel(selectedVal)}</option>`;
+  let html = FROM_NOW_SECONDS.map(seconds => `<option value="${seconds}">${marchLabel(seconds)}</option>`).join('');
+  if(!FROM_NOW_SECONDS.includes(selectedVal)) html += `<option value="${selectedVal}">${marchLabel(selectedVal)}</option>`;
   prepTimeSel.innerHTML = html;
   prepTimeSel.value = String(selectedVal);
 }
@@ -944,15 +944,16 @@ let currentDeparturePresetKind = null;
 const DEFAULT_DEPARTURE_PRESETS = Object.freeze({
   'castle-rally':[5, 10],
   'landing-rally':[1, 2, 5, 10],
+  'castle-prep':[...FROM_NOW_SECONDS],
   prep:[0, 10, 30, 60, 120],
   diff:[30, 60, 90, 120, 180],
   'switch-rally':[...SWITCH_MARCH_SECONDS],
-  'switch-from-now':[10, 20, 30, 45, 60]
+  'switch-from-now':[...FROM_NOW_SECONDS]
 });
 const DEPARTURE_PRESET_KIND_BY_EDITOR = Object.freeze({
   rally:'castle-rally',
   'landing-rally':'landing-rally',
-  prep:'prep',
+  prep:'castle-prep',
   'landing-prep':'prep',
   'landing-diff':'diff',
   'switch-rally':'switch-rally',
@@ -966,7 +967,7 @@ const DEPARTURE_EDITOR_TITLES = Object.freeze({
   prep:'準備時間を編集',
   'landing-diff':'時差を編集',
   'switch-rally':'基準の行軍時間を編集',
-  'switch-from-now':'30秒後を編集'
+  'switch-from-now':'今からを編集'
 });
 
 const DEPARTURE_PRESET_STORAGE_PREFIX = 'departurePresets:';
@@ -2373,15 +2374,19 @@ document.querySelectorAll('.page-tab-btn').forEach(btn => {
 
   function buildSwitchPreview(impactDate, entries){
     const lines = [];
-    lines.push('今からスイッチします🙌');
-    lines.push('自分の行軍秒数を確認して、該当時刻に1軍で出発してください。');
+    lines.push('今からスイッチします！');
+    lines.push('該当の時刻に王城へ1軍部隊を送ってください。');
     lines.push('');
-    lines.push('出発時刻');
+    lines.push('王城までの行軍 → 出発時刻');
+    lines.push('');
     entries.forEach(e => {
-      lines.push(`${e.march}秒 → ${e.timeStr} UTC`);
+      lines.push(`${`${e.march}秒`.padEnd(6, ' ')}→ ${e.timeStr} UTC`);
     });
     lines.push('━━━━━━━━━━━');
     lines.push(`着弾時刻：${formatSwitchUtc(impactDate)} UTC`);
+    lines.push('');
+    lines.push('端末を同期すると、');
+    lines.push('ゲーム内で時計やカウントダウンを利用できます。');
     return lines.join('\n');
   }
 
@@ -2660,17 +2665,17 @@ window.addEventListener('load', function() {
   function runFastCountdown(token){
     return new Promise(resolve => {
       let v = 9.8;
-      miniValue.textContent = v.toFixed(1);
+      miniValue.textContent = formatRemainingSeconds(v * 1000);
       const id = setInterval(() => {
         if(token !== playToken){ clearInterval(id); resolve(); return; }
         v -= 0.35 + Math.random() * 0.3;
         if(v <= 0.4){
-          miniValue.textContent = '0.4';
+          miniValue.textContent = formatRemainingSeconds(400);
           clearInterval(id);
           resolve();
           return;
         }
-        miniValue.textContent = v.toFixed(1);
+        miniValue.textContent = formatRemainingSeconds(v * 1000);
       }, 90);
     });
   }

@@ -275,23 +275,18 @@
         </span>
       </div>
 
-      <div class="setting-row departure-setting-row" id="sw-from-now-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="30秒後を編集">
+      <div class="setting-row departure-setting-row" id="sw-from-now-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="今からを編集">
         <span class="setting-label departure-setting-name">今から</span>
         <span class="setting-control departure-setting-control">
           <select id="sw-from-now" class="inline-select" tabindex="-1">
-            <option value="55">55秒</option>
-            <option value="50">50秒</option>
-            <option value="45">45秒</option>
-            <option value="40">40秒</option>
-            <option value="39">39秒</option>
-            <option value="36">36秒</option>
-            <option value="35">35秒</option>
-            <option value="33">33秒</option>
-            <option value="32">32秒</option>
             <option value="30" selected>30秒</option>
+            <option value="40">40秒</option>
+            <option value="60">1分</option>
+            <option value="80">1分20秒</option>
+            <option value="90">1分30秒</option>
           </select>
           <span class="departure-after-text">後</span>
-          <button type="button" class="setting-chevron sw-chevron departure-edit-trigger" data-editor="switch-from-now" aria-label="30秒後を編集">›</button>
+          <button type="button" class="setting-chevron sw-chevron departure-edit-trigger" data-editor="switch-from-now" aria-label="今からを編集">›</button>
         </span>
       </div>
     </div>
@@ -318,7 +313,7 @@
       </button>
       <div id="sw-preview-content" class="collapsible-content" style="height:0;">
         <div class="collapsible-content-inner">
-          <pre id="sw-preview-text" class="preview-text-box"></pre>
+          <pre id="sw-preview-text" class="preview-text-box switch-preview-text"></pre>
         </div>
       </div>
     </div>
@@ -347,7 +342,7 @@
       </div>
       <div class="utc-clock-overlay-countdown-row utc-clock-overlay-countdown-row-main">
         <span class="utc-clock-overlay-countdown-label">残り</span>
-        <span id="utc-overlay-countdown-value" class="utc-clock-overlay-countdown-value">0.0</span><span class="utc-clock-overlay-countdown-suffix">秒</span>
+        <span id="utc-overlay-countdown-value" class="utc-clock-overlay-countdown-value">0秒</span>
       </div>
     </div>
   </div>
@@ -363,7 +358,7 @@
   <div id="demo-mini-countdown" class="demo-mini-countdown" hidden>
     <span id="demo-mini-name" class="demo-mini-name"></span>
     <span class="demo-mini-label">出発まで</span>
-    <span id="demo-mini-value" class="demo-mini-value"></span><span class="demo-mini-unit">秒</span>
+    <span id="demo-mini-value" class="demo-mini-value"></span>
   </div>
 </div>
 <div id="demo-sync-list" class="demo-sync-list" aria-hidden="true">
