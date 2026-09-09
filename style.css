@@ -4161,7 +4161,7 @@ body[data-theme]{
 }
 
 /* Main times use the same strong color inside each theme. */
-body[data-theme] #utc-now, body[data-theme] .impact-time, body[data-theme] .clock-quick-menu-value{
+body[data-theme] #utc-now, body[data-theme] .impact-time{
   color:var(--time-primary) !important;
   -webkit-text-fill-color:var(--time-primary) !important;
 }
@@ -4363,6 +4363,50 @@ body.landing-active .app-settings-button:active{
   color:var(--text-primary) !important;
   box-shadow:none !important;
   transform:none !important;
+}
+body .app-settings-button.registered::after,
+body.landing-active .app-settings-button.registered::after{
+  content:"";
+  display:block;
+  position:absolute;
+  right:0;
+  bottom:0;
+  width:7px;
+  height:7px;
+  border:1.5px solid var(--bg);
+  border-radius:50%;
+  background:var(--success);
+}
+
+body[data-theme] .clock-quick-menu{
+  border-color:var(--border) !important;
+  background:var(--card-bg) !important;
+}
+body[data-theme] .clock-quick-menu-item,
+body[data-theme] .quick-theme-head,
+body[data-theme] .quick-theme-choice{
+  border-bottom-color:var(--border) !important;
+  background:transparent !important;
+  color:var(--text-primary) !important;
+}
+body[data-theme] .clock-quick-menu-item:active,
+body[data-theme] .quick-theme-choice:hover,
+body[data-theme] .quick-theme-choice:focus,
+body[data-theme] .quick-theme-choice:active,
+body[data-theme] .quick-theme-choice[aria-checked="true"]{
+  background:var(--theme-soft) !important;
+}
+body[data-theme] .clock-quick-menu-value,
+body[data-theme] .quick-theme-back{
+  color:var(--text-secondary) !important;
+  -webkit-text-fill-color:var(--text-secondary) !important;
+}
+body[data-theme] .clock-quick-menu-chevron{
+  color:var(--text-muted) !important;
+}
+body[data-theme] .quick-theme-panel{
+  border-top-color:var(--border) !important;
+  background:var(--card-bg) !important;
 }
 
 body #page-calc > .collapsible-card:first-of-type,
