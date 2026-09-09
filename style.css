@@ -4241,24 +4241,13 @@ body #page-calc .impact-display-inner, body #page-landing #l-result .impact-disp
 body .impact-display-inner > .impact-label:first-child{font-size:12px !important;line-height:1.1;}
 body .impact-display-inner > .impact-time{font-size:30px !important;line-height:1;}
 
-/* Preview = thin one-row header, not a floating card. */
-body .copy-preview-card{
-  overflow:hidden;
-}
-body .copy-preview-card .collapsible-header{
-  height:40px !important;
-}
-body .copy-preview-card .collapsible-header-title{line-height:1;}
-body .copy-preview-card .collapsible-arrow{align-self:center;margin:0;}
-body .copy-preview-card .preview-text-box{border:0;}
+/* ===== Final shared UI cleanup: tabs stay as-is; rows/cards/footer share one source. ===== */
 
-/* Active member row only receives a very soft theme glow. */
 body #players .member-row-wrapper.is-editing .member-row{
   background:rgba(var(--theme-accent-rgb),.045);
   box-shadow:inset 0 0 0 1px rgba(var(--theme-accent-rgb),.16),0 0 7px rgba(var(--theme-accent-rgb),.055);
 }
 
-/* Exclusive theme selector: five vertical choices. */
 .theme-choice-list{display:flex;flex-direction:column;}
 .theme-choice-list .quick-theme-choice{height:48px;min-height:48px;}
 .theme-symbol{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
@@ -4274,7 +4263,112 @@ body #players .member-row-wrapper.is-editing .member-row{
 .palette-truffle .theme-palette i:nth-child(2){background:#B8A397}
 .palette-truffle .theme-palette i:nth-child(3){background:#665247}
 
-body .app-settings-button, body.landing-active .app-settings-button{
+body #page-calc .setting-row,
+body #page-landing .setting-row,
+body #page-switch .setting-row{
+  display:grid;
+  grid-template-columns:max-content 1fr;
+  align-items:center;
+  min-height:46px !important;
+  margin:0 16px !important;
+  padding:0 !important;
+  border-bottom:1px solid var(--separator-soft);
+}
+body #page-landing .setting-row:last-child,
+body #page-switch .setting-row:last-child{border-bottom:0;}
+body #page-landing .setting-label,
+body #page-switch .setting-label{
+  grid-column:1;
+  justify-self:start;
+  font-size:17px;
+  font-weight:600;
+  white-space:nowrap;
+}
+body #page-calc .setting-control,
+body #page-landing .setting-control,
+body #page-switch .setting-control{
+  gap:8px;
+  font-size:17px;
+  font-weight:500;
+  white-space:nowrap;
+}
+body #page-landing .setting-control,
+body #page-switch .setting-control{
+  grid-column:2;
+  justify-self:end;
+  display:inline-flex;
+  align-items:center;
+  justify-content:flex-end;
+  min-height:44px;
+}
+body #page-landing .setting-control .inline-select,
+body #page-switch .setting-control .inline-select,
+body #page-landing .setting-control .departure-after-text,
+body #page-switch .setting-control .departure-after-text{
+  margin:0;
+  font-size:17px;
+  line-height:1;
+  text-align:right;
+}
+body #page-calc .setting-chevron,
+body #page-landing .setting-chevron,
+body #page-switch .setting-chevron{
+  flex:0 0 auto;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:28px;
+  min-width:28px;
+  height:44px;
+  margin:0;
+  padding:0;
+  border:0;
+  background:transparent;
+  font-size:28px;
+  font-weight:300;
+  line-height:1;
+}
+body #page-calc .setting-chevron::before,
+body #page-calc .setting-chevron::after,
+body #page-landing .setting-chevron::before,
+body #page-landing .setting-chevron::after,
+body #page-switch .setting-chevron::before,
+body #page-switch .setting-chevron::after{
+  content:none;
+  display:none;
+}
+
+body #page-calc .departure-settings-card,
+body #page-landing .landing-settings-card,
+body #page-switch .switch-settings-card{margin-top:6px !important;}
+body #page-landing .landing-settings-card,
+body #page-switch .switch-settings-card{padding:0 !important;}
+body #page-landing .footer,
+body.landing-active #page-landing .footer{margin-top:0;}
+
+body #page-calc #action-btn,
+body #page-landing #l-action-btn,
+body #page-switch #sw-action-btn{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:calc(100% - 32px);
+  height:44px;
+  min-height:44px;
+  margin:0 auto 10px;
+  padding:0 16px !important;
+  box-sizing:border-box;
+  font-family:var(--font-ui);
+  font-size:16px;
+  font-weight:700;
+  line-height:1 !important;
+  letter-spacing:-.01em;
+  -webkit-appearance:none;
+  appearance:none;
+}
+
+body .app-settings-button,
+body.landing-active .app-settings-button{
   top:-16px;
   right:4px;
   width:36px;
@@ -4284,79 +4378,80 @@ body .app-settings-button, body.landing-active .app-settings-button{
   padding:0;
   border:0;
   border-radius:50%;
-  background:rgba(60,60,67,.07);
+  background:var(--bg-lighter) !important;
   box-shadow:none;
-  color:rgba(60,60,67,.75);
+  color:var(--text-secondary) !important;
   font-size:20px;
   font-weight:600;
 }
-body .app-settings-button::before, body .app-settings-button::after, body.landing-active .app-settings-button::before, body.landing-active .app-settings-button::after{
-  display:none;
+body .app-settings-button::before,
+body .app-settings-button::after,
+body.landing-active .app-settings-button::before,
+body.landing-active .app-settings-button::after{
   content:none;
-  background:none;
-  box-shadow:none;
+  display:none;
 }
-body .app-settings-button:hover, body .app-settings-button:focus, body .app-settings-button:active, body.landing-active .app-settings-button:hover, body.landing-active .app-settings-button:focus, body.landing-active .app-settings-button:active{
-  background:transparent !important;
+body .app-settings-button:hover,
+body .app-settings-button:focus,
+body .app-settings-button:active,
+body.landing-active .app-settings-button:hover,
+body.landing-active .app-settings-button:focus,
+body.landing-active .app-settings-button:active{
+  background:var(--theme-soft) !important;
+  color:var(--text-primary) !important;
   box-shadow:none !important;
   transform:none !important;
 }
 
-/* 集結主一覧：主役ではないので外枠を弱くし、面の主張を減らす */
-body #page-calc > .collapsible-card:first-of-type{
-  border:1px solid rgba(60,60,67,.08);
-  border-radius:10px;
-  background:rgba(255,255,255,.62);
-  box-shadow:none;
-}
-body #page-calc > .collapsible-card:first-of-type .member-row, body #page-calc > .collapsible-card:first-of-type .member-row-wrapper, body #page-calc > .collapsible-card:first-of-type .button-controls{
-  background:transparent;
-}
-
-/* チャット貼り付け用プレビュー：カード感を一段落として、本文より目立たせない */
+body #page-calc > .collapsible-card:first-of-type,
 body .copy-preview-card{
-  border:1px solid rgba(60,60,67,.08) !important;
+  border:1px solid var(--border) !important;
   border-radius:10px !important;
-  background:rgba(255,255,255,.56) !important;
+  background:var(--card-bg) !important;
   box-shadow:none;
 }
+body #page-calc > .collapsible-card:first-of-type .member-row,
+body #page-calc > .collapsible-card:first-of-type .member-row-wrapper,
+body #page-calc > .collapsible-card:first-of-type .button-controls,
+body .copy-preview-card .collapsible-content-inner{
+  background:transparent !important;
+}
+body .copy-preview-card{overflow:hidden;}
 body .copy-preview-card .collapsible-header,
 body #page-calc .copy-preview-card .collapsible-header{
   min-height:40px !important;
+  height:40px !important;
   padding:0 14px !important;
   background:transparent;
   border-bottom:0;
 }
-body #page-calc .copy-preview-card .collapsible-header:hover,
-body #page-calc .copy-preview-card .collapsible-header:active{
-  background:var(--bg-lighter);
-}
+body .copy-preview-card .collapsible-header:hover,
+body .copy-preview-card .collapsible-header:active{background:var(--bg-lighter);}
 body .copy-preview-card .collapsible-header-title{
-  color:rgba(60,60,67,.66);
+  color:var(--text-secondary) !important;
   font-size:15px !important;
   font-weight:500;
+  line-height:1;
 }
 body .copy-preview-card .collapsible-arrow{
-  color:rgba(60,60,67,.28);
-}
-body .copy-preview-card .collapsible-content-inner{
-  background:transparent !important;
+  align-self:center;
+  margin:0;
+  color:var(--text-muted) !important;
 }
 body .copy-preview-card .preview-text-box{
   padding:10px 14px;
-  border-top:1px solid rgba(60,60,67,.06);
-  background:rgba(118,118,128,.025);
-  color:rgba(60,60,67,.68);
+  border:0;
+  border-top:1px solid var(--border) !important;
+  background:var(--bg-lighter) !important;
+  color:var(--text-secondary) !important;
   font-size:13px;
   line-height:1.5;
 }
 
-/* 結果表示：上下の余白を同量にして、光った時の囲みのバランスを揃える */
-body #page-calc .impact-display, body #page-landing #l-result .impact-display, body #page-switch #sw-result .impact-display{
-  padding:10px 0 0 !important;
-}
+body #page-calc .impact-display,
+body #page-landing #l-result .impact-display,
+body #page-switch #sw-result .impact-display{padding:10px 0 0 !important;}
 
-/* コピー完了フラッシュ：外側に均等に広がる、少し控えめな光 */
 @keyframes copyTargetFlashBalanced{
   0%{ box-shadow:0 0 0 0 rgba(var(--signal-rgb),0), 0 0 0 rgba(var(--signal-rgb),0); }
   35%,70%{ box-shadow:0 0 0 1.5px rgba(var(--signal-rgb),.82), 0 0 11px rgba(var(--signal-rgb),.20); }
@@ -4367,141 +4462,6 @@ body #page-calc .members-table.flash{
   border-radius:8px !important;
 }
 
-/* ===== 王城決戦・着弾時刻・スイッチ 共通設定UI ===== */
-
-body #page-calc .setting-row,
-body #page-landing .setting-row,
-body #page-switch .setting-row {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  align-items: center;
-  min-height: 46px !important;
-  margin: 0 16px !important;
-  padding: 0 !important;
-  border-bottom: 1px solid var(--separator-soft);
-}
-
-body #page-landing .setting-label,
-body #page-switch .setting-label {
-  grid-column: 1;
-  justify-self: start;
-  font-size: 17px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-body #page-landing .setting-control,
-body #page-switch .setting-control {
-  grid-column: 2;
-  justify-self: end;
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-end;
-  min-height: 44px;
-}
-
-body #page-calc .setting-chevron,
-body #page-landing .setting-chevron,
-body #page-switch .setting-chevron {
-  flex: 0 0 auto;
-  width: 28px;
-  min-width: 28px;
-  height: 44px;
-  padding: 0;
-  margin: 0;
-  border: 0;
-  background: transparent;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  font-weight: 300;
-  line-height: 1;
-}
-
-body #page-calc .setting-control,
-body #page-landing .setting-control,
-body #page-switch .setting-control {
-  gap: 8px;
-  font-size: 17px;
-  font-weight: 500;
-  white-space: nowrap;
-}
-
-body #page-landing .setting-control .inline-select,
-body #page-switch .setting-control .inline-select {
-  font-size: 17px;
-  line-height: 1;
-  text-align: right;
-}
-
-body #page-landing .setting-control .departure-after-text,
-body #page-switch .setting-control .departure-after-text {
-  margin: 0;
-  font-size: 17px;
-  line-height: 1;
-}
-
-body #page-landing .setting-row:last-child,
-body #page-switch .setting-row:last-child {
-  border-bottom: none;
-}
-
-body #page-calc .departure-settings-card,
-body #page-landing .landing-settings-card,
-body #page-switch .switch-settings-card {
-  margin-top: 6px !important;
-}
-
-body #page-landing .landing-settings-card,
-body #page-switch .switch-settings-card {
-  padding: 0 !important;
-}
-
-body #page-landing .footer,
-body.landing-active #page-landing .footer {
-  margin-top: 0;
-}
-
-
-body #page-calc .setting-chevron::before,
-body #page-calc .setting-chevron::after,
-body #page-landing .setting-chevron::before,
-body #page-landing .setting-chevron::after,
-body #page-switch .setting-chevron::before,
-body #page-switch .setting-chevron::after {
-  content: none;
-  display: none;
-}
-
-/* ===== FIX: 計算開始ボタン 3タブ共通・縦中央揃え =====
-   既存の display:block 指定を最終上書きし、
-   iPhone Safari を含め文字をボタン中央に固定する。 */
-body #page-calc #action-btn,
-body #page-landing #l-action-btn,
-body #page-switch #sw-action-btn{
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-
-  width:calc(100% - 32px);
-  height:44px;
-  min-height:44px;
-  margin:0 auto 10px;
-  padding:0 16px !important;
-
-  font-family:var(--font-ui);
-  font-size:16px;
-  font-weight:700;
-  line-height:1 !important;
-  letter-spacing:-.01em;
-
-  box-sizing:border-box;
-  -webkit-appearance:none;
-  appearance:none;
-}
-
-/* ===== Theme color leak fixes: same role, same token. ===== */
 body[data-theme] select:focus,
 body[data-theme] input:focus,
 body[data-theme] .inline-select:focus,
@@ -4548,10 +4508,10 @@ body[data-theme] .device-settings-group{
   background:var(--card-bg) !important;
   color:var(--text-primary) !important;
 }
-body[data-theme] .member-row{
-  border-color:var(--border) !important;
-}
+body[data-theme] .member-row,
+body[data-theme] .departure-preset-option{border-color:var(--border) !important;}
 body[data-theme] .member-departure-status.counting,
+body[data-theme] .member-row.pet-active,
 body[data-theme] .member-settings-toggle:hover,
 body[data-theme] .member-settings-toggle:focus,
 body[data-theme] .member-settings-toggle:active,
@@ -4567,59 +4527,15 @@ body[data-theme] .departure-sheet-cancel:active,
 body[data-theme] .clock-quick-menu-item:active{
   background:var(--theme-soft) !important;
 }
-body[data-theme] .member-row.pet-active{
-  background:var(--theme-soft) !important;
-}
-body[data-theme] .app-settings-button,
-body[data-theme].landing-active .app-settings-button{
-  background:var(--bg-lighter) !important;
-  color:var(--text-secondary) !important;
-}
-body[data-theme] .app-settings-button:hover,
-body[data-theme] .app-settings-button:focus,
-body[data-theme] .app-settings-button:active,
-body[data-theme].landing-active .app-settings-button:hover,
-body[data-theme].landing-active .app-settings-button:focus,
-body[data-theme].landing-active .app-settings-button:active{
-  background:var(--theme-soft) !important;
-  color:var(--text-primary) !important;
-}
-body[data-theme] #page-calc > .collapsible-card:first-of-type,
-body[data-theme] .copy-preview-card{
-  border-color:var(--border) !important;
-  background:var(--card-bg) !important;
-}
-body[data-theme] .copy-preview-card .collapsible-header-title{
-  color:var(--text-secondary) !important;
-}
-body[data-theme] .copy-preview-card .collapsible-arrow{
-  color:var(--text-muted) !important;
-}
-body[data-theme] .copy-preview-card .preview-text-box{
-  border-top-color:var(--border) !important;
-  background:var(--bg-lighter) !important;
-  color:var(--text-secondary) !important;
-}
 body[data-theme] .device-settings-modal,
 body[data-theme] .device-settings-panel,
-body[data-theme] .departure-edit-modal{
-  background:var(--bg) !important;
-}
-body[data-theme] .device-settings-header button{
-  color:var(--theme-accent) !important;
-}
+body[data-theme] .departure-edit-modal{background:var(--bg) !important;}
+body[data-theme] .device-settings-header button{color:var(--theme-accent) !important;}
 body[data-theme] .device-settings-group-title,
-body[data-theme] .device-sync-status{
-  color:var(--text-muted) !important;
-}
+body[data-theme] .device-sync-status{color:var(--text-muted) !important;}
 body[data-theme] .device-settings-row,
-body[data-theme] .device-settings-row select{
-  color:var(--text-primary) !important;
-}
+body[data-theme] .device-settings-row select{color:var(--text-primary) !important;}
 body[data-theme] .device-settings-row select{
   background:transparent !important;
   -webkit-text-fill-color:var(--text-secondary);
-}
-body[data-theme] .departure-preset-option{
-  border-color:var(--border) !important;
 }
