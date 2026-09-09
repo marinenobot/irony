@@ -9,6 +9,12 @@
   --blue-hover:#33415A;
   --blue-active:#2A3446;
   --blue-text:#3C4A63;
+  --theme-accent:#636366;
+  --theme-accent-rgb:99,99,102;
+  --theme-soft:#F2F2F7;
+  --theme-line:rgba(60,60,67,.18);
+  --time-primary:#1C1C1E;
+  --time-secondary:#636366;
   --accent-soft:rgba(60,74,99,0.10);
   --signal:#8E8E93;
   --signal-rgb:142,142,147;
@@ -3766,22 +3772,14 @@ body #page-calc .member-departure-status{
 
 /* ===== split from index.html ===== */
 
-/* ===== テーマ：バニラ / チョコミント / キャラメルリボン ===== */
-body[data-theme="mint"]{
-  --bg:#FBFDFB; --card-bg:#FFFEFB; --blue-primary:#5F514B; --blue-hover:#51453F; --blue-active:#443A35; --blue-text:#5F514B;
-  --accent-soft:rgba(207,232,224,.64); --border:#E1E8E3; --text-primary:#383532; --text-secondary:#6F6A65; --text-muted:#8A837D;
-  --bg-light:#F1F6F3; --bg-lighter:#F5F8F6; --bg-blue-light:#EAF5F2; --signal:#8FBDB1; --signal-rgb:143,189,177;
-  --btn-disabled:#C5C1BC; --text-tertiary:rgba(95,81,75,.20);
-}
+/* ===== テーマ共通部品：色は下の5テーマ変数だけから受け取る ===== */
 /* UTC時計：形は共通。テーマ差はよく見れば分かる程度 */
 body .header, body.landing-active .header{padding-top:var(--compact-gap);margin-bottom:var(--compact-gap);}
 body .clock, body.landing-active .clock{position:relative;width:calc(100% - 8px);min-height:94px;margin:0 auto;padding:13px 16px 14px;border:1px solid rgba(60,60,67,.065);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(251,250,247,.95));box-shadow:0 12px 28px rgba(30,28,25,.09),0 2px 7px rgba(30,28,25,.045);overflow:hidden;}
 body .clock-time-line, body.landing-active .clock-time-line{display:flex;align-items:baseline;justify-content:center;gap:0;width:100%;line-height:1;}
-body #utc-now, body.landing-active #utc-now{font-size:clamp(48px,13.3vw,58px);font-weight:650;letter-spacing:-.045em;line-height:.98;text-shadow:0 2px 5px rgba(30,28,25,.13);color:#3C4A63;}
-body #utc-millis, body.landing-active #utc-millis{margin-left:3px;font-size:clamp(18px,5vw,22px);font-weight:600;line-height:1;text-shadow:none;color:#59657A;}
-body .utc-label, body.landing-active .utc-label{margin-left:8px;font-size:13px;font-weight:600;line-height:1;text-shadow:none;color:#77736D;}
-body[data-theme="mint"] .clock{background:linear-gradient(180deg,#FFFEFC 0%,#FAFCFA 72%,rgba(207,232,224,.32) 100%)!important;border-color:rgba(95,81,75,.055)!important;box-shadow:0 12px 28px rgba(79,101,94,.075),0 2px 7px rgba(95,81,75,.035),inset 0 -1px 0 rgba(143,189,177,.12)!important;}
-body[data-theme="mint"] .impact-time{color:#5F514B!important;}
+body #utc-now, body.landing-active #utc-now{font-size:clamp(48px,13.3vw,58px);font-weight:650;letter-spacing:-.045em;line-height:.98;text-shadow:0 2px 5px rgba(30,28,25,.13);color:var(--time-primary);}
+body #utc-millis, body.landing-active #utc-millis{margin-left:3px;font-size:clamp(18px,5vw,22px);font-weight:600;line-height:1;text-shadow:none;color:var(--time-secondary);}
+body .utc-label, body.landing-active .utc-label{margin-left:8px;font-size:13px;font-weight:600;line-height:1;text-shadow:none;color:var(--time-secondary);}
 /* テーマ選択は「…」メニュー内で完結 */
 .quick-theme-panel{display:none;border-top:1px solid rgba(60,60,67,.08);background:rgba(248,248,248,.72);}
 .clock-quick-menu.theme-open .clock-quick-menu-main{display:none;}
@@ -3796,41 +3794,13 @@ body[data-theme="mint"] .impact-time{color:#5F514B!important;}
 
 /* ===== Final polish: 色・余白・テーマ表現を役割ごとに統一 ===== */
 
-/* 共通：本文はニュートラル。テーマ色は操作・結果だけに限定 */
-body{
-  --pro-ink:#24211F;
-  --pro-ink-soft:#6F6862;
-  --pro-ink-faint:#97908A;
-  --pro-line:rgba(79,70,64,.12);
-  --pro-card:#FFFFFF;
-  --pro-accent:var(--blue-primary);
-  --pro-accent-soft:rgba(60,74,99,.07);
-  --pro-result:var(--blue-text);
-}
-body[data-theme="mint"]{
-  --blue-primary:#66564D;
-  --blue-hover:#5B4C44;
-  --blue-active:#50423B;
-  --blue-text:#66564D;
-  --accent-soft:rgba(163,203,192,.14);
-  --signal:#A8CDC3;
-  --signal-rgb:168,205,195;
-  --pro-accent:#66564D;
-  --pro-accent-soft:#F1F6F3;
-  --pro-result:#725F54;
-}
-
 /* 文字色：黒・紺・茶の混在をなくす */
 body .l-setting-name, body .departure-setting-name, body #page-switch .sw-row-label, body .name-text, body .collapsible-header-title, body .quick-theme-choice, body .clock-quick-menu-title{
-  color:var(--pro-ink);
+  color:var(--text-primary);
 }
 body .impact-label, body .utc-label, body .footer, body .departure-after-text{
-  color:var(--pro-ink-soft);
+  color:var(--text-secondary);
 }
-body[data-theme="mint"] .impact-time, body[data-theme="mint"] .member-departure-status.counting, body[data-theme="mint"] #add-member{
-  color:var(--pro-accent) !important;
-}
-
 /* UTC時計：単色。色の発光はやめ、テーマごとの差は境界線と文字にだけ入れる */
 body .clock, body.landing-active .clock{
   min-height:94px;
@@ -3839,29 +3809,9 @@ body .clock, body.landing-active .clock{
   align-items:center;
   justify-content:center;
   border-radius:18px;
-  background:#FFFFFF;
-  border:1px solid rgba(60,60,67,.07);
+  background:var(--card-bg);
+  border:1px solid var(--theme-line);
   box-shadow:0 2px 7px rgba(28,28,30,.045),0 10px 24px rgba(28,28,30,.055);
-}
-body[data-theme="mint"] .clock, body[data-theme="mint"].landing-active .clock{
-  background:#FBFCFA !important;
-  border-color:#DCE9E4 !important;
-  box-shadow:0 2px 7px rgba(28,28,30,.04),0 10px 24px rgba(28,28,30,.05) !important;
-}
-body[data-theme="mint"] .clock::before, body[data-theme="mint"] .clock::after{
-  display:none !important;
-  content:none !important;
-}
-body[data-theme="mint"] #utc-now{color:#5C514B !important;}
-body[data-theme="mint"] #utc-millis{color:#776B65 !important;}
-body[data-theme="mint"] .utc-label{color:#788A84 !important;}
-
-/* 計算開始：テーマ色を全面に塗らず、少しだけ雰囲気を変える */
-body[data-theme="mint"] .btn-primary, body[data-theme="mint"] #action-btn, body[data-theme="mint"] #l-action-btn, body[data-theme="mint"] #sw-action-btn{
-  background:#F1F6F3 !important;
-  border-color:#66564D !important;
-  color:#66564D !important;
-  box-shadow:none !important;
 }
 
 /* 結果：ラベル・数字・UTCの上下バランスを固定 */
@@ -3890,7 +3840,7 @@ body #page-calc .impact-display-inner .impact-label:first-child, body #page-land
   font-weight:600;
 }
 body .impact-time{
-  color:var(--pro-result);
+  color:var(--time-primary);
 }
 
 /* コピー対象の光：上下左右同じ余白。テーマ色はごく薄く */
@@ -3920,7 +3870,7 @@ body .member-identity-row::before{
   content:counter(member-row);
   flex:0 0 22px;
   width:22px;
-  color:var(--pro-ink-faint);
+  color:var(--text-muted);
   font-family:var(--font-num);
   font-size:13px;
   font-weight:600;
@@ -3940,24 +3890,24 @@ body .member-departure-status{
   border-radius:0;
   background:transparent;
   box-shadow:none;
-  color:var(--pro-ink-soft);
+  color:var(--text-secondary);
   font-size:13px;
   font-weight:600;
 }
 body .member-departure-status.counting::before{
   content:"出発まで残り";
   margin-right:5px;
-  color:var(--pro-ink-faint);
+  color:var(--text-muted);
   font-family:var(--font-ui);
   font-size:11px;
   font-weight:500;
 }
 body .member-settings-toggle{
   background:transparent;
-  color:var(--pro-ink-soft);
+  color:var(--text-secondary);
 }
 body .member-row{
-  border-bottom-color:var(--pro-line);
+  border-bottom-color:var(--border);
 }
 
 /* プレビュー：ヘッダーを1段軽く、集結主一覧と同じ行感覚へ */
@@ -3990,10 +3940,10 @@ body .copy-preview-card .preview-text-box{
 
 /* 区切り線・chevronを同じ薄さに */
 body .l-chevron, body .sw-chevron, body .departure-edit-trigger, body .clock-quick-menu-chevron{
-  color:var(--pro-ink-faint);
+  color:var(--text-muted);
 }
 body .l-setting-row, body .departure-setting-row, body #page-switch .sw-row{
-  border-bottom-color:var(--pro-line);
+  border-bottom-color:var(--border);
 }
 
 
@@ -4185,6 +4135,18 @@ body[data-theme="truffle"]{
   --time-primary:#66574F; --time-secondary:#85766D;
   --label-strong:#282421; --label-secondary:#706761; --label-tertiary:#A09790;
   color-scheme:light;
+}
+body[data-theme="dark"]{
+  --theme-accent:#C7C7CC; --theme-accent-rgb:199,199,204;
+  --theme-soft:#2C2C2E; --theme-line:rgba(255,255,255,.12);
+  --bg:#101014; --card-bg:#1C1C1E;
+  --text-primary:#F5F5F7; --text-secondary:#C7C7CC; --text-muted:#8E8E93;
+  --border:rgba(255,255,255,.14); --bg-light:#1C1C1E; --bg-lighter:#2C2C2E;
+  --time-primary:#FFFFFF; --time-secondary:#A1A1A6;
+  --label-strong:#F5F5F7; --label-secondary:#C7C7CC; --label-tertiary:#8E8E93;
+  --red-error-bg:rgba(255,69,58,.16); --red-error:#FF6961; --btn-disabled:#48484A;
+  --text-tertiary:rgba(255,255,255,.18);
+  color-scheme:dark;
 }
 body[data-theme]{
   --blue-primary:var(--theme-accent);
