@@ -24,6 +24,7 @@
   --red-error:#B3453D;
   --red-error-hover:#963A33;
   --red-error-bg:rgba(179, 69, 61, 0.1);
+  --success:#34C759;
   --btn-disabled:#C7C7CC;
   --text-tertiary:rgba(0,0,0,0.08);
   /* Radius: 0を基本にしつつ、操作要素とカードだけ小さな丸みを許可 */
@@ -1158,9 +1159,9 @@ body.landing-active #utc-now{
   bottom:0;
   width:7px;
   height:7px;
-  border:1.5px solid #f7f7f5;
+  border:1.5px solid var(--bg);
   border-radius:50%;
-  background:#34c759;
+  background:var(--success);
 }
 .clock, body.landing-active .clock{
   max-width:100%;
@@ -4500,3 +4501,125 @@ body #page-switch #sw-action-btn{
   appearance:none;
 }
 
+/* ===== Theme color leak fixes: same role, same token. ===== */
+body[data-theme] select:focus,
+body[data-theme] input:focus,
+body[data-theme] .inline-select:focus,
+body[data-theme] .coord-input:focus{
+  border-color:var(--theme-accent) !important;
+  box-shadow:0 0 0 3px rgba(var(--theme-accent-rgb),.16) !important;
+}
+body[data-theme] button:focus-visible,
+body[data-theme] .page-tab-btn:focus-visible,
+body[data-theme] .collapsible-header:focus-visible,
+body[data-theme] .departure-preset-option:focus-visible{
+  outline:2px solid var(--theme-accent) !important;
+  outline-offset:2px;
+  box-shadow:0 0 0 3px rgba(var(--theme-accent-rgb),.16) !important;
+}
+body[data-theme] button:disabled,
+body[data-theme] .btn-primary:disabled,
+body[data-theme] #action-btn.calculating{
+  background:var(--btn-disabled) !important;
+  border-color:var(--btn-disabled) !important;
+  color:var(--card-bg) !important;
+  cursor:not-allowed !important;
+  opacity:.78;
+  box-shadow:none !important;
+  transform:none !important;
+  transition:none !important;
+}
+body[data-theme] .member-row-wrapper .delete-bg,
+body[data-theme] .delete-bg,
+body[data-theme] .departure-preset-delete{
+  background:var(--danger-soft) !important;
+  color:var(--danger-text) !important;
+}
+body[data-theme] .member-row,
+body[data-theme] #page-calc .member-row,
+body[data-theme] #page-calc .member-row-wrapper,
+body[data-theme] #page-calc .button-controls,
+body[data-theme] .departure-edit-fields,
+body[data-theme] .departure-preset-list,
+body[data-theme] .departure-preset-row,
+body[data-theme] .departure-preset-option,
+body[data-theme] .departure-sheet-cancel,
+body[data-theme] .device-settings-group{
+  background:var(--card-bg) !important;
+  color:var(--text-primary) !important;
+}
+body[data-theme] .member-row{
+  border-color:var(--border) !important;
+}
+body[data-theme] .member-departure-status.counting,
+body[data-theme] .member-settings-toggle:hover,
+body[data-theme] .member-settings-toggle:focus,
+body[data-theme] .member-settings-toggle:active,
+body[data-theme] .member-settings-toggle[aria-expanded="true"],
+body[data-theme] .name-text:focus,
+body[data-theme] .march-select:focus,
+body[data-theme] .departure-preset-option:hover,
+body[data-theme] .departure-preset-option:focus,
+body[data-theme] .departure-preset-option:active,
+body[data-theme] .departure-sheet-cancel:hover,
+body[data-theme] .departure-sheet-cancel:focus,
+body[data-theme] .departure-sheet-cancel:active,
+body[data-theme] .clock-quick-menu-item:active{
+  background:var(--theme-soft) !important;
+}
+body[data-theme] .member-row.pet-active{
+  background:var(--theme-soft) !important;
+}
+body[data-theme] .app-settings-button,
+body[data-theme].landing-active .app-settings-button{
+  background:var(--bg-lighter) !important;
+  color:var(--text-secondary) !important;
+}
+body[data-theme] .app-settings-button:hover,
+body[data-theme] .app-settings-button:focus,
+body[data-theme] .app-settings-button:active,
+body[data-theme].landing-active .app-settings-button:hover,
+body[data-theme].landing-active .app-settings-button:focus,
+body[data-theme].landing-active .app-settings-button:active{
+  background:var(--theme-soft) !important;
+  color:var(--text-primary) !important;
+}
+body[data-theme] #page-calc > .collapsible-card:first-of-type,
+body[data-theme] .copy-preview-card{
+  border-color:var(--border) !important;
+  background:var(--card-bg) !important;
+}
+body[data-theme] .copy-preview-card .collapsible-header-title{
+  color:var(--text-secondary) !important;
+}
+body[data-theme] .copy-preview-card .collapsible-arrow{
+  color:var(--text-muted) !important;
+}
+body[data-theme] .copy-preview-card .preview-text-box{
+  border-top-color:var(--border) !important;
+  background:var(--bg-lighter) !important;
+  color:var(--text-secondary) !important;
+}
+body[data-theme] .device-settings-modal,
+body[data-theme] .device-settings-panel,
+body[data-theme] .departure-edit-modal{
+  background:var(--bg) !important;
+}
+body[data-theme] .device-settings-header button{
+  color:var(--theme-accent) !important;
+}
+body[data-theme] .device-settings-group-title,
+body[data-theme] .device-sync-status{
+  color:var(--text-muted) !important;
+}
+body[data-theme] .device-settings-row,
+body[data-theme] .device-settings-row select{
+  color:var(--text-primary) !important;
+}
+body[data-theme] .device-settings-row select{
+  background:transparent !important;
+  -webkit-text-fill-color:var(--text-secondary);
+}
+body[data-theme] .departure-preset-option{
+  border-color:var(--border) !important;
+}
