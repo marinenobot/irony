@@ -16,10 +16,30 @@
 <meta property="og:title" content="集結計算機">
 <meta property="og:site_name" content="集結計算機">
 <meta property="og:description" content="ホームに追加するとすぐに使えて便利です。">
+<script>
+(() => {
+  const normalizeTheme = theme => {
+    if(theme === 'caramel') return 'truffle';
+    if(theme === 'default') return 'light';
+    return ['light','mint','cookies','truffle','dark'].includes(theme) ? theme : 'light';
+  };
+  let theme = 'light';
+  try{
+    theme = normalizeTheme(localStorage.getItem('rallyThemeV3') || localStorage.getItem('rallyThemeV2') || localStorage.getItem('rallyThemeV1'));
+  }catch(_){}
+  document.documentElement.dataset.theme = theme;
+  document.documentElement.style.colorScheme = theme === 'dark' ? 'dark' : 'light';
+  window.__initialTheme = theme;
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', {light:'#F7F6F3',mint:'#F7F8F6',cookies:'#F6F8F9',truffle:'#F8F6F3',dark:'#101014'}[theme]);
+})();
+</script>
 <link rel="stylesheet" href="style.css" />
 
 </head>
-<body class="landing-active">
+<body class="landing-active" data-theme="light">
+<script>
+document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
+</script>
 
 
 <div class="container">
@@ -151,7 +171,7 @@
       <span class="collapsible-header-title">チャット貼り付け用プレビュー</span>
       <span id="preview-arrow" class="collapsible-arrow" aria-hidden="true"></span>
     </button>
-    <div id="preview-content" class="collapsible-content" style="height:0;">
+    <div id="preview-content" class="collapsible-content" style="height:0;" aria-hidden="true">
       <div class="collapsible-content-inner">
         <pre id="preview-text" class="preview-text-box"></pre>
       </div>
@@ -311,7 +331,7 @@
         <span class="collapsible-header-title">チャット貼り付け用プレビュー</span>
         <span id="sw-preview-arrow" class="collapsible-arrow" aria-hidden="true"></span>
       </button>
-      <div id="sw-preview-content" class="collapsible-content" style="height:0;">
+      <div id="sw-preview-content" class="collapsible-content" style="height:0;" aria-hidden="true">
         <div class="collapsible-content-inner">
           <pre id="sw-preview-text" class="preview-text-box switch-preview-text"></pre>
         </div>

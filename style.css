@@ -241,6 +241,10 @@ button:focus{
   overflow:hidden;
   transition:height 0.3s ease;
 }
+.collapsible-content[aria-hidden="true"]{
+  height:0;
+  overflow:hidden;
+}
 .collapsible-content-inner{
   padding:0;
   background:#fff;
@@ -4096,6 +4100,7 @@ body .copy-preview-card .collapsible-arrow.is-open::after{transform:rotate(225de
 /* ===== split from index.html ===== */
 
 /* ===== Exclusive 5-theme system ===== */
+html[data-theme="light"],
 body[data-theme="light"]{
   --bg:#F2F2F7; --surface:#FFFFFF; --surface-secondary:#F7F7FA;
   --text:#1C1C1E; --text-subtle:#636366; --text-muted:#8E8E93;
@@ -4108,6 +4113,7 @@ body[data-theme="light"]{
   --time-primary:#1C1C1E; --time-secondary:#636366;
   color-scheme:light;
 }
+html[data-theme="mint"],
 body[data-theme="mint"]{
   --bg:#F7F8F6; --surface:#FFFFFF; --surface-secondary:#F5F6F4;
   --text:#252321; --text-subtle:#6D6965; --text-muted:#99938E;
@@ -4120,6 +4126,7 @@ body[data-theme="mint"]{
   --time-primary:#5B524D; --time-secondary:#7A706A;
   color-scheme:light;
 }
+html[data-theme="cookies"],
 body[data-theme="cookies"]{
   --bg:#F6F8F9; --surface:#FFFFFF; --surface-secondary:#F5F7F8;
   --text:#25282A; --text-subtle:#687078; --text-muted:#969EA4;
@@ -4132,6 +4139,7 @@ body[data-theme="cookies"]{
   --time-primary:#56616A; --time-secondary:#78848D;
   color-scheme:light;
 }
+html[data-theme="truffle"],
 body[data-theme="truffle"]{
   --bg:#F8F6F3; --surface:#FFFFFF; --surface-secondary:#F6F3F0;
   --text:#282421; --text-subtle:#706761; --text-muted:#9B928C;
@@ -4144,6 +4152,7 @@ body[data-theme="truffle"]{
   --time-primary:#66574F; --time-secondary:#85766D;
   color-scheme:light;
 }
+html[data-theme="dark"],
 body[data-theme="dark"]{
   --bg:#101014; --surface:#1C1C1E; --surface-secondary:#2C2C2E;
   --text:#F5F5F7; --text-subtle:#C7C7CC; --text-muted:#8E8E93;
@@ -4156,6 +4165,7 @@ body[data-theme="dark"]{
   --time-primary:#FFFFFF; --time-secondary:#A1A1A6;
   color-scheme:dark;
 }
+html[data-theme],
 body[data-theme]{
   --theme-accent:var(--accent);
   --theme-accent-rgb:var(--accent-rgb);

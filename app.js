@@ -320,6 +320,8 @@ function normalizeTheme(theme){
 }
 function applyTheme(theme,persist=true){
   const selected=normalizeTheme(theme);
+  document.documentElement.setAttribute('data-theme',selected);
+  document.documentElement.style.colorScheme = selected === 'dark' ? 'dark' : 'light';
   document.body.setAttribute('data-theme',selected);
   themeOptions.forEach(btn=>btn.setAttribute('aria-checked',btn.dataset.themeChoice===selected?'true':'false'));
   if(persist) localStorage.setItem(THEME_KEY,selected);
@@ -337,7 +339,7 @@ function closeThemeMenu(){ clockQuickMenu?.classList.remove('theme-open'); }
 quickThemeBtn?.addEventListener('click',openThemeMenu);
 quickThemeBack?.addEventListener('click',closeThemeMenu);
 themeOptions.forEach(btn=>btn.addEventListener('click',()=>applyTheme(btn.dataset.themeChoice,true)));
-applyTheme(localStorage.getItem(THEME_KEY) || localStorage.getItem('rallyThemeV2') || localStorage.getItem('rallyThemeV1'),false);
+applyTheme(window.__initialTheme || localStorage.getItem(THEME_KEY) || localStorage.getItem('rallyThemeV2') || localStorage.getItem('rallyThemeV1'),false);
 document.getElementById('device-sync-close')?.addEventListener('click', closeDeviceSync);
 document.getElementById('device-sync-save')?.addEventListener('click', ()=>{
   const selectedName = canonicalRosterName(quickDeviceMemberSelect?.value);
@@ -2188,12 +2190,14 @@ previewToggle.addEventListener('click', function(){
     previewContent.style.height = currentHeight + 'px';
     previewContent.offsetHeight; // 強制リフロー
     previewContent.style.height = '0';
+    previewContent.setAttribute('aria-hidden','true');
     previewArrow.classList.remove('is-open');
   }else{
     // 開く
     generateCopyMessage();
     const targetHeight = previewContent.scrollHeight;
     previewContent.style.height = targetHeight + 'px';
+    previewContent.setAttribute('aria-hidden','false');
     previewArrow.classList.add('is-open');
   }
   previewExpanded = !previewExpanded;
@@ -2460,10 +2464,12 @@ document.querySelectorAll('.page-tab-btn').forEach(btn => {
         swPreviewContent.style.height = currentHeight + 'px';
         swPreviewContent.offsetHeight; // 強制リフロー
         swPreviewContent.style.height = '0';
+        swPreviewContent.setAttribute('aria-hidden','true');
         swPreviewArrow.classList.remove('is-open');
       }else{
         const targetHeight = swPreviewContent.scrollHeight;
         swPreviewContent.style.height = targetHeight + 'px';
+        swPreviewContent.setAttribute('aria-hidden','false');
         swPreviewArrow.classList.add('is-open');
       }
       swPreviewExpanded = !swPreviewExpanded;
