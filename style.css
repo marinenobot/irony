@@ -173,9 +173,9 @@ button:focus{
   margin-left:4px;
 }
 .mode-card{
-  background:var(--card-bg);
-  border:1px solid var(--border);
-  border-radius:0;
+  background:var(--surface);
+  border:1px solid var(--card-border);
+  border-radius:var(--radius);
   margin:var(--spacing) 0;
   box-shadow:var(--shadow);
   box-sizing:border-box;
@@ -195,9 +195,9 @@ button:focus{
   margin-left:-20px;
 }
 .collapsible-card{
-  background:var(--card-bg);
-  border:1px solid var(--border);
-  border-radius:0;
+  background:var(--surface);
+  border:1px solid var(--card-border);
+  border-radius:var(--radius-card);
   margin:var(--spacing) 0;
   box-shadow:var(--shadow);
   box-sizing:border-box;
@@ -251,9 +251,9 @@ button:focus{
 }
 .collapsible-content-inner{
   padding:0;
-  background:#fff;
+  background:var(--surface);
   border-radius:0;
-  border:1px solid #ddd;
+  border:1px solid var(--divider);
 }
 #time-input-group{
   margin-right:4px;
@@ -480,9 +480,9 @@ body.modal-open .member-row-wrapper{
   min-height:36px;
   height:36px;
   padding:3px 4px;
-  border:1px solid #dedee2;
+  border:1px solid var(--border);
   border-radius:var(--control-radius);
-  background:#f7f7f8;
+  background:var(--input-bg);
   color:var(--text-primary);
   font-family:var(--font-num);
   font-size:15px;
@@ -492,7 +492,7 @@ body.modal-open .member-row-wrapper{
 }
 .coord-input:focus{
   border-color:var(--blue-primary);
-  background:#fff;
+  background:var(--input-bg);
   box-shadow:0 0 0 2px rgba(60,74,99,.12);
 }
 .stat-boost-control{
@@ -696,7 +696,7 @@ body.modal-open .member-row-wrapper{
   color:var(--text-primary);
   white-space:pre-wrap;
   word-break:break-word;
-  background:#fafafa;
+  background:var(--surface-secondary);
   padding:12px;
   border-radius:var(--preview-radius);
   border:1px solid var(--preview-border);
@@ -2126,9 +2126,9 @@ body .page-tab-btn, body.landing-active .page-tab-btn{
 
 /* --- カード（設定グループ） --- */
 body .mode-card, body .collapsible-card, body #page-calc .mode-card, body #page-calc .collapsible-card, body #page-calc .departure-settings-card, body .landing-settings-card{
-  border:0;
-  border-radius:var(--ios-radius);
-  background:var(--ios-card);
+  border:1px solid var(--card-border);
+  border-radius:var(--radius);
+  background:var(--surface);
   box-shadow:none;
   overflow:hidden;
 }
@@ -2818,16 +2818,17 @@ body #page-switch .sw-row-control{
   background:transparent;
 }
 body .collapsible-card, body #page-calc .collapsible-card{
-  border-radius:var(--radius-section);
-  background:var(--surface-primary);
-  border:1px solid var(--border);
+  border-radius:var(--radius-card);
+  background:var(--surface);
+  border:1px solid var(--card-border);
   box-shadow:none;
 }
 
-/* mode-cardは行区切り(border-bottom)だけで十分に構造が伝わるため、外箱(背景/角丸)を持たない */
+/* mode-cardの色・枠・角丸はテーマトークンだけを見る */
 body .mode-card, body #page-calc .mode-card, body #page-calc .departure-settings-card, body .landing-settings-card, body #page-landing .landing-settings-card{
-  border-radius:0;
-  background:transparent;
+  border:1px solid var(--card-border);
+  border-radius:var(--radius);
+  background:var(--surface);
   box-shadow:none;
 }
 body #l-result-inner{
@@ -3429,20 +3430,28 @@ body #page-calc > #impact-display, body #page-landing > #l-result, body #page-sw
   box-sizing:border-box;
 }
 body .impact-display, body #page-calc .impact-display, body #page-landing #l-result .impact-display, body #page-switch #sw-result .impact-display{
-  padding:16px 0 0 !important;
+  padding:10px 0 0 !important;
   border-top:1px solid var(--border);
   border-radius:0;
   background:transparent;
 }
 body .impact-display-inner, body #page-landing #l-result .impact-display-inner, body #page-switch #sw-result .impact-display-inner{
   display:grid;
+  width:calc(100% - 32px) !important;
+  height:68px !important;
+  min-height:68px !important;
   grid-template-columns:max-content max-content;
   grid-template-areas:"label label" "time unit";
   justify-content:center;
   align-items:end;
   column-gap:8px;
-  row-gap:4px;
-  margin:0 !important;
+  row-gap:2px;
+  margin:0 auto !important;
+  padding:7px 12px !important;
+  border:1px solid transparent;
+  border-radius:var(--radius-card);
+  background:transparent;
+  box-sizing:border-box;
 }
 body .impact-display-inner > .impact-label:first-child{
   grid-area:label;
@@ -3476,20 +3485,42 @@ body .impact-display-inner > .impact-label:last-child{
 body .copy-preview-card{
   width:100%;
   margin:0 0 var(--final-section-gap);
+  border:1px solid var(--preview-border);
+  border-radius:var(--preview-radius);
+  background:var(--surface);
+  box-shadow:none;
   box-sizing:border-box;
+  overflow:hidden;
 }
 body .copy-preview-card .collapsible-header{
+  min-height:36px;
+  height:36px;
+  padding:0 14px;
   border:0;
+  background:transparent;
 }
 body .copy-preview-card .collapsible-header-title{
   font-family:var(--font-ui);
+  color:var(--text-secondary);
+  font-size:14px;
+  font-weight:500;
+  line-height:1;
 }
 body .copy-preview-card .collapsible-content-inner{
   border:0;
+  background:transparent;
 }
 body .copy-preview-card .preview-text-box{
   margin:0;
+  padding:10px 14px;
+  border:0;
+  border-top:1px solid var(--preview-border);
+  border-radius:0;
+  background:var(--surface-secondary);
+  color:var(--text-muted);
   font-family:var(--font-num);
+  font-size:13px;
+  line-height:1.5;
 }
 @keyframes copyPreviewFlash{
   0%{box-shadow:inset 0 0 0 0 rgba(var(--signal-rgb),0)}
@@ -3822,24 +3853,6 @@ body .clock, body.landing-active .clock{
   box-shadow:0 2px 7px rgba(28,28,30,.045),0 10px 24px rgba(28,28,30,.055);
 }
 
-/* 結果：ラベル・数字・UTCの上下バランスを固定 */
-body #page-calc .impact-display, body #page-landing #l-result .impact-display, body #page-switch #sw-result .impact-display{
-  padding:0 !important;
-  margin:0 !important;
-  background:transparent;
-}
-body #page-calc .impact-display-inner, body #page-landing #l-result .impact-display-inner, body #page-switch #sw-result .impact-display-inner{
-  min-height:96px !important;
-  margin:0 !important;
-  padding:12px 8px !important;
-  display:flex;
-  flex-wrap:wrap;
-  align-content:center;
-  align-items:baseline;
-  justify-content:center;
-  column-gap:7px;
-  row-gap:2px;
-}
 body #page-calc .impact-display-inner .impact-label:first-child, body #page-landing #l-result .impact-display-inner .impact-label:first-child, body #page-switch #sw-result .impact-display-inner .impact-label:first-child{
   flex:0 0 100%;
   text-align:center;
@@ -3916,14 +3929,6 @@ body .member-settings-toggle{
 }
 body .member-row{
   border-bottom-color:var(--border);
-}
-
-/* プレビュー：ヘッダーを1段軽く、集結主一覧と同じ行感覚へ */
-body .copy-preview-card .collapsible-header-title{
-  letter-spacing:0;
-}
-body .copy-preview-card .preview-text-box{
-  border-radius:0;
 }
 
 /* テーマ選択：リアル画像/絵文字/斜め二分割なし。小さい色見本だけ */
@@ -4069,7 +4074,7 @@ body #page-calc #action-btn:active, body #page-landing #l-action-btn:active, bod
 
 /* Result: compact, equal internal whitespace, only result receives calculation glow. */
 body #page-calc > #impact-display, body #page-landing > #l-result, body #page-switch > #sw-result{margin-top:0 !important;margin-bottom:var(--compact-gap) !important;}
-body #page-calc .impact-display-inner, body #page-landing #l-result .impact-display-inner, body #page-switch #sw-result .impact-display-inner{height:var(--compact-result-h) !important;min-height:var(--compact-result-h) !important;row-gap:2px;}
+body #page-calc .impact-display-inner, body #page-landing #l-result .impact-display-inner, body #page-switch #sw-result .impact-display-inner{row-gap:2px;}
 body .impact-display-inner > .impact-label:last-child{padding-bottom:2px !important;}
 body .impact-display-inner.flash{animation:resultSoftGlow .8s ease !important;}
 @keyframes resultSoftGlow{0%,100%{box-shadow:0 0 0 0 rgba(var(--theme-accent-rgb),0)}40%,70%{box-shadow:0 0 0 1px rgba(var(--theme-accent-rgb),.28),0 0 10px rgba(var(--theme-accent-rgb),.11)}}
@@ -4211,8 +4216,8 @@ body[data-theme]{
   --action-primary:var(--accent);
   --action-primary-pressed:var(--accent);
   --danger-soft:var(--danger-bg);
-  background:var(--bg) !important;
-  color:var(--text) !important;
+  background:var(--bg);
+  color:var(--text);
 }
 
 /* Main times use the same strong color inside each theme. */
@@ -4234,23 +4239,6 @@ body[data-theme] .clock, body[data-theme].landing-active .clock{
   box-shadow:0 2px 6px rgba(28,28,30,.03),0 8px 18px rgba(28,28,30,.035) !important;
 }
 
-/* Result: compact rectangle around the actual result + soft calculation glow. */
-body #page-calc .impact-display, body #page-landing #l-result .impact-display, body #page-switch #sw-result .impact-display{
-  padding:5px 0 !important;
-  border-top:1px solid var(--border);
-  background:transparent;
-}
-body #page-calc .impact-display-inner, body #page-landing #l-result .impact-display-inner, body #page-switch #sw-result .impact-display-inner{
-  width:calc(100% - 32px) !important;
-  height:68px !important;
-  min-height:68px !important;
-  margin:0 auto !important;
-  padding:7px 12px !important;
-  border:1px solid transparent;
-  border-radius:12px;
-  background:transparent;
-  box-sizing:border-box;
-}
 @keyframes compactResultGlow{
   0%,100%{border-color:transparent;box-shadow:0 0 0 rgba(var(--theme-accent-rgb),0);}
   35%,70%{border-color:rgba(var(--theme-accent-rgb),.38);box-shadow:0 0 9px rgba(var(--theme-accent-rgb),.12);}
@@ -4513,68 +4501,6 @@ body[data-theme] .quick-theme-panel{
   background:var(--surface);
 }
 
-body #page-calc > .collapsible-card:first-of-type{
-  border:1px solid var(--card-border) !important;
-  border-radius:var(--radius-card) !important;
-  background:var(--surface) !important;
-  box-shadow:none;
-}
-body #page-calc .copy-preview-card,
-body .copy-preview-card{
-  border:1px solid var(--preview-border) !important;
-  border-radius:var(--preview-radius) !important;
-  background:var(--surface) !important;
-  box-shadow:none;
-}
-body #page-calc > .collapsible-card:first-of-type .member-row,
-body #page-calc > .collapsible-card:first-of-type .member-row-wrapper,
-body #page-calc > .collapsible-card:first-of-type .button-controls,
-body #page-calc .copy-preview-card .collapsible-content-inner,
-body .copy-preview-card .collapsible-content-inner{
-  background:transparent !important;
-}
-body .copy-preview-card{overflow:hidden;}
-body .copy-preview-card .collapsible-header,
-body #page-calc .copy-preview-card .collapsible-header{
-  min-height:36px !important;
-  height:36px !important;
-  padding:0 14px !important;
-  background:transparent;
-  border-bottom:0;
-}
-body .copy-preview-card .collapsible-header:hover,
-body #page-calc .copy-preview-card .collapsible-header:hover,
-body #page-calc .copy-preview-card .collapsible-header:active,
-body .copy-preview-card .collapsible-header:active{background:var(--surface-secondary);}
-body .copy-preview-card .collapsible-header-title,
-body #page-calc .copy-preview-card .collapsible-header-title{
-  color:var(--text-secondary) !important;
-  font-size:14px !important;
-  font-weight:500;
-  line-height:1;
-}
-body .copy-preview-card .collapsible-arrow,
-body #page-calc .copy-preview-card .collapsible-arrow{
-  align-self:center;
-  margin:0;
-  color:var(--text-muted) !important;
-}
-body .copy-preview-card .preview-text-box,
-body #page-calc .copy-preview-card .preview-text-box{
-  padding:10px 14px;
-  border:0;
-  border-top:1px solid var(--preview-border) !important;
-  border-radius:0;
-  background:var(--surface-secondary) !important;
-  color:var(--text-muted) !important;
-  font-size:13px;
-  line-height:1.5;
-}
-
-body #page-calc .impact-display,
-body #page-landing #l-result .impact-display,
-body #page-switch #sw-result .impact-display{padding:10px 0 0 !important;}
-
 @keyframes copyTargetFlashBalanced{
   0%{ box-shadow:0 0 0 0 rgba(var(--signal-rgb),0), 0 0 0 rgba(var(--signal-rgb),0); }
   35%,70%{ box-shadow:0 0 0 1.5px rgba(var(--signal-rgb),.82), 0 0 11px rgba(var(--signal-rgb),.20); }
@@ -4629,7 +4555,7 @@ body[data-theme] .member-row,
 body[data-theme] .member-auto-settings,
 body[data-theme] .mode-card,
 body[data-theme] .settings-card,
-body[data-theme] .collapsible-card,
+body[data-theme] .collapsible-card:not(.copy-preview-card),
 body[data-theme] #page-calc .member-row,
 body[data-theme] #page-calc .member-row-wrapper,
 body[data-theme] #page-calc .button-controls,
@@ -4640,24 +4566,25 @@ body[data-theme] .departure-preset-row,
 body[data-theme] .departure-preset-option,
 body[data-theme] .departure-sheet-cancel,
 body[data-theme] .device-settings-group{
-  background:var(--surface) !important;
-  color:var(--text) !important;
-  border-color:var(--card-border) !important;
+  background:var(--surface);
+  color:var(--text);
+  border-color:var(--card-border);
 }
 body[data-theme] .member-row,
 body[data-theme] .member-setting-row,
 body[data-theme] .setting-row,
-body[data-theme] .departure-preset-option{border-color:var(--divider) !important;}
+body[data-theme] .departure-preset-option{border-color:var(--divider);}
 body[data-theme] .member-row,
 body[data-theme] .mode-card,
 body[data-theme] .settings-card,
-body[data-theme] .collapsible-card,
+body[data-theme] .collapsible-card:not(.copy-preview-card),
 body[data-theme] .device-settings-group{
-  border-color:var(--card-border) !important;
+  border-color:var(--card-border);
 }
 body[data-theme] .copy-preview-card{
-  border-color:var(--preview-border) !important;
-  border-radius:var(--preview-radius) !important;
+  background:var(--surface);
+  border-color:var(--preview-border);
+  border-radius:var(--preview-radius);
 }
 body[data-theme] .setting-label,
 body[data-theme] .departure-setting-name,
@@ -4665,7 +4592,7 @@ body[data-theme] .l-setting-name,
 body[data-theme] .sw-row-label,
 body[data-theme] .member-setting-label,
 body[data-theme] .clock-quick-menu-title{
-  color:var(--text) !important;
+  color:var(--text);
 }
 body[data-theme] .setting-control,
 body[data-theme] .departure-setting-control,
@@ -4674,16 +4601,16 @@ body[data-theme] .sw-row-control,
 body[data-theme] .member-setting-value,
 body[data-theme] .departure-after-text,
 body[data-theme] .footer{
-  color:var(--text-muted) !important;
+  color:var(--text-muted);
 }
 body[data-theme] input,
 body[data-theme] select,
 body[data-theme] .inline-select,
 body[data-theme] .coord-input{
-  background:var(--input-bg) !important;
-  color:var(--text) !important;
-  border-color:var(--border) !important;
-  border-radius:var(--control-radius) !important;
+  background:var(--input-bg);
+  color:var(--text);
+  border-color:var(--border);
+  border-radius:var(--control-radius);
 }
 body[data-theme] .setting-control select,
 body[data-theme] .setting-control .inline-select,
