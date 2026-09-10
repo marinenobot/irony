@@ -331,7 +331,7 @@ function updateThemeMeta(){
   const meta=document.querySelector('meta[name="theme-color"]');
   if(!meta) return;
   const selected=document.body.getAttribute('data-theme');
-  const colors={light:'#F7F6F3',mint:'#F7F8F6',cookies:'#F6F8F9',truffle:'#F8F6F3',dark:'#101014'};
+  const colors={light:'#F2F2F7',dark:'#101014',mint:'#F5F8F6',cookies:'#F4F7F9',truffle:'#F8F5F1'};
   meta.setAttribute('content',colors[selected] || colors.light);
 }
 function openThemeMenu(){ clockQuickMenu?.classList.add('theme-open'); }
