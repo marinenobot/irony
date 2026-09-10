@@ -1256,7 +1256,9 @@ body.landing-active #utc-now{
 .device-settings-group-title{margin:0 4px 7px;color:var(--text-muted);font-size:13px;font-weight:600}
 .device-settings-group{overflow:hidden;border-radius:var(--card-radius);background:var(--surface)}
 .device-settings-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;margin:0;padding:6px 14px;color:var(--text);font-size:15px;font-weight:600}
+.device-settings-row + .device-settings-row{border-top:1px solid var(--divider)}
 button.device-settings-row{width:100%;border:0;border-radius:0;background:transparent;box-shadow:none;text-align:left}
+button.device-settings-row[hidden]{display:none}
 .device-settings-row select{flex:1;min-width:0;min-height:44px;padding:5px 0;border:0;background:transparent;color:var(--text-muted);text-align:right;text-align-last:right;box-shadow:none}
 select#quick-device-member-select{appearance:none;-webkit-appearance:none;background-image:none}
 .device-sync-status{margin:9px 4px 0;color:var(--text-muted);font-size:11px;line-height:1.5}
@@ -3573,15 +3575,15 @@ body .copy-preview-card .collapsible-content-inner{
 }
 body .copy-preview-card .preview-text-box{
   margin:0;
-  padding:8px 12px;
+  padding:6px 12px;
   border:0;
   border-top:1px solid var(--preview-border);
   border-radius:0;
   background:var(--surface-secondary);
-  color:var(--text-muted);
+  color:var(--text-subtle);
   font-family:var(--font-num);
   font-size:13px;
-  line-height:1.5;
+  line-height:1.42;
 }
 @keyframes copyPreviewFlash{
   0%{box-shadow:inset 0 0 0 0 rgba(var(--signal-rgb),0)}

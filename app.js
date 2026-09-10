@@ -132,15 +132,9 @@ function updateDeviceRegistrationUi(){
   const settingsButton = document.getElementById('app-settings-button');
   const quickName = document.getElementById('quick-sync-name');
   const quickSelect = document.getElementById('quick-device-member-select');
-  const quickStatus = document.getElementById('quick-device-sync-status');
   if(quickSelect) quickSelect.value = registeredName || '';
   if(quickName) quickName.textContent = registeredName || '未設定';
   settingsButton?.classList.toggle('registered', Boolean(registeredName));
-  if(quickStatus){
-    if(!registeredName) quickStatus.textContent = '端末同期を使う場合のみ選択してください。';
-    else if(!firebaseIsConfigured()) quickStatus.textContent = `${registeredName}で端末登録済み（Firebase設定待ち）`;
-    else quickStatus.textContent = `${registeredName}の出発時刻を同期します。`;
-  }
 }
 
 function clearDeviceCountdown(options = {}){
@@ -253,10 +247,11 @@ const clockQuickMenu = document.getElementById('clock-quick-menu');
 const quickSyncBtn = document.getElementById('quick-sync-btn');
 const quickThemeBtn = document.getElementById('quick-theme-btn');
 const deviceSyncModal = document.getElementById('device-sync-modal');
-const deviceShortcutSection = document.getElementById('device-shortcut-section');
 const deviceShortcutBtn = document.getElementById('device-shortcut-btn');
+const deviceShortcutHelp = document.getElementById('device-shortcut-help');
 const isAppleMobile = /iPhone|iPad|iPod/i.test(navigator.userAgent || '') || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-if(deviceShortcutSection) deviceShortcutSection.hidden = !isAppleMobile;
+if(deviceShortcutBtn) deviceShortcutBtn.hidden = !isAppleMobile;
+if(deviceShortcutHelp) deviceShortcutHelp.hidden = !isAppleMobile;
 
 function setClockQuickMenu(open){
   if(!clockQuickMenu || !appSettingsButton) return;

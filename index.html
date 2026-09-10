@@ -392,7 +392,7 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
       <h2 id="device-sync-title">端末同期</h2>
       <button type="button" id="device-sync-save">保存</button>
     </div>
-    <div class="device-settings-group-title">同期する名前</div>
+    <div class="device-settings-group-title">端末設定</div>
     <div class="device-settings-group">
       <label class="device-settings-row" for="quick-device-member-select">
         <span>名前</span>
@@ -401,18 +401,12 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
           <span class="device-settings-row-chevron" aria-hidden="true">›</span>
         </span>
       </label>
+      <button type="button" id="device-shortcut-btn" class="device-settings-row" hidden>
+        <span>PiPショートカット</span>
+        <span class="device-settings-row-chevron" aria-hidden="true">›</span>
+      </button>
     </div>
-    <p id="quick-device-sync-status" class="device-sync-status">端末同期を使う場合のみ選択してください。</p>
-    <div id="device-shortcut-section" hidden>
-      <div class="device-settings-group-title">PiP設定</div>
-      <div class="device-settings-group">
-        <button type="button" id="device-shortcut-btn" class="device-settings-row">
-          <span>PiPショートカット</span>
-          <span class="device-settings-row-chevron" aria-hidden="true">›</span>
-        </button>
-      </div>
-      <p class="device-sync-status">iPhoneでゲーム内時計を使う場合は、PiPショートカットをホーム画面に追加してください。</p>
-    </div>
+    <p id="device-shortcut-help" class="device-sync-status" hidden>iPhoneでゲーム内時計を使う場合は、ショートカットをホーム画面に追加してください。</p>
   </div>
 </div>
 
