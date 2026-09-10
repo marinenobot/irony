@@ -251,10 +251,12 @@ const quickDeviceMemberSelect = document.getElementById('quick-device-member-sel
 const appSettingsButton = document.getElementById('app-settings-button');
 const clockQuickMenu = document.getElementById('clock-quick-menu');
 const quickSyncBtn = document.getElementById('quick-sync-btn');
-const quickShortcutBtn = document.getElementById('quick-shortcut-btn');
-const quickPipBtn = document.getElementById('quick-pip-btn');
 const quickThemeBtn = document.getElementById('quick-theme-btn');
 const deviceSyncModal = document.getElementById('device-sync-modal');
+const deviceShortcutSection = document.getElementById('device-shortcut-section');
+const deviceShortcutBtn = document.getElementById('device-shortcut-btn');
+const isAppleMobile = /iPhone|iPad|iPod/i.test(navigator.userAgent || '') || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+if(deviceShortcutSection) deviceShortcutSection.hidden = !isAppleMobile;
 
 function setClockQuickMenu(open){
   if(!clockQuickMenu || !appSettingsButton) return;
@@ -302,14 +304,7 @@ document.addEventListener('keydown', event=>{
   }
 });
 quickSyncBtn?.addEventListener('click', openDeviceSync);
-quickPipBtn?.addEventListener('click', ()=>{
-  setClockQuickMenu(false);
-  document.getElementById('utc-clock-trigger')?.click();
-});
-quickShortcutBtn?.addEventListener('click', ()=>{
-  setClockQuickMenu(false);
-  location.href = 'https://www.icloud.com/shortcuts/cb29f0952c1c485993dfd116fa56f929';
-});
+deviceShortcutBtn?.addEventListener('click', ()=>{ location.href = 'https://www.icloud.com/shortcuts/4bd84513d0b3477ab6dca92e824cc7e7'; });
 const themeOptions = Array.from(document.querySelectorAll('[data-theme-choice]'));
 const quickThemeBack = document.getElementById('quick-theme-back');
 const THEME_KEY = 'rallyThemeV3';

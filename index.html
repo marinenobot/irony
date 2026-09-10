@@ -53,11 +53,6 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
           <span class="clock-quick-menu-title">端末同期</span>
           <span class="clock-quick-menu-value"><span id="quick-sync-name">未設定</span> ›</span>
         </button>
-        <button type="button" id="quick-shortcut-btn" class="clock-quick-menu-item" role="menuitem">
-          <span class="clock-quick-menu-title">PiP用ショートカット</span>
-          <span class="clock-quick-menu-chevron" aria-hidden="true">›</span>
-        </button>
-        <button type="button" id="quick-pip-btn" class="clock-quick-menu-item" role="menuitem"><span class="clock-quick-menu-title">時計をPiP表示</span></button>
         <button type="button" id="quick-theme-btn" class="clock-quick-menu-item" role="menuitem">
           <span class="clock-quick-menu-title">テーマ</span>
           <span class="clock-quick-menu-chevron" aria-hidden="true">›</span>
@@ -408,6 +403,15 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
       </label>
     </div>
     <p id="quick-device-sync-status" class="device-sync-status">同期を使う場合だけ名前を選択してください。</p>
+    <div id="device-shortcut-section" hidden>
+      <div class="device-settings-group-title">PiP</div>
+      <div class="device-settings-group">
+        <button type="button" id="device-shortcut-btn" class="device-settings-row">
+          <span>PiP用ショートカット</span>
+          <span class="device-settings-row-chevron" aria-hidden="true">›</span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
