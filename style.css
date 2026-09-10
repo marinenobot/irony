@@ -4301,6 +4301,55 @@ body #page-switch .setting-label{
   font-weight:600;
   white-space:nowrap;
 }
+body .l-setting-name-help{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+}
+body .prep-help-button{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:auto;
+  min-width:18px;
+  height:18px;
+  min-height:18px;
+  margin:0;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:transparent;
+  color:var(--text-muted);
+  font:600 13px/1 var(--font-ui);
+  box-shadow:none;
+}
+body .prep-help-button:hover,
+body .prep-help-button:focus,
+body .prep-help-button:active{
+  background:transparent;
+  color:var(--text-muted);
+  box-shadow:none;
+  transform:none;
+}
+body .prep-help-popover{
+  position:absolute;
+  z-index:20;
+  left:0;
+  top:calc(100% + 8px);
+  width:max-content;
+  max-width:260px;
+  padding:8px 10px;
+  border:1px solid var(--card-border);
+  border-radius:var(--control-radius);
+  background:var(--surface);
+  color:var(--text);
+  box-shadow:var(--shadow-overlay);
+  font-size:13px;
+  font-weight:500;
+  line-height:1.4;
+  white-space:normal;
+}
 body #page-calc .setting-control,
 body #page-landing .setting-control,
 body #page-switch .setting-control{

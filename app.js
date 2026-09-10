@@ -1407,6 +1407,22 @@ wireDepartureRowTrigger(document.getElementById('l-two-wave-section'), 'landing-
 wireDepartureRowTrigger(document.getElementById('sw-rally-row'), 'switch-rally');
 wireDepartureRowTrigger(document.getElementById('sw-from-now-row'), 'switch-from-now');
 
+const prepHelpButton = document.getElementById('prep-help-button');
+const prepHelpPopover = document.getElementById('prep-help-popover');
+function setPrepHelp(open){
+  if(!prepHelpButton || !prepHelpPopover) return;
+  prepHelpPopover.hidden = !open;
+  prepHelpButton.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+prepHelpButton?.addEventListener('click', event => {
+  event.preventDefault();
+  event.stopPropagation();
+  setPrepHelp(prepHelpPopover?.hidden !== false);
+});
+prepHelpButton?.addEventListener('keydown', event => event.stopPropagation());
+prepHelpPopover?.addEventListener('click', event => event.stopPropagation());
+document.addEventListener('click', () => setPrepHelp(false));
+
 document.querySelectorAll('.departure-edit-trigger').forEach(button => {
   button.addEventListener('click', event => {
     event.preventDefault();

@@ -201,7 +201,7 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
 
       <!-- 準備時間 -->
       <div class="setting-row l-setting-row" id="l-prep-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="準備時間を編集">
-        <span class="setting-label l-setting-name l-setting-name-help">準備時間<small>最長行軍＋集結を出すまで</small></span>
+        <span class="setting-label l-setting-name l-setting-name-help">準備時間<button type="button" id="prep-help-button" class="prep-help-button" aria-label="準備時間の補足を表示" aria-expanded="false" aria-describedby="prep-help-popover">ⓘ</button><span id="prep-help-popover" class="prep-help-popover" role="tooltip" hidden>最長行軍時間＋集結を出すまでの時間</span></span>
         <span class="setting-control l-setting-control">
           <select id="l-from-now" class="inline-select" tabindex="-1">
             <option value="60" selected>1分</option>
