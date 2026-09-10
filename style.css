@@ -36,8 +36,12 @@
   /* Radius: 0を基本にしつつ、操作要素とカードだけ小さな丸みを許可 */
   --radius:0;
   --radius-control:10px;
+  --control-radius:10px;
   --radius-control-sm:8px;
   --radius-card:12px;
+  --preview-radius:10px;
+  --card-border:var(--border);
+  --preview-border:var(--border);
   /* Shadow: 常設カード用の控えめな影と、一時的に浮くオーバーレイ用の2種類のみ */
   --shadow:0 1px 3px rgba(0,0,0,0.05);
   --shadow-rest:0 1px 2px rgba(0,0,0,0.04), 0 6px 16px rgba(0,0,0,0.04);
@@ -87,7 +91,7 @@ label{
 select{
   background:var(--card-bg);
   border:1px solid var(--border);
-  border-radius:var(--radius);
+  border-radius:var(--control-radius);
   padding:10px 12px;
   font-size:16px;
   font-weight:600;
@@ -104,7 +108,7 @@ select:focus{
 input{
   background:var(--card-bg);
   border:1px solid var(--border);
-  border-radius:var(--radius);
+  border-radius:var(--control-radius);
   padding:10px 12px;
   font-size:16px;
   color:var(--text-secondary);
@@ -477,7 +481,7 @@ body.modal-open .member-row-wrapper{
   height:36px;
   padding:3px 4px;
   border:1px solid #dedee2;
-  border-radius:7px;
+  border-radius:var(--control-radius);
   background:#f7f7f8;
   color:var(--text-primary);
   font-family:var(--font-num);
@@ -694,8 +698,8 @@ body.modal-open .member-row-wrapper{
   word-break:break-word;
   background:#fafafa;
   padding:12px;
-  border-radius:8px;
-  border:1px solid #e8e8e8;
+  border-radius:var(--preview-radius);
+  border:1px solid var(--preview-border);
 }
 
 /* 集結主テーブルの外枠 */
@@ -819,7 +823,7 @@ body #page-calc #action-btn.calculating{background:var(--btn-disabled);cursor:no
 .inline-select{
   background:var(--card-bg);
   border:1px solid var(--border);
-  border-radius:var(--radius);
+  border-radius:var(--control-radius);
   padding:10px 12px;
   font-size:17px;
   font-weight:600;
@@ -4105,6 +4109,8 @@ body[data-theme="light"]{
   --bg:#F2F2F7; --surface:#FFFFFF; --surface-secondary:#F7F7FA;
   --text:#1C1C1E; --text-subtle:#636366; --text-muted:#8E8E93;
   --border:rgba(60,60,67,.18); --border-strong:rgba(60,60,67,.28); --divider:rgba(60,60,67,.12);
+  --card-border:rgba(60,60,67,.18); --preview-border:rgba(60,60,67,.14);
+  --control-radius:10px; --preview-radius:10px;
   --accent:#636366; --accent-rgb:99,99,102; --accent-soft:#F2F2F7;
   --button-bg:#F2F2F7; --button-text:#636366;
   --input-bg:#FFFFFF; --result-bg:transparent;
@@ -4118,6 +4124,8 @@ body[data-theme="mint"]{
   --bg:#F7F8F6; --surface:#FFFFFF; --surface-secondary:#F5F6F4;
   --text:#252321; --text-subtle:#6D6965; --text-muted:#99938E;
   --border:#E4E3DF; --border-strong:#D1D6D0; --divider:#E9E8E4;
+  --card-border:#E4E3DF; --preview-border:#E9E8E4;
+  --control-radius:10px; --preview-radius:10px;
   --accent:#88B9AF; --accent-rgb:136,185,175; --accent-soft:#EDF5F2;
   --button-bg:#EDF5F2; --button-text:#6D6965;
   --input-bg:#FFFFFF; --result-bg:transparent;
@@ -4131,6 +4139,8 @@ body[data-theme="cookies"]{
   --bg:#F6F8F9; --surface:#FFFFFF; --surface-secondary:#F5F7F8;
   --text:#25282A; --text-subtle:#687078; --text-muted:#969EA4;
   --border:#E1E6E9; --border-strong:#CDD8DE; --divider:#E8EEF1;
+  --card-border:#E1E6E9; --preview-border:#E8EEF1;
+  --control-radius:10px; --preview-radius:10px;
   --accent:#91ACB8; --accent-rgb:145,172,184; --accent-soft:#EEF4F7;
   --button-bg:#EEF4F7; --button-text:#687078;
   --input-bg:#FFFFFF; --result-bg:transparent;
@@ -4144,6 +4154,8 @@ body[data-theme="truffle"]{
   --bg:#F8F6F3; --surface:#FFFFFF; --surface-secondary:#F6F3F0;
   --text:#282421; --text-subtle:#706761; --text-muted:#9B928C;
   --border:#E7E0DB; --border-strong:#D8CBC3; --divider:#EEE8E4;
+  --card-border:#E7E0DB; --preview-border:#EEE8E4;
+  --control-radius:10px; --preview-radius:10px;
   --accent:#8A7467; --accent-rgb:138,116,103; --accent-soft:#F3EFEC;
   --button-bg:#F3EFEC; --button-text:#706761;
   --input-bg:#FFFFFF; --result-bg:transparent;
@@ -4157,6 +4169,8 @@ body[data-theme="dark"]{
   --bg:#101014; --surface:#1C1C1E; --surface-secondary:#2C2C2E;
   --text:#F5F5F7; --text-subtle:#C7C7CC; --text-muted:#8E8E93;
   --border:rgba(255,255,255,.14); --border-strong:rgba(255,255,255,.22); --divider:rgba(255,255,255,.10);
+  --card-border:transparent; --preview-border:transparent;
+  --control-radius:10px; --preview-radius:10px;
   --accent:#C7C7CC; --accent-rgb:199,199,204; --accent-soft:#2C2C2E;
   --button-bg:#2C2C2E; --button-text:#C7C7CC;
   --input-bg:#1C1C1E; --result-bg:transparent;
@@ -4193,6 +4207,7 @@ body[data-theme]{
   --surface-primary:var(--surface);
   --surface-tertiary:var(--accent-soft);
   --separator-soft:var(--divider);
+  --radius-control:var(--control-radius);
   --action-primary:var(--accent);
   --action-primary-pressed:var(--accent);
   --danger-soft:var(--danger-bg);
@@ -4419,7 +4434,7 @@ body.landing-active .app-settings-button.registered::after{
 }
 
 body[data-theme] .clock-quick-menu{
-  border-color:var(--border);
+  border-color:var(--card-border);
   background:var(--surface);
 }
 body[data-theme] .clock-quick-menu-item,
@@ -4445,15 +4460,20 @@ body[data-theme] .clock-quick-menu-chevron{
   color:var(--text-muted);
 }
 body[data-theme] .quick-theme-panel{
-  border-top-color:var(--border);
+  border-top-color:var(--divider);
   background:var(--surface);
 }
 
-body #page-calc > .collapsible-card:first-of-type,
+body #page-calc > .collapsible-card:first-of-type{
+  border:1px solid var(--card-border) !important;
+  border-radius:var(--radius-card) !important;
+  background:var(--surface) !important;
+  box-shadow:none;
+}
 body #page-calc .copy-preview-card,
 body .copy-preview-card{
-  border:1px solid var(--border) !important;
-  border-radius:10px !important;
+  border:1px solid var(--preview-border) !important;
+  border-radius:var(--preview-radius) !important;
   background:var(--surface) !important;
   box-shadow:none;
 }
@@ -4467,8 +4487,8 @@ body .copy-preview-card .collapsible-content-inner{
 body .copy-preview-card{overflow:hidden;}
 body .copy-preview-card .collapsible-header,
 body #page-calc .copy-preview-card .collapsible-header{
-  min-height:40px !important;
-  height:40px !important;
+  min-height:36px !important;
+  height:36px !important;
   padding:0 14px !important;
   background:transparent;
   border-bottom:0;
@@ -4480,7 +4500,7 @@ body .copy-preview-card .collapsible-header:active{background:var(--surface-seco
 body .copy-preview-card .collapsible-header-title,
 body #page-calc .copy-preview-card .collapsible-header-title{
   color:var(--text-secondary) !important;
-  font-size:15px !important;
+  font-size:14px !important;
   font-weight:500;
   line-height:1;
 }
@@ -4494,7 +4514,8 @@ body .copy-preview-card .preview-text-box,
 body #page-calc .copy-preview-card .preview-text-box{
   padding:10px 14px;
   border:0;
-  border-top:1px solid var(--divider) !important;
+  border-top:1px solid var(--preview-border) !important;
+  border-radius:0;
   background:var(--surface-secondary) !important;
   color:var(--text-muted) !important;
   font-size:13px;
@@ -4572,11 +4593,23 @@ body[data-theme] .departure-sheet-cancel,
 body[data-theme] .device-settings-group{
   background:var(--surface) !important;
   color:var(--text) !important;
+  border-color:var(--card-border) !important;
 }
 body[data-theme] .member-row,
 body[data-theme] .member-setting-row,
 body[data-theme] .setting-row,
 body[data-theme] .departure-preset-option{border-color:var(--divider) !important;}
+body[data-theme] .member-row,
+body[data-theme] .mode-card,
+body[data-theme] .settings-card,
+body[data-theme] .collapsible-card,
+body[data-theme] .device-settings-group{
+  border-color:var(--card-border) !important;
+}
+body[data-theme] .copy-preview-card{
+  border-color:var(--preview-border) !important;
+  border-radius:var(--preview-radius) !important;
+}
 body[data-theme] .setting-label,
 body[data-theme] .departure-setting-name,
 body[data-theme] .l-setting-name,
@@ -4601,6 +4634,16 @@ body[data-theme] .coord-input{
   background:var(--input-bg) !important;
   color:var(--text) !important;
   border-color:var(--border) !important;
+  border-radius:var(--control-radius) !important;
+}
+body[data-theme] .setting-control select,
+body[data-theme] .setting-control .inline-select,
+body[data-theme] .march-select,
+body[data-theme] .device-settings-row select{
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
 }
 body[data-theme] .member-departure-status.counting,
 body[data-theme] .member-row.pet-active,
