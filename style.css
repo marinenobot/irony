@@ -83,6 +83,33 @@
   --settings-area-height:calc(var(--settings-row-height) * var(--settings-rows-max));
 }
 *{box-sizing:border-box;margin:0;padding:0}
+@media (prefers-reduced-motion:no-preference){
+  body,
+  button,
+  input,
+  select,
+  .clock,
+  .page-tabs,
+  .page-tab-btn,
+  .mode-card,
+  .collapsible-card,
+  .collapsible-header,
+  .copy-preview-card,
+  .preview-text-box,
+  .device-settings-modal,
+  .device-settings-panel,
+  .device-settings-group,
+  .device-settings-row,
+  .clock-quick-menu,
+  .clock-quick-menu-item,
+  .toast,
+  svg,
+  svg *{
+    transition-property:background-color,color,border-color,box-shadow,fill,stroke;
+    transition-duration:.25s;
+    transition-timing-function:ease;
+  }
+}
 body{
   background:var(--bg);
   font-family:var(--font-ui);
@@ -692,7 +719,7 @@ body.modal-open .member-row-wrapper{
   font-weight:600;
   cursor:pointer;
   min-height:var(--touch-target);
-  transition:all 0.2s;
+  transition:background-color .2s,color .2s,border-color .2s,box-shadow .2s,transform .1s;
   margin:0;
 }
 .control-btn:hover{
@@ -723,7 +750,7 @@ body.modal-open .member-row-wrapper{
 /* 集結主テーブルの外枠 */
 .members-table{
   border:2px solid transparent;
-  transition:all 0.3s ease;
+  transition:border-color .3s ease,box-shadow .3s ease;
 }
 .members-table.flash{
   animation:tableFlashEffect var(--motion-signal-dur) ease;
@@ -731,7 +758,7 @@ body.modal-open .member-row-wrapper{
 #l-result-inner{
   border:2px solid transparent;
   border-radius:var(--radius);
-  transition:all 0.3s ease;
+  transition:border-color .3s ease,box-shadow .3s ease;
 }
 /* ===== Tab1 (王城決戦) スコープ限定 ===== */
 #page-calc #impact-display .impact-display{ display:block; }
@@ -793,7 +820,9 @@ body.modal-open .member-row-wrapper{
   margin:0;
   padding:0;
   border:0;
+  border-radius:0;
   background:transparent;
+  box-shadow:none;
   color:var(--border);
   font-size:0;
 }
@@ -810,6 +839,9 @@ body.modal-open .member-row-wrapper{
 #page-switch .sw-chevron:hover, #page-switch .sw-chevron:focus, #page-switch .sw-chevron:active{
   color:var(--accent);
   background:transparent;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
 }
 /* ===== /Tab3 ===== */
 
@@ -860,7 +892,7 @@ body #page-calc #action-btn.calculating{background:var(--btn-disabled);cursor:no
 }
 .btn-primary{
   cursor:pointer;
-  transition:all 0.2s;
+  transition:background-color .2s,color .2s,border-color .2s,box-shadow .2s,transform .1s;
 }
 .btn-primary:active{
   transform:translateY(1px);
@@ -1226,6 +1258,7 @@ body.landing-active #utc-now{
 .device-settings-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;margin:0;padding:6px 14px;color:var(--text);font-size:15px;font-weight:600}
 button.device-settings-row{width:100%;border:0;border-radius:0;background:transparent;box-shadow:none;text-align:left}
 .device-settings-row select{flex:1;min-width:0;min-height:44px;padding:5px 0;border:0;background:transparent;color:var(--text-muted);text-align:right;text-align-last:right;box-shadow:none}
+select#quick-device-member-select{appearance:none;-webkit-appearance:none;background-image:none}
 .device-sync-status{margin:9px 4px 0;color:var(--text-muted);font-size:11px;line-height:1.5}
 .clock-time-value{
   display:inline;
@@ -2196,7 +2229,10 @@ body #page-calc .departure-chevron, body #page-landing .l-chevron, body #page-sw
   min-height:44px;
   color:var(--ios-tertiary);
   font-size:0;
+  border:0;
+  border-radius:0;
   background:transparent;
+  box-shadow:none;
 }
 body #page-calc .departure-chevron::after, body #page-landing .l-chevron::after, body #page-switch .departure-chevron::after{
   content:"";
@@ -2211,6 +2247,9 @@ body #page-calc .departure-chevron::after, body #page-landing .l-chevron::after,
 body #page-calc .departure-chevron:hover, body #page-calc .departure-chevron:focus, body #page-calc .departure-chevron:active, body #page-landing .l-chevron:hover, body #page-landing .l-chevron:focus, body #page-landing .l-chevron:active, body #page-switch .departure-chevron:hover, body #page-switch .departure-chevron:focus, body #page-switch .departure-chevron:active{
   color:var(--ios-tint);
   background:transparent;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
 }
 
 /* --- 主ボタン（計算開始） --- */
@@ -2245,6 +2284,10 @@ body .collapsible-arrow{
   height:20px;
   color:var(--ios-tertiary);
   font-size:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
   transition:transform .25s ease;
 }
 body .collapsible-arrow::after{
@@ -2799,7 +2842,7 @@ body .page-tab-btn.active::after, body.landing-active .page-tab-btn.active::afte
   position:absolute;
   left:50%;
   bottom:6px;
-  width:40px;
+  width:54px;
   height:2px;
   transform:translateX(-50%);
   background:var(--accent);
@@ -3513,7 +3556,7 @@ body .copy-preview-card{
 body .copy-preview-card .collapsible-header{
   min-height:36px;
   height:36px;
-  padding:0 14px;
+  padding:0 12px;
   border:0;
   background:transparent;
 }
@@ -3530,7 +3573,7 @@ body .copy-preview-card .collapsible-content-inner{
 }
 body .copy-preview-card .preview-text-box{
   margin:0;
-  padding:10px 14px;
+  padding:8px 12px;
   border:0;
   border-top:1px solid var(--preview-border);
   border-radius:0;
@@ -4090,9 +4133,9 @@ body #players .member-row-wrapper{counter-increment:none;}
 body #players .member-identity-row{counter-increment:member-index;}
 body #players .member-identity-row::before{content:counter(member-index);min-width:18px;font-size:12px;font-weight:500;color:var(--text-muted);}
 
-/* Preview: one centered chevron, identical 52px header in every tab. */
+/* Preview: one centered chevron, compact 36px header in every tab. */
 body .copy-preview-card{margin-bottom:var(--compact-gap);}
-body .copy-preview-card .collapsible-arrow{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;flex:0 0 20px;font-size:0;transform:none;}
+body .copy-preview-card .collapsible-arrow{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;flex:0 0 18px;border:0;border-radius:0;background:transparent;box-shadow:none;font-size:0;transform:none;}
 body .copy-preview-card .collapsible-arrow::before{display:none;content:none;}
 body .copy-preview-card .collapsible-arrow::after{content:"";display:block;width:7px;height:7px;margin:0;border:0;border-right:1.75px solid currentColor;border-bottom:1.75px solid currentColor;transform:rotate(45deg);transform-origin:center;}
 body .copy-preview-card .collapsible-arrow.is-open::after{transform:rotate(225deg) !important;}
@@ -4385,7 +4428,9 @@ body #page-switch .setting-chevron{
   margin:0;
   padding:0;
   border:0;
+  border-radius:0;
   background:transparent;
+  box-shadow:none;
   font-size:28px;
   font-weight:300;
   line-height:1;
@@ -4662,6 +4707,9 @@ body .device-settings-row,
 body .device-settings-row select{color:var(--text);}
 body .device-settings-row select{
   background:transparent;
+  appearance:none;
+  -webkit-appearance:none;
+  background-image:none;
   -webkit-text-fill-color:var(--text-subtle);
 }
 body .toast{

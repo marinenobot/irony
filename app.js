@@ -137,7 +137,7 @@ function updateDeviceRegistrationUi(){
   if(quickName) quickName.textContent = registeredName || '未設定';
   settingsButton?.classList.toggle('registered', Boolean(registeredName));
   if(quickStatus){
-    if(!registeredName) quickStatus.textContent = '同期を使う場合だけ名前を選択してください。';
+    if(!registeredName) quickStatus.textContent = '端末同期を使う場合のみ選択してください。';
     else if(!firebaseIsConfigured()) quickStatus.textContent = `${registeredName}で端末登録済み（Firebase設定待ち）`;
     else quickStatus.textContent = `${registeredName}の出発時刻を同期します。`;
   }

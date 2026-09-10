@@ -323,7 +323,7 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
     <!-- プレビュー -->
     <div class="collapsible-card copy-preview-card">
       <button type="button" id="sw-preview-toggle" class="collapsible-header">
-        <span class="collapsible-header-title">チャット貼り付け用プレビュー</span>
+        <span class="collapsible-header-title">同盟通知貼り付けプレビュー</span>
         <span id="sw-preview-arrow" class="collapsible-arrow" aria-hidden="true"></span>
       </button>
       <div id="sw-preview-content" class="collapsible-content" style="height:0;" aria-hidden="true">
@@ -392,25 +392,26 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
       <h2 id="device-sync-title">端末同期</h2>
       <button type="button" id="device-sync-save">保存</button>
     </div>
-    <div class="device-settings-group-title">名前（敬称略）</div>
+    <div class="device-settings-group-title">同期する名前</div>
     <div class="device-settings-group">
       <label class="device-settings-row" for="quick-device-member-select">
         <span>名前</span>
         <span class="device-sync-select-wrap">
-          <select id="quick-device-member-select"><option value="">同期を使用しない</option></select>
+          <select id="quick-device-member-select"><option value="">未設定</option></select>
           <span class="device-settings-row-chevron" aria-hidden="true">›</span>
         </span>
       </label>
     </div>
-    <p id="quick-device-sync-status" class="device-sync-status">同期を使う場合だけ名前を選択してください。</p>
+    <p id="quick-device-sync-status" class="device-sync-status">端末同期を使う場合のみ選択してください。</p>
     <div id="device-shortcut-section" hidden>
-      <div class="device-settings-group-title">PiP</div>
+      <div class="device-settings-group-title">PiP設定</div>
       <div class="device-settings-group">
         <button type="button" id="device-shortcut-btn" class="device-settings-row">
-          <span>PiP用ショートカット</span>
+          <span>PiPショートカット</span>
           <span class="device-settings-row-chevron" aria-hidden="true">›</span>
         </button>
       </div>
+      <p class="device-sync-status">iPhoneでゲーム内時計を使う場合は、PiPショートカットをホーム画面に追加してください。</p>
     </div>
   </div>
 </div>
