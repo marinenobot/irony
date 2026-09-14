@@ -4584,6 +4584,29 @@ body .departure-preset-option:focus-visible{
   outline-offset:2px;
   box-shadow:0 0 0 3px rgba(var(--accent-rgb),.16);
 }
+body .setting-chevron,
+body .setting-chevron:hover,
+body .setting-chevron:focus,
+body .setting-chevron:focus-visible,
+body .setting-chevron:active,
+body .copy-preview-card .collapsible-arrow,
+body .copy-preview-card .collapsible-arrow:hover,
+body .copy-preview-card .collapsible-arrow:focus,
+body .copy-preview-card .collapsible-arrow:focus-visible,
+body .copy-preview-card .collapsible-arrow:active,
+body .quick-theme-back,
+body .quick-theme-back:hover,
+body .quick-theme-back:focus,
+body .quick-theme-back:focus-visible,
+body .quick-theme-back:active,
+body .clock-quick-menu-chevron,
+body .device-settings-row-chevron{
+  outline:0;
+  background:transparent;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+}
 body button:disabled,
 body .btn-primary:disabled,
 body #action-btn.calculating{
