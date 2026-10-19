@@ -4742,3 +4742,36 @@ body .toast{
   color:var(--surface);
   border-color:var(--accent);
 }
+
+/* 集結主アイコン：画像がない間は連番を表示 */
+body #players .member-identity-row::before{content:none;display:none;}
+body .member-avatar{
+  flex:0 0 28px;
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background-color:var(--accent-soft);
+  background-size:cover;
+  background-position:center;
+  color:var(--text-muted);
+  font-family:var(--font-num);
+  font-size:12px;
+  font-weight:500;
+  font-variant-numeric:tabular-nums;
+  overflow:hidden;
+}
+body .member-avatar::before{content:counter(member-index);}
+body .member-avatar.has-image::before{content:none;}
+body .member-avatar.loading::before{
+  content:"";
+  width:14px;
+  height:14px;
+  border:2px solid var(--text-muted);
+  border-top-color:transparent;
+  border-radius:50%;
+  animation:memberAvatarSpin .8s linear infinite;
+}
+@keyframes memberAvatarSpin{to{transform:rotate(360deg);}}

@@ -1586,13 +1586,88 @@ function attachSwipeToRow(row){
 document.querySelectorAll('#players .member-row').forEach(attachSwipeToRow);
 
 /* ======= 行イベント（入力・選択用） ======= */
+/* ======= ID からプレイヤー名・アイコンを取得 ======= */
+const PLAYER_LOOKUP_URL = 'https://YOUR-WORKER.workers.dev/player/';
+const PLAYER_ID_PATTERN = /^\d{5,12}$/;
+
+function renderMemberAvatar(row){
+  const avatar = row.querySelector('.member-avatar');
+  if(!avatar) return;
+  const url = row.dataset.avatar || '';
+  avatar.classList.toggle('has-image', !!url);
+  avatar.style.backgroundImage = url ? `url("${url.replace(/"/g, '%22')}")` : '';
+}
+
+function setPlayerOnRow(row, fid, nickname, avatarUrl){
+  row.dataset.fid = fid || '';
+  row.dataset.nickname = nickname || '';
+  row.dataset.avatar = avatarUrl || '';
+  renderMemberAvatar(row);
+}
+
+function clearPlayerIfRenamed(row){
+  if(!row.dataset.fid) return;
+  const text = (row.querySelector('.name-text').textContent || '').trim();
+  if(text === row.dataset.nickname) return;
+  setPlayerOnRow(row, '', '', '');
+}
+
+async function lookupPlayerForRow(row){
+  const nameInput = row.querySelector('.name-text');
+  const avatar = row.querySelector('.member-avatar');
+  const id = (nameInput.textContent || '').trim().replace(/\s/g, '');
+  if(!PLAYER_ID_PATTERN.test(id)) return;
+  if(row.dataset.lookingUp === id) return;
+
+  row.dataset.lookingUp = id;
+  avatar?.classList.add('loading');
+  try{
+    const res = await fetch(PLAYER_LOOKUP_URL + id);
+    if(res.status === 404){
+      showToast('IDが見つかりません');
+      return;
+    }
+    if(res.status === 429){
+      showToast('混み合っています。少し待ってください');
+      return;
+    }
+    if(!res.ok) throw new Error(String(res.status));
+    const player = await res.json();
+    const nickname = (player.name || '').trim();
+    if(!nickname){
+      showToast('名前を取得できませんでした');
+      return;
+    }
+    if((nameInput.textContent || '').trim().replace(/\s/g, '') !== id) return;
+
+    const duplicate = Array.from(document.querySelectorAll('#players .member-row'))
+      .some(r => r !== row && (r.querySelector('.name-text').textContent || '').trim().toLowerCase() === nickname.toLowerCase());
+    if(duplicate){
+      showToast('同じ名前が既に存在します');
+      return;
+    }
+
+    nameInput.textContent = nickname;
+    setPlayerOnRow(row, id, nickname, player.avatar_url || '');
+    refreshMemberAutoMarch(row, {save:false});
+    saveSettings();
+  }catch(error){
+    showToast('取得できませんでした');
+  }finally{
+    delete row.dataset.lookingUp;
+    avatar?.classList.remove('loading');
+  }
+}
+
 function attachRowEvents(row){
   if(row.dataset.eventsAttached) return;
   row.dataset.eventsAttached = 'true';
 
   const nameInput = row.querySelector('.name-text');
+  renderMemberAvatar(row);
 
   nameInput.addEventListener('input', function(){
+    clearPlayerIfRenamed(row);
     saveSettings();
     refreshMemberAutoMarch(row, {save:false});
     const text = (this.textContent || '').trim();
@@ -1604,13 +1679,20 @@ function attachRowEvents(row){
   });
 
   nameInput.addEventListener('blur', function(){
+    lookupPlayerForRow(row);
     refreshMemberAutoMarch(row, {save:false});
     saveSettings();
     setTimeout(hideAutocomplete, 120);
   });
 
   nameInput.addEventListener('keydown', function(ev){
-    if(!currentDropdown) return;
+    if(!currentDropdown){
+      if(ev.key === 'Enter'){
+        ev.preventDefault();
+        this.blur();
+      }
+      return;
+    }
     const items = currentDropdown.querySelectorAll('.autocomplete-item');
     if(ev.key === 'ArrowDown'){
       ev.preventDefault();
@@ -1698,11 +1780,14 @@ function buildMemberRowHtml(member = {}){
   const coordX = escapeMemberText(member.coordX ?? '');
   const coordY = escapeMemberText(member.coordY ?? '');
   const boostChecked = member.statBoost ? ' checked' : '';
+  const fid = escapeMemberText(member.fid || '');
+  const avatar = escapeMemberText(member.avatar || '');
   return `
     <div class="delete-bg" onclick="deleteThisRow(this)">削除</div>
-    <div class="member-row">
+    <div class="member-row" data-fid="${fid}" data-avatar="${avatar}" data-nickname="${fid ? name : ''}">
       <div class="member-identity-row">
-        <span class="name-text" contenteditable="true" data-placeholder="マリン">${name}</span>
+        <span class="member-avatar" aria-hidden="true"></span>
+        <span class="name-text" contenteditable="true" data-placeholder="名前・ID">${name}</span>
         <span class="member-departure-inline"><span class="member-departure-status">未設定</span><span class="dep" hidden>-</span></span>
         <button type="button" class="member-settings-toggle" aria-expanded="false" aria-label="集結主設定"></button>
       </div>
@@ -2064,6 +2149,7 @@ function selectSuggestion(inputElement, item){
   }
 
   inputElement.textContent = item.name;
+  clearPlayerIfRenamed(row);
 
   const marchSelect = row.querySelector('.march-select');
   if(marchSelect && Number.isFinite(Number(item.marchSec))){
@@ -2085,7 +2171,9 @@ function saveSettings(){
       march: row.querySelector('.march-select').value,
       coordX: row.querySelector('.coord-x')?.value || '',
       coordY: row.querySelector('.coord-y')?.value || '',
-      statBoost: !!row.querySelector('.stat-boost-toggle')?.checked
+      statBoost: !!row.querySelector('.stat-boost-toggle')?.checked,
+      fid: row.dataset.fid || '',
+      avatar: row.dataset.avatar || ''
     });
   });
 
