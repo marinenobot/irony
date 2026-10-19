@@ -1588,6 +1588,18 @@ document.querySelectorAll('#players .member-row').forEach(attachSwipeToRow);
 /* ======= 行イベント（入力・選択用） ======= */
 /* ======= ID からプレイヤー名・アイコンを取得 ======= */
 const PLAYER_LOOKUP_URL = 'members.json';
+const ORACLE_PLAYER_URL = 'https://wosoracle.com/api/v1/players/';
+const ORACLE_TOKEN = 'jp_79b2864bf87dc99485d1c12971807608077b3581';
+
+async function fetchOraclePlayer(id){
+  const res = await fetch(`${ORACLE_PLAYER_URL}${id}?cached=1`, {
+    headers: {Authorization: `Bearer ${ORACLE_TOKEN}`}
+  });
+  if(res.status === 404) return null;
+  if(!res.ok) throw new Error(String(res.status));
+  const data = await res.json();
+  return {name: data.name || '', avatar: data.avatar_url || ''};
+}
 let memberDirectoryPromise = null;
 
 function loadMemberDirectory(){
@@ -1639,10 +1651,15 @@ async function lookupPlayerForRow(row){
   row.dataset.lookingUp = id;
   avatar?.classList.add('loading');
   try{
-    const directory = await loadMemberDirectory();
-    const player = directory[id];
+    let player = null;
+    try{
+      player = await fetchOraclePlayer(id);
+    }catch(error){
+      const directory = await loadMemberDirectory();
+      player = directory[id] || null;
+    }
     if(!player){
-      showToast('同盟メンバーにこのIDがありません');
+      showToast('IDが見つかりません');
       return;
     }
     const nickname = (player.name || '').trim();
