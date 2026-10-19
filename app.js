@@ -1587,7 +1587,24 @@ document.querySelectorAll('#players .member-row').forEach(attachSwipeToRow);
 
 /* ======= 行イベント（入力・選択用） ======= */
 /* ======= ID からプレイヤー名・アイコンを取得 ======= */
-const PLAYER_LOOKUP_URL = 'https://YOUR-WORKER.workers.dev/player/';
+const PLAYER_LOOKUP_URL = 'members.json';
+let memberDirectoryPromise = null;
+
+function loadMemberDirectory(){
+  if(!memberDirectoryPromise){
+    memberDirectoryPromise = fetch(PLAYER_LOOKUP_URL, {cache:'no-cache'})
+      .then(res => {
+        if(!res.ok) throw new Error(String(res.status));
+        return res.json();
+      })
+      .then(data => data.players || {})
+      .catch(error => {
+        memberDirectoryPromise = null;
+        throw error;
+      });
+  }
+  return memberDirectoryPromise;
+}
 const PLAYER_ID_PATTERN = /^\d{5,12}$/;
 
 function renderMemberAvatar(row){
@@ -1622,17 +1639,12 @@ async function lookupPlayerForRow(row){
   row.dataset.lookingUp = id;
   avatar?.classList.add('loading');
   try{
-    const res = await fetch(PLAYER_LOOKUP_URL + id);
-    if(res.status === 404){
-      showToast('IDが見つかりません');
+    const directory = await loadMemberDirectory();
+    const player = directory[id];
+    if(!player){
+      showToast('同盟メンバーにこのIDがありません');
       return;
     }
-    if(res.status === 429){
-      showToast('混み合っています。少し待ってください');
-      return;
-    }
-    if(!res.ok) throw new Error(String(res.status));
-    const player = await res.json();
     const nickname = (player.name || '').trim();
     if(!nickname){
       showToast('名前を取得できませんでした');
@@ -1648,7 +1660,7 @@ async function lookupPlayerForRow(row){
     }
 
     nameInput.textContent = nickname;
-    setPlayerOnRow(row, id, nickname, player.avatar_url || '');
+    setPlayerOnRow(row, id, nickname, player.avatar || '');
     refreshMemberAutoMarch(row, {save:false});
     saveSettings();
   }catch(error){
