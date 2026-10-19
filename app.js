@@ -1592,7 +1592,7 @@ const ORACLE_PLAYER_URL = 'https://wosoracle.com/api/v1/players/';
 const ORACLE_TOKEN = 'jp_79b2864bf87dc99485d1c12971807608077b3581';
 
 async function fetchOraclePlayer(id){
-  const res = await fetch(`${ORACLE_PLAYER_URL}${id}?cached=1`, {
+  const res = await fetch(`${ORACLE_PLAYER_URL}${id}`, {
     headers: {Authorization: `Bearer ${ORACLE_TOKEN}`}
   });
   if(res.status === 404) return null;
