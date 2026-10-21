@@ -181,14 +181,6 @@
    "name": "黒崎一護",
    "avatar": "https://wosoracle.com/avatars/c7398d12196909a66de2799b18a995ef.png"
   },
-  "227117418": {
-   "name": "yüy ᴶᵂˢ·°",
-   "avatar": "https://wosoracle.com/assets/wos/preset_avatars/1016.png"
-  },
-  "227349093": {
-   "name": "むーくん˶'ᵕ'˶ ᴊωs",
-   "avatar": "https://wosoracle.com/avatars/5986847890e733406f1406b31c81158a.png"
-  },
   "227478262": {
    "name": "こんなはずでは",
    "avatar": "https://wosoracle.com/assets/wos/preset_avatars/1035.png"
@@ -257,10 +249,6 @@
    "name": "めりーさんの羊＊zᶻᶻ",
    "avatar": "https://wosoracle.com/avatars/cd69f7262f87a8afdb089ecccdad6202.png"
   },
-  "245024618": {
-   "name": "全てアレン様が正しいでございます",
-   "avatar": "https://wosoracle.com/avatars/a136f3a564540ae02e31139434b3840c.png"
-  },
   "245188561": {
    "name": "マリン ホール担当？",
    "avatar": "https://wosoracle.com/avatars/4bcbe258ea4e226281f436736447e5c9.png"
@@ -269,9 +257,21 @@
    "name": "Corazon",
    "avatar": "https://wosoracle.com/avatars/6126eef2cfe4ca2fb578e184a769c7b4.png"
   },
+  "279306115": {
+   "name": "スタープラチナ",
+   "avatar": "https://wosoracle.com/avatars/d89436bbeac79f566003758dc5fc0416.png"
+  },
   "280725712": {
    "name": "たぴさぶ",
    "avatar": "https://wosoracle.com/avatars/f9cc26ed6c9c8f320392fafd6c294f93.png"
+  },
+  "281038781": {
+   "name": "木星帰り",
+   "avatar": "https://wosoracle.com/avatars/3932304dcabc58b669a0696c88398542.png"
+  },
+  "296444746": {
+   "name": "emaron",
+   "avatar": "https://wosoracle.com/avatars/3cf0ace584bb428d3e9bea8ce8dc23fb.png"
   },
   "312408866": {
    "name": "寝落ちのViVi",
@@ -280,6 +280,10 @@
   "336388667": {
    "name": "たぴさぶさぶ 援軍不要",
    "avatar": "https://wosoracle.com/avatars/4fd42f0e25719dadc78b7e0ae1d22fde.png"
+  },
+  "353784757": {
+   "name": "すたぷらくん",
+   "avatar": "https://wosoracle.com/avatars/b1dc9738852fa589b47f07595060bc54.png"
   },
   "354115918": {
    "name": "だらだらくま。援軍不要",
@@ -296,6 +300,14 @@
   "457102075": {
    "name": "もうこないからねー",
    "avatar": "https://wosoracle.com/avatars/b3e95d832fac95a437af3df4738a3d2e.png"
+  },
+  "555350229": {
+   "name": "どりポチ",
+   "avatar": "https://wosoracle.com/avatars/b9d51d1320d400ffa81bc325bd7055b1.png"
+  },
+  "657202933": {
+   "name": "援軍 不要",
+   "avatar": "https://wosoracle.com/avatars/fb755ceedc30b1c7a05fd5672191ec97.png"
   },
   "704196728": {
    "name": "ぷりぷり＠通常時担当",
@@ -316,6 +328,10 @@
   "842985229": {
    "name": "くみっちょ？",
    "avatar": "https://wosoracle.com/avatars/9d002acac90bd76c2a1e9d7529af33fa.png"
+  },
+  "844114206": {
+   "name": "援軍NO",
+   "avatar": "https://wosoracle.com/avatars/0324082abe27a3b433b8040f07729df2.png"
   }
  }
 }
