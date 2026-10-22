@@ -1,0 +1,1254 @@
+/* ===== スマホ：iOS設定画面に近い縦密度 ===== */
+@media (max-width:600px){
+  /* 左右余白と時計カードの寸法は上の共通指定を維持 */
+
+  .page-tabs,
+  body.landing-active .page-tabs{
+    margin-bottom:22px;
+  }
+
+  .page-tab-btn,
+  body.landing-active .page-tab-btn{
+    min-height:40px;
+    padding-top:6px;
+    padding-bottom:6px;
+  }
+
+  /* 着弾時刻：1つの設定グループ内だけをコンパクトにする */
+  #page-landing .l-setting-row,
+  #page-landing .l-wave-options{
+    min-height:56px;
+  }
+
+  #page-landing .l-setting-control select,
+  #page-landing .l-chevron{
+    min-height:44px;
+  }
+
+  #page-landing .l-wave-options{
+    min-height:54px;
+  }
+
+  #page-landing .landing-action{
+    min-height:56px;
+    margin-top:20px;
+    font-size:18px;
+  }
+
+  #page-landing #l-result{
+    margin-top:14px;
+  }
+
+  #page-landing #l-result .impact-display{
+    padding:13px 14px;
+  }
+
+  /* 王城決戦：設定行、一覧行、内部ボタンを同じ基準へ揃える */
+  #page-calc .mode-card{
+    margin-bottom:12px;
+  }
+
+  #page-calc .departure-setting-row{
+    min-height:56px;
+  }
+
+#page-calc .departure-setting-control select,
+#page-calc .departure-chevron{
+    min-height:44px;
+  }
+
+  #page-calc .departure-action{
+    min-height:56px;
+    margin-top:20px;
+    font-size:18px;
+  }
+
+  #page-calc .departure-result{
+    margin-top:14px;
+  }
+
+  #page-calc > .collapsible-card{
+    margin-top:14px;
+    margin-bottom:0 !important;
+  }
+
+  #page-calc > .collapsible-card + .collapsible-card{
+    margin-top:10px;
+  }
+
+  #page-calc .collapsible-header{
+    min-height:48px;
+    padding:8px 14px !important;
+  }
+
+  .member-identity-row{
+    min-height:44px;
+    padding-top:4px;
+    padding-bottom:4px;
+  }
+
+  .member-settings-toggle{
+    width:34px;
+    min-width:34px;
+    min-height:34px;
+  }
+
+  .member-auto-settings{
+    padding:8px 10px 10px;
+  }
+
+
+  .button-controls{
+    margin-top:8px;
+    margin-bottom:8px;
+  }
+
+  .control-btn{
+    min-height:44px;
+    padding-top:9px;
+    padding-bottom:9px;
+  }
+
+  /* 設定・時間編集画面も同じ行密度に統一 */
+  .device-settings-header{
+    margin-bottom:20px;
+  }
+
+  .device-settings-row{
+    min-height:52px;
+  }
+
+  .departure-edit-header{
+    margin-bottom:22px;
+  }
+
+  .departure-preset-option,
+  .departure-sheet-cancel{
+    min-height:44px;
+  }
+
+  #page-calc .footer,
+  #page-landing .footer,
+  body.landing-active #page-landing .footer{
+    margin-top:28px;
+  }
+}
+
+/* ===== スマホ：共通の縦レイアウトグリッド ===== */
+@media (max-width:600px){
+  .container{
+    --layout-section-gap:18px;
+  }
+
+  /* 時計以外の外側ラインをコンテナ幅へ統一 */
+  .header,
+  body.landing-active .header{
+    padding-top:34px;
+    margin-right:0;
+    margin-bottom:var(--layout-section-gap);
+    margin-left:0;
+  }
+
+  .page-tabs,
+  body.landing-active .page-tabs{
+    width:calc(100% - 8px);
+    margin:0 0 var(--layout-section-gap);
+  }
+
+  #page-calc,
+  #page-landing,
+  #page-calc > .mode-card,
+  #page-calc > .departure-action,
+  #page-calc > .departure-result,
+  #page-calc > .collapsible-card,
+  #page-landing > .mode-card,
+  #page-landing > .landing-action,
+  #page-landing > #l-result{
+    width:100%;
+    max-width:none;
+    margin-right:0;
+    margin-left:0;
+    box-sizing:border-box;
+  }
+
+  /* 各主要セクションの外側間隔を18pxに統一 */
+  #page-calc > .mode-card{
+    margin:0 0 var(--layout-section-gap) !important;
+  }
+
+  #page-calc > .departure-action{
+    margin:0 0 var(--layout-section-gap);
+  }
+
+  #page-calc > .departure-result{
+    margin:0 0 var(--layout-section-gap);
+  }
+
+  #page-calc > .collapsible-card,
+  #page-calc > .collapsible-card + .collapsible-card{
+    margin:0 0 var(--layout-section-gap) !important;
+  }
+
+  #page-landing > .landing-settings-card{
+    margin:0 0 var(--layout-section-gap) !important;
+  }
+
+  #page-landing > .landing-action{
+    margin:0 0 var(--layout-section-gap);
+  }
+
+  #page-landing > #l-result{
+    margin:0 0 var(--layout-section-gap) !important;
+  }
+
+  #page-landing #l-result-inner,
+  #page-calc .collapsible-content,
+  #page-calc .collapsible-content-inner,
+  #page-calc #sec-members,
+  #page-calc .members-list{
+    width:100%;
+    box-sizing:border-box;
+  }
+
+  /* 集結一覧：ヘッダー・行・追加ボタンを1枚のカード内に収める */
+  #page-calc .collapsible-card{
+    overflow:hidden;
+  }
+
+  #page-calc .button-controls{
+    width:100%;
+    margin:0;
+    padding:8px 14px 10px;
+    border-top:1px solid var(--divider);
+    box-sizing:border-box;
+  }
+
+  #page-calc .button-controls .control-btn{
+    width:100%;
+    margin:0;
+  }
+
+  #page-calc .member-row-wrapper,
+  #page-calc .member-row,
+  #page-calc .member-identity-row{
+    width:100%;
+    box-sizing:border-box;
+  }
+
+  /* 補助テキストとフッターはグリッドを乱さない */
+
+  #page-calc .footer,
+  #page-landing .footer,
+  body.landing-active #page-landing .footer{
+    width:100%;
+    margin:0;
+  }
+}
+
+/* ===== スマホ表示レイヤー：値は共通トークンへのエイリアスのみ（独自の色/角丸は持たない） ===== */
+/* body[data-theme]で上書きされる実トークンを毎回参照し直すため、:rootではなくbodyで宣言する */
+body{
+  --ios-bg:var(--bg);
+  --ios-card:var(--surface);
+  --ios-separator:var(--divider);
+  --ios-label:var(--text);
+  --ios-secondary:var(--text-subtle);
+  --ios-tertiary:var(--text-muted);
+  --ios-tint:var(--accent);
+  --ios-fill:var(--accent-soft);
+  --ios-radius:var(--card-radius);
+}
+html{
+  -webkit-text-size-adjust:100%;
+  background:var(--ios-bg);
+}
+body, body.landing-active{
+  padding:max(10px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+  background:var(--ios-bg);
+  color:var(--ios-label);
+  font-family:var(--font-ui);
+  font-size:17px;
+  font-weight:400;
+  line-height:1.45;
+  letter-spacing:-.01em;
+  font-variant-numeric:tabular-nums;
+  font-feature-settings:"tnum" 1;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+/* --- ヘッダーのUTC時計 --- */
+body .clock, body.landing-active .clock{
+  font-family:var(--font-ui);
+}
+body #utc-now, body.landing-active #utc-now{
+  color:var(--ios-label);
+  font-family:var(--font-num);
+  font-size:clamp(36px, 10.4vw, 44px);
+  font-weight:600;
+  letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
+  font-feature-settings:"tnum" 1;
+}
+body #utc-millis, body.landing-active #utc-millis{
+  margin-left:1px;
+  color:var(--ios-secondary);
+  font-family:var(--font-num);
+  font-size:clamp(17px, 4.8vw, 20px);
+  font-weight:600;
+  letter-spacing:-.01em;
+  font-variant-numeric:tabular-nums;
+  font-feature-settings:"tnum" 1;
+}
+body .utc-label, body.landing-active .utc-label{
+  font-family:var(--font-ui);
+  letter-spacing:.01em;
+}
+body .app-settings-button{
+  top:2px;
+  background:var(--ios-fill);
+  color:var(--ios-secondary);
+  font-size:14px;
+}
+
+/* --- セグメンテッドコントロール --- */
+body .page-tab-btn, body.landing-active .page-tab-btn{
+  min-height:30px;
+  padding:4px 8px;
+  border-radius:7px;
+  color:var(--ios-label);
+  font-family:var(--font-ui);
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:-.01em;
+}
+
+/* --- カード（設定グループ） --- */
+body .mode-card, body .collapsible-card, body #page-calc .mode-card, body #page-calc .collapsible-card, body #page-calc .departure-settings-card, body .landing-settings-card{
+  border:1px solid var(--card-border);
+  border-radius:var(--radius);
+  background:var(--surface);
+  box-shadow:none;
+  overflow:hidden;
+}
+
+/* --- 設定行（集結時間・準備時間など） --- */
+body #page-calc .departure-setting-row, body #page-landing .l-setting-row, body #page-landing .l-wave-options, body #page-switch .departure-setting-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  min-height:50px;
+  margin:0 16px;
+  padding:0;
+  border-bottom:1px solid var(--ios-separator);
+}
+body #page-landing .l-wave-options{
+  min-height:50px;
+  border-bottom:0;
+}
+body #page-calc .departure-setting-name, body #page-landing .l-setting-name{
+  color:var(--ios-label);
+  font-family:var(--font-ui);
+  font-size:17px;
+  font-weight:600;
+  letter-spacing:-.01em;
+}
+body #page-calc .departure-setting-control select, body #page-calc .departure-after-text, body #page-landing .l-setting-control select{
+  color:var(--ios-secondary);
+  font-family:var(--font-ui);
+  font-size:17px;
+  font-weight:400;
+  letter-spacing:-.01em;
+}
+body #page-landing .l-setting-control select[class*="time"]{
+  font-family:var(--font-num);
+  font-size:17px;
+  font-variant-numeric:tabular-nums;
+}
+
+/* --- シェブロン（iOS標準の細い「>」） --- */
+body #page-calc .departure-chevron, body #page-landing .l-chevron, body #page-switch .departure-chevron{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:20px;
+  min-width:20px;
+  min-height:44px;
+  color:var(--ios-tertiary);
+  font-size:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+body #page-calc .departure-chevron::after, body #page-landing .l-chevron::after, body #page-switch .departure-chevron::after{
+  content:"";
+  display:block;
+  width:7px;
+  height:7px;
+  border-right:2px solid currentColor;
+  border-bottom:2px solid currentColor;
+  border-radius:1px;
+  transform:rotate(-45deg);
+}
+body #page-calc .departure-chevron:hover, body #page-calc .departure-chevron:focus, body #page-calc .departure-chevron:active, body #page-landing .l-chevron:hover, body #page-landing .l-chevron:focus, body #page-landing .l-chevron:active, body #page-switch .departure-chevron:hover, body #page-switch .departure-chevron:focus, body #page-switch .departure-chevron:active{
+  color:var(--ios-tint);
+  background:transparent;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+}
+
+/* --- 主ボタン（計算開始） --- */
+body #page-calc .departure-action, body #page-landing .landing-action{
+  align-items:center;
+  justify-content:center;
+  letter-spacing:-.01em;
+}
+/* --- 折りたたみヘッダー --- */
+body .collapsible-card, body #page-calc .collapsible-card{
+  margin-bottom:16px !important;
+}
+body .collapsible-header{
+  position:relative;
+  min-height:50px;
+  padding:0 16px !important;
+  border:0;
+  background:var(--ios-card);
+}
+body .collapsible-header-title{
+  color:var(--ios-label);
+  font-family:var(--font-ui);
+  font-size:17px;
+  font-weight:400;
+  letter-spacing:-.01em;
+}
+body .collapsible-arrow{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:20px;
+  height:20px;
+  color:var(--ios-tertiary);
+  font-size:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  transition:transform .25s ease;
+}
+body .collapsible-arrow::after{
+  content:"";
+  display:block;
+  width:7px;
+  height:7px;
+  margin-bottom:3px;
+  border-right:2px solid currentColor;
+  border-bottom:2px solid currentColor;
+  border-radius:1px;
+  transform:rotate(45deg);
+}
+body .collapsible-content-inner{
+  border:0;
+  background:var(--ios-card);
+}
+
+/* --- 集結一覧：iOSのリストセル（名前／残り時間／設定）--- */
+body .member-row{
+  position:relative;
+  border-bottom:0;
+}
+
+/* 区切り線は本文の開始位置に合わせて左を16px空ける */
+body .member-row::after{
+  content:"";
+  position:absolute;
+  right:0;
+  bottom:0;
+  left:16px;
+  height:1px;
+  background:var(--ios-separator);
+}
+body .member-identity-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-height:48px;
+  padding:0 16px;
+}
+body .member-identity-row .name-text{
+  flex:1 1 auto;
+  min-width:0;
+  max-width:none;
+  overflow:hidden;
+  color:var(--ios-label);
+  font-family:var(--font-ui);
+  font-size:17px;
+  font-weight:400;
+  line-height:1.3;
+  letter-spacing:-.01em;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+body .name-text:empty:before{
+  color:var(--ios-tertiary);
+  opacity:.5;
+}
+body .name-text:focus{
+  background:transparent;
+}
+body .member-departure-inline{
+  flex:0 0 auto;
+  margin-left:auto;
+  text-align:right;
+}
+body .member-departure-status{
+  display:inline-flex;
+  align-items:center;
+  justify-content:flex-end;
+  min-height:0;
+  padding:0;
+  border-radius:0;
+  background:transparent;
+  color:var(--ios-secondary);
+  font-family:var(--font-ui);
+  font-size:15px;
+  font-weight:400;
+  letter-spacing:-.01em;
+  font-variant-numeric:tabular-nums;
+  font-feature-settings:"tnum" 1;
+  white-space:nowrap;
+  box-shadow:none;
+}
+body .member-departure-status.counting{
+  background:transparent;
+  color:var(--ios-tint);
+  box-shadow:none;
+}
+body .member-departure-status.departed{
+  background:transparent;
+  color:var(--ios-tertiary);
+}
+
+/* --- 集結主の詳細設定：1項目1行の設定リスト --- */
+body .member-auto-settings{
+  display:block;
+  gap:0;
+  min-height:0;
+  padding:0;
+  border-top:0;
+  background:var(--ios-bg);
+  color:var(--ios-label);
+  font-family:var(--font-ui);
+  font-size:17px;
+}
+body .member-setting-row{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-height:48px;
+  margin:0;
+  padding:0 16px;
+  border:0;
+  background:transparent;
+  cursor:pointer;
+}
+body .member-setting-row::after{
+  content:"";
+  position:absolute;
+  right:0;
+  bottom:0;
+  left:16px;
+  height:1px;
+  background:var(--ios-separator);
+}
+body .member-setting-row:last-child::after{
+  display:none;
+}
+body .member-setting-label{
+  flex:0 0 auto;
+  color:var(--ios-label);
+  font-family:var(--font-ui);
+  font-size:17px;
+  font-weight:400;
+  letter-spacing:-.01em;
+  white-space:nowrap;
+}
+body .member-setting-value{
+  display:inline-flex;
+  flex:1 1 auto;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+  min-width:0;
+  margin-left:auto;
+  color:var(--ios-secondary);
+  font-family:var(--font-ui);
+  font-size:17px;
+  font-weight:400;
+  letter-spacing:-.01em;
+  white-space:nowrap;
+}
+body .member-coordinates{
+  gap:6px;
+  color:var(--ios-secondary);
+  font-size:17px;
+  font-weight:400;
+}
+body .coord-axis{
+  color:var(--ios-tertiary);
+  font-size:15px;
+}
+body .coord-input{
+  width:56px;
+  min-width:56px;
+  height:32px;
+  min-height:32px;
+  padding:0 8px;
+  border:0;
+  border-radius:8px;
+  background:var(--ios-fill);
+  color:var(--ios-label);
+  font-family:var(--font-num);
+  font-size:17px;
+  font-weight:400;
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+}
+body .coord-input:focus{
+  border:0;
+  background:var(--ios-fill);
+  box-shadow:0 0 0 2px rgba(var(--accent-rgb),.30);
+}
+body #page-calc .march-select, body .march-select{
+  width:auto;
+  min-width:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  background-image:none;
+  color:var(--ios-secondary);
+  font-family:var(--font-ui);
+  font-size:17px !important;
+  font-weight:400;
+  text-align:right;
+  justify-self:end;
+  font-variant-numeric:tabular-nums;
+}
+body .march-select:focus, body #page-calc .march-select:focus{
+  background-color:transparent;
+}
+body .march-select:disabled{
+  color:var(--ios-tint);
+  -webkit-text-fill-color:var(--ios-tint);
+}
+body .march-auto-badge{
+  color:var(--ios-secondary);
+  font-family:var(--font-ui);
+  font-size:17px;
+  font-weight:400;
+}
+body .march-auto-badge::before{content:"（"}
+body .march-auto-badge::after{content:"）"}
+body .stat-boost-control, body .member-settings-pet-control{
+  display:flex;
+  color:var(--ios-label);
+  font-size:17px;
+  font-weight:400;
+}
+
+/* --- ステ強化・ペットはiOS標準のトグルスイッチ --- */
+body .stat-boost-switch{
+  position:relative;
+  flex:0 0 51px;
+  width:51px;
+  height:31px;
+  min-width:51px;
+  border:0;
+  border-radius:16px;
+  background:var(--toggle-bg);
+  transition:background .2s ease;
+}
+body .stat-boost-switch::after{
+  content:'';
+  display:block;
+  position:absolute;
+  top:2px;
+  left:2px;
+  width:27px;
+  height:27px;
+  border:0;
+  border-radius:50%;
+  background:var(--surface);
+  box-shadow:0 3px 8px rgba(0,0,0,.15), 0 1px 1px rgba(0,0,0,.16);
+  transform:none;
+  transition:transform .2s ease;
+}
+body .stat-boost-toggle:checked + .stat-boost-switch, body .member-settings-pet-toggle:checked + .stat-boost-switch{
+  border:0;
+  background:var(--ios-tint);
+}
+body .stat-boost-toggle:checked + .stat-boost-switch::after, body .member-settings-pet-toggle:checked + .stat-boost-switch::after{
+  display:block;
+  border:0;
+  transform:translateX(20px);
+}
+/* 行軍時間が手動（マスタ表に一致しない）のときは、効果のないステ強化・ペットトグルを操作不可にする */
+body .stat-boost-toggle:disabled + .stat-boost-switch, body .member-settings-pet-toggle:disabled + .stat-boost-switch{
+  opacity:.35;
+}
+body .stat-boost-control:has(.stat-boost-toggle:disabled), body .member-settings-pet-control:has(.member-settings-pet-toggle:disabled){
+  cursor:not-allowed;
+}
+body .member-pet-remaining{
+  color:var(--ios-secondary);
+  font-family:var(--font-ui);
+  font-size:15px;
+  font-weight:400;
+  letter-spacing:-.01em;
+}
+
+/* --- 「＋ 集結主」も同じリスト内のセルとして扱う --- */
+body #page-calc .button-controls{
+  width:100%;
+  margin:0;
+  padding:0;
+  border-top:0;
+}
+body .button-controls .control-btn, body #page-calc .button-controls .control-btn, body #add-member{
+  width:100%;
+  min-height:48px;
+  margin:0;
+  padding:0 16px;
+}
+body .member-settings-toggle{
+  flex:0 0 auto;
+  width:20px;
+  min-width:20px;
+  min-height:48px;
+  border-radius:0;
+  background:transparent;
+  color:var(--ios-tertiary);
+  transition:transform .25s ease;
+}
+body .member-settings-toggle::before{
+  content:"";
+  width:7px;
+  height:7px;
+  margin-bottom:3px;
+  border-right:2px solid currentColor;
+  border-bottom:2px solid currentColor;
+  border-radius:1px;
+  background-color:transparent;
+  -webkit-mask:none;
+  mask:none;
+  transform:rotate(45deg);
+}
+body .member-settings-toggle:hover, body .member-settings-toggle:focus, body .member-settings-toggle:active, body .member-settings-toggle[aria-expanded="true"]{
+  background:transparent;
+  color:var(--ios-tint);
+}
+
+/* --- 追加ボタンはiOSの「青文字の行」に --- */
+body .button-controls{
+  margin:0;
+  padding:0;
+}
+body .button-controls .control-btn, body #add-member{
+  flex:1;
+  min-height:50px;
+  margin:0;
+  padding:0 16px;
+  text-align:left;
+  border:0;
+  border-radius:0;
+  background:var(--ios-card);
+  color:var(--ios-tint);
+  font-family:var(--font-ui);
+  font-size:17px;
+  font-weight:400;
+  letter-spacing:-.01em;
+  box-shadow:none;
+}
+body .button-controls .control-btn:hover, body .button-controls .control-btn:active, body #add-member:hover, body #add-member:active{
+  background:var(--bg);
+  color:var(--ios-tint);
+  border:0;
+  transform:none;
+}
+
+/* --- 結果表示 --- */
+body .impact-time{
+  font-feature-settings:"tnum" 1;
+}
+
+/* --- フッター --- */
+body .footer, body #page-calc .footer, body #page-landing .footer, body.landing-active #page-landing .footer{
+  margin-top:var(--compact-gap);
+  color:var(--ios-tertiary);
+  font-family:var(--font-ui);
+  font-size:13px;
+  font-weight:400;
+}
+
+/* --- トースト・モーダルの文字 --- */
+body .toast{
+  border-radius:14px;
+  font-family:var(--font-ui);
+  font-size:15px;
+  font-weight:400;
+  letter-spacing:-.01em;
+}
+body .departure-edit-sheet, body .departure-edit-header h3, body .departure-preset-option, body .departure-sheet-cancel, body .departure-wheel-option{
+  font-family:var(--font-ui);
+  letter-spacing:-.01em;
+}
+
+/* --- 数字が動いても幅が変わらないようにする --- */
+body select, body input, body button, body pre, body .members-table{
+  font-variant-numeric:tabular-nums;
+  font-feature-settings:"tnum" 1;
+}
+body .preview-text-box{
+  font-family:var(--font-num);
+  font-size:14px;
+  line-height:1.6;
+}
+
+/* --- 時計オーバーレイ --- */
+body .utc-clock-overlay-card{
+  width:min(88vw, 340px);
+  padding:30px 20px 24px;
+  border:0;
+  border-radius:16px;
+  background:var(--surface);
+  box-shadow:0 20px 60px rgba(0,0,0,.45);
+}
+body .utc-clock-overlay-time-line{
+  gap:0;
+}
+body .utc-clock-overlay-label{
+  margin-bottom:6px;
+  color:var(--ios-secondary);
+  font-family:var(--font-ui);
+  font-size:13px;
+  font-weight:400;
+}
+body #utc-overlay-time{
+  font-family:var(--font-num);
+  font-size:clamp(38px, 11vw, 46px);
+  font-weight:600;
+  letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
+  font-feature-settings:"tnum" 1;
+}
+body #utc-overlay-millis{
+  margin-left:1px;
+  color:var(--ios-secondary);
+  font-family:var(--font-num);
+  font-size:clamp(18px, 5vw, 21px);
+  font-weight:600;
+  font-variant-numeric:tabular-nums;
+  font-feature-settings:"tnum" 1;
+}
+body .utc-clock-overlay-unit{
+  margin-left:8px;
+  color:var(--ios-secondary);
+  font-family:var(--font-ui);
+  font-size:13px;
+  font-weight:600;
+}
+body .utc-clock-overlay-countdown{
+  margin-top:12px;
+  font-family:var(--font-ui);
+  font-size:13px;
+}
+body .utc-clock-overlay-countdown-value{
+  color:var(--accent);
+  font-family:var(--font-num);
+  font-size:19px;
+  font-weight:600;
+  font-variant-numeric:tabular-nums;
+  font-feature-settings:"tnum" 1;
+}
+body .utc-clock-overlay-close{
+  top:10px;
+  right:10px;
+  width:30px;
+  min-width:30px;
+  min-height:30px;
+  background:var(--surface-secondary);
+  color:var(--text);
+  font-size:19px;
+  box-shadow:none;
+}
+
+
+/* --- 編集シート：区切り線をiOS流に左インセット --- */
+body .departure-preset-option:not(:last-child){
+  border-bottom:1px solid var(--ios-separator);
+}
+body .departure-edit-header h3{
+  font-family:var(--font-ui);
+  font-size:13px;
+  font-weight:400;
+  color:var(--ios-secondary);
+}
+
+/* ===== モバイル表示の最終上書き層：これも独自の色/角丸は持たず、共通トークンへエイリアス ===== */
+/* --space-1〜5・--radius-control・--control-heightは基本:rootの値をそのまま継承するため、ここでは再宣言しない */
+:root{
+  --radius-section:var(--card-radius);
+  --surface-primary:var(--surface);
+  --surface-tertiary:var(--accent-soft);
+  --separator-soft:var(--divider);
+  --label-strong:var(--text);
+  --label-secondary:var(--text-subtle);
+  --label-tertiary:var(--text-muted);
+  --action-primary:var(--accent);
+  --action-primary-pressed:var(--accent);
+  --danger-soft:var(--danger-bg);
+  --danger-text:var(--red-error);
+}
+body, body.landing-active{
+  padding:max(10px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+  background:var(--surface-secondary);
+  color:var(--label-strong);
+  font-family:-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+  font-size:16px;
+  line-height:1.45;
+}
+body .container, body.landing-active .container{
+  max-width:430px;
+}
+body .header, body.landing-active .header{
+  margin:0 0 var(--space-4);
+  padding-top:var(--space-5);
+}
+body .app-settings-button::before, body.landing-active .app-settings-button::before{
+  content:'';
+  position:absolute;
+  inset:9px;
+  border-radius:50%;
+  background:var(--surface-tertiary);
+}
+body .app-settings-button, body .app-settings-button::after, body.landing-active .app-settings-button, body.landing-active .app-settings-button::after{
+  z-index:2;
+}
+body .utc-clock-overlay-label{
+  color:var(--label-secondary);
+  font-size:13px;
+  font-weight:500;
+}
+body #utc-millis, body.landing-active #utc-millis, body #utc-overlay-millis{
+  color:var(--label-secondary);
+  font-size:clamp(18px, 4.8vw, 22px);
+  font-weight:600;
+}
+body .utc-clock-overlay-unit{
+  margin-left:8px;
+  color:var(--label-secondary);
+  font-size:13px;
+  font-weight:500;
+}
+body .member-pet-remaining, body .march-auto-badge, body .coord-axis, body .device-sync-status, body .footer, body #page-calc .footer, body #page-landing .footer, body.landing-active #page-landing .footer{
+  color:var(--label-tertiary);
+  font-size:13px;
+  font-weight:400;
+}
+body .page-tabs, body.landing-active .page-tabs{
+  gap:var(--space-4);
+  margin:0 0 var(--space-5);
+  padding:0;
+  border-radius:0;
+  background:transparent;
+  border-bottom:1px solid var(--border);
+}
+body .page-tab-btn, body.landing-active .page-tab-btn{
+  position:relative;
+  min-height:var(--control-height);
+  padding:0 var(--space-2);
+  border-radius:0;
+  background:transparent;
+  color:var(--text-muted);
+  font-size:15px;
+  font-weight:500;
+  border-bottom:2px solid transparent;
+}
+body .page-tab-btn.active, body.landing-active .page-tab-btn.active{
+  box-shadow:none;
+  background:transparent;
+  color:var(--text-primary);
+  font-weight:600;
+  border-bottom:2px solid transparent;
+}
+body .page-tab-btn.active::after, body.landing-active .page-tab-btn.active::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:6px;
+  width:54px;
+  height:2px;
+  transform:translateX(-50%);
+  background:var(--accent);
+  border-radius:1px;
+}
+body #page-calc > .mode-card, body #page-landing > .mode-card{
+  margin:0 0 var(--space-4) !important;
+}
+body #page-calc > #impact-display, body #page-landing > #l-result{
+  margin:0 0 var(--space-4) !important;
+}
+body #page-calc > .collapsible-card, body #page-calc > .collapsible-card + .collapsible-card{
+  margin:0 0 var(--compact-gap) !important;
+}
+
+/* ===== #page-switch: 他タブと同じ余白密度に揃える（追加のみ、既存ルールは無変更） ===== */
+body #page-switch > .mode-card{
+  margin:0 0 var(--space-4) !important;
+}
+body #page-switch > #sw-result{
+  margin:0 0 var(--space-4) !important;
+}
+body #page-switch > .collapsible-card{
+  margin:0 0 var(--compact-gap) !important;
+}
+body #page-switch .sw-row-control{
+  display:inline-flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:var(--space-1);
+  min-height:var(--control-height);
+  padding:0;
+  border-radius:0;
+  background:transparent;
+}
+body .collapsible-card, body #page-calc .collapsible-card{
+  border-radius:var(--radius-card);
+  background:var(--surface);
+  border:1px solid var(--card-border);
+  box-shadow:none;
+}
+
+/* mode-cardの色・枠・角丸はテーマトークンだけを見る */
+body .mode-card, body #page-calc .mode-card, body #page-calc .departure-settings-card, body .landing-settings-card, body #page-landing .landing-settings-card{
+  border:1px solid var(--card-border);
+  border-radius:var(--radius);
+  background:var(--surface);
+  box-shadow:none;
+}
+body #l-result-inner{
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+body .collapsible-header{
+  min-height:44px;
+  padding:0 var(--space-3) !important;
+}
+body .collapsible-header-title, body label, body .member-setting-label{
+  color:var(--label-strong);
+  font-size:17px;
+  font-weight:600;
+}
+body #page-landing .l-wave-options{
+  margin:0 var(--space-3);
+}
+body #page-calc .departure-setting-control, body #page-landing .l-setting-control, body #page-switch .departure-setting-control{
+  display:inline-flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:var(--space-1);
+  min-height:var(--control-height);
+  padding:0;
+  border-radius:0;
+  background:transparent;
+}
+body #time-input-group, body #prep-input-group{
+  margin-right:0;
+}
+body #page-calc .departure-setting-control select, body #page-calc .departure-after-text, body #page-landing .l-setting-control select, body #page-switch .departure-setting-control select, body .inline-select, body select, body input:not([type="checkbox"]){
+  min-height:var(--control-height);
+  border:0;
+  background:transparent;
+  box-shadow:none;
+  color:var(--text-primary);
+  font-size:16px;
+  font-weight:600;
+}
+body #page-calc .departure-schedule-label{
+  display:inline-flex;
+  align-items:center;
+  min-height:var(--control-height);
+}
+body #page-calc .departure-after-text{
+  color:var(--label-secondary);
+  font-size:15px;
+  font-weight:500;
+}
+body #page-calc .departure-after-text{
+  display:inline-flex;
+  align-items:center;
+  min-height:var(--control-height);
+  line-height:1;
+}
+body #page-calc .departure-chevron, body #page-landing .l-chevron, body .member-settings-toggle{
+  min-height:var(--control-height);
+}
+
+/* 結果もカードにしない。時計と同じ「基準点」の言語で、罫線と数字だけで見せる */
+body #page-calc .member-row-wrapper, body #page-calc .member-row, body #page-calc .button-controls{
+  background:var(--surface-primary);
+}
+body .member-row::after, body .member-setting-row::after{
+  background:var(--divider);
+}
+body .member-identity-row .name-text{
+  color:var(--label-strong);
+  font-size:18px;
+  font-weight:700;
+}
+body .member-departure-status{
+  color:var(--label-secondary);
+  font-size:15px;
+  font-weight:600;
+}
+body .member-departure-status.counting{
+  color:var(--action-primary);
+}
+body .member-departure-status.departed{
+  color:var(--label-tertiary);
+}
+body .member-auto-settings{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  background:transparent;
+  border-top:1px solid var(--border);
+  padding:8px var(--space-3) 10px;
+}
+body .member-setting-row{
+  min-height:0;
+  margin:0;
+  padding:0;
+}
+body .member-setting-row::after{
+  display:none;
+}
+
+/* 座標+行軍時間、ステ強化+ペットを、それぞれ横並び2カラムの1行にまとめる。
+   縦4行だった詳細を横並び2行に圧縮し、1人分の高さをできるだけコンパクトにする */
+body .member-setting-pair{
+  display:flex;
+  align-items:center;
+  gap:var(--space-3);
+}
+body .member-setting-pair .member-setting-row{
+  flex:1 1 0;
+  min-width:0;
+  gap:6px;
+}
+/* 座標・行軍時間：ラベルと値を詰めて並べる */
+body .member-setting-pair div.member-setting-row{
+  justify-content:flex-start;
+}
+/* ステ強化・ペット：ラベルとトグルを両端に振る */
+body .member-setting-pair label.member-setting-row{
+  justify-content:space-between;
+}
+body .member-setting-label{
+  flex:0 0 auto;
+  color:var(--text-muted);
+  font-size:12px;
+  font-weight:500;
+  white-space:nowrap;
+}
+body .member-setting-value, body .member-coordinates{
+  color:var(--text-muted);
+  font-size:13px;
+  font-weight:500;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* 座標・行軍時間・ステ強化・ペットを均等な4項目の縦並びにしない、という元の考え方は、
+   今回は横2カラム×2行という配置そのもので表現するため、行軍時間だけを大きくする強調はやめ、
+   他の値と同じ文字サイズに揃えて一覧性を優先する */
+body .march-select, body #page-calc .march-select{
+  color:var(--text-primary);
+  font-size:13px;
+  font-weight:600;
+  font-variant-numeric:tabular-nums;
+}
+body .coord-input{
+  width:34px;
+  min-width:34px;
+  min-height:22px;
+  height:22px;
+  padding:0;
+  border-radius:0;
+  background:transparent;
+  border:0;
+  border-bottom:1px solid var(--border);
+  color:var(--text-muted);
+  font-size:13px;
+  font-weight:500;
+  text-align:center;
+}
+body .march-control{
+  gap:4px;
+}
+
+/* 1人分の中の間隔はそのまま。展開されているブロックの前後の境目だけ余白を広く取り、
+   罫線の種類は増やさずに「どこからどこまでが1人分か」を空間のリズムだけで伝える。
+   折りたたみ同士が並ぶ通常のリストはこれまで通り詰めたまま変えない */
+body #players .member-row-wrapper:not(:first-child):has(.member-auto-settings:not([hidden])), body #players .member-row-wrapper:has(.member-auto-settings:not([hidden])) + .member-row-wrapper{
+  margin-top:var(--space-4);
+}
+body .march-auto-badge, body .coord-axis, body .member-pet-remaining{
+  font-size:12px;
+  font-weight:500;
+  color:var(--text-muted);
+}
+body .delete-bg, body .member-row-wrapper .delete-bg{
+  width:72px;
+  background:var(--danger-soft);
+  color:var(--danger-text);
+  font-size:13px;
+  font-weight:600;
+}
+body .button-controls .control-btn, body #page-calc .button-controls .control-btn, body #add-member{
+  min-height:50px;
+  color:var(--action-primary);
+  font-size:17px;
+  font-weight:500;
+}
+body .preview-text-box, body .copy{
+  padding:var(--space-3);
+  border:0;
+  border-radius:0;
+  background:var(--surface-secondary);
+  color:var(--label-secondary);
+  font-family:var(--font-num);
+  font-size:14px;
+  line-height:1.65;
+}
+
+@media (max-width:380px){
+body .header, body.landing-active .header{
+    padding-top:28px;
+  }
+body .page-tabs, body.landing-active .page-tabs{
+    margin-bottom:var(--space-4);
+  }
+body #utc-now, body.landing-active #utc-now{
+    font-size:34px;
+  }
+body .impact-display-inner > .impact-time{
+    font-size:28px;
+  }
+}
+

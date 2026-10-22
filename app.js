@@ -1,5 +1,15 @@
+import {DEFAULT_FIREBASE_CONFIG} from './js/config.js';
+import {connectRallySync, isSyncConfigured} from './js/api/rally-sync.js';
+import {createPlayerApi} from './js/api/players.js';
+import {pad2, calculateCastle, calculateDeparture} from './js/domain/timing.js';
+import {lookupMarchTime} from './js/domain/march.js';
+import {initLandingPage} from './js/ui/landing.js';
+import {initSwitchPage} from './js/ui/switch.js';
+import {initGuidedDemo} from './js/ui/demo.js';
+
+// UI composition root: DOM events, local settings and presentation state.
+// Network transports and time formulas live in js/api and js/domain.
 /* ======= ヘルパ ======= */
-function pad2(n){return String(n).padStart(2,'0')}
 
 /* ======= 集結主名簿：Firebase Realtime Database でリアルタイム同期 =======
    指示役が現在入力している集結主名だけを候補として共有する。 */
@@ -64,7 +74,7 @@ async function publishCurrentRoster(){
   if(!firebaseSync) return;
   const roster = getCurrentDirectorRoster();
   try{
-    await firebaseSync.set(firebaseSync.ref(firebaseSync.database, 'activeRally/roster'), roster);
+    await firebaseSync.publishRoster(roster);
   }catch(error){
     console.warn('集結主名簿を同期できませんでした', error);
   }
@@ -73,18 +83,8 @@ async function publishCurrentRoster(){
 function subscribeLiveRoster(){
   if(!firebaseSync) return;
   if(firebaseRosterUnsubscribe) firebaseRosterUnsubscribe();
-  const rosterRef = firebaseSync.ref(firebaseSync.database, 'activeRally/roster');
-  firebaseRosterUnsubscribe = firebaseSync.onValue(rosterRef, snapshot => {
-    const value = snapshot.val();
-    const incoming = Array.isArray(value) ? value : (value && typeof value === 'object' ? Object.values(value) : []);
-    const seen = new Set();
-    LIVE_MEMBER_ROSTER = incoming.map(v => String(v || '').trim()).filter(name => {
-      if(!name) return false;
-      const key = name.toLocaleLowerCase('ja-JP');
-      if(seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
+  firebaseRosterUnsubscribe = firebaseSync.subscribeRoster(names => {
+    LIVE_MEMBER_ROSTER = names;
     refreshDeviceMemberOptions();
     if(currentInput) showAutocomplete(currentInput, getSuggestions((currentInput.textContent || '').trim()));
   });
@@ -92,28 +92,19 @@ function subscribeLiveRoster(){
 
 
 /* 既存のSmart-testと同じFirebase Realtime Databaseを再利用 */
-const FIREBASE_CONFIG = window.ARRIVAL_FIREBASE_CONFIG || {
-  apiKey:'AIzaSyDZlCZo-h0lZ-lwU7FwNULDvem0isR_fa4',
-  authDomain:'celebration-7658d.firebaseapp.com',
-  databaseURL:'https://celebration-7658d-default-rtdb.asia-southeast1.firebasedatabase.app',
-  projectId:'celebration-7658d',
-  storageBucket:'celebration-7658d.firebasestorage.app',
-  messagingSenderId:'974478338084',
-  appId:'1:974478338084:web:2bdfb382f544de4c42d0b1'
-};
+const FIREBASE_CONFIG = window.ARRIVAL_FIREBASE_CONFIG || DEFAULT_FIREBASE_CONFIG;
 
 let firebaseSync = null;
 let firebaseMemberUnsubscribe = null;
 let currentRemoteDeparture = null;
 let utcPipLastDeparture = null;
-let firebaseServerOffsetMs = 0;
 
 function firebaseNow(){
-  return Date.now() + firebaseServerOffsetMs;
+  return firebaseSync ? firebaseSync.now() : Date.now();
 }
 
 function firebaseIsConfigured(){
-  return Boolean(FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.databaseURL && FIREBASE_CONFIG.projectId);
+  return isSyncConfigured(FIREBASE_CONFIG);
 }
 
 function getRegisteredDeviceMember(){
@@ -150,7 +141,7 @@ function updateDeviceCountdown(){
   const expiredKey = currentRemoteDeparture.key;
   clearDeviceCountdown({keepPipHold:true});
   if(firebaseSync && expiredKey){
-    firebaseSync.remove(firebaseSync.ref(firebaseSync.database, `activeRally/members/${expiredKey}`)).catch(()=>{});
+    firebaseSync.removeMember(expiredKey).catch(()=>{});
   }
 }
 
@@ -163,19 +154,15 @@ function subscribeRegisteredMember(){
   const name = getRegisteredDeviceMember();
   const key = rosterFirebaseKey(name);
   if(!firebaseSync || !key) return;
-  const memberRef = firebaseSync.ref(firebaseSync.database, `activeRally/members/${key}`);
-  firebaseMemberUnsubscribe = firebaseSync.onValue(memberRef, snapshot => {
-    const value = snapshot.val();
-    const departureTime = Number.isFinite(Number(value?.departureTime))
-      ? Number(value.departureTime)
-      : Date.parse(value?.launchTime || '');
+  firebaseMemberUnsubscribe = firebaseSync.subscribeMember(key, value => {
+    const departureTime = value?.departureTime;
     if(!value || (value.name && value.name !== name) || !Number.isFinite(departureTime)){
       clearDeviceCountdown();
       return;
     }
     if(departureTime <= firebaseNow()){
       clearDeviceCountdown();
-      firebaseSync.remove(memberRef).catch(()=>{});
+      firebaseSync.removeMember(key).catch(()=>{});
       return;
     }
     currentRemoteDeparture = {key, name, departureTime};
@@ -187,51 +174,25 @@ async function initializeFirebaseSync(){
   updateDeviceRegistrationUi();
   if(!firebaseIsConfigured()) return;
   try{
-    const version = '12.17.1';
-    const [appModule, databaseModule] = await Promise.all([
-      import(`https://www.gstatic.com/firebasejs/${version}/firebase-app.js`),
-      import(`https://www.gstatic.com/firebasejs/${version}/firebase-database.js`)
-    ]);
-    const app = appModule.initializeApp(FIREBASE_CONFIG);
-    firebaseSync = {
-      database:databaseModule.getDatabase(app),
-      ref:databaseModule.ref,
-      onValue:databaseModule.onValue,
-      update:databaseModule.update,
-      remove:databaseModule.remove,
-      set:databaseModule.set
-    };
-    databaseModule.onValue(databaseModule.ref(firebaseSync.database, '.info/serverTimeOffset'), snapshot => {
-      const offset = snapshot.val();
-      if(typeof offset === 'number') firebaseServerOffsetMs = offset;
-    });
+    firebaseSync = await connectRallySync(FIREBASE_CONFIG);
     updateDeviceRegistrationUi();
     subscribeLiveRoster();
     subscribeRegisteredMember();
   }catch(error){
     console.warn('Firebase同期を開始できませんでした', error);
-    if(status) status.textContent = 'Firebaseへ接続できません。設定と通信状態を確認してください。';
+    showToast('Firebaseへ接続できません。設定と通信状態を確認してください。');
   }
 }
 
 async function publishRosterDepartureTimes(rowData){
   if(!firebaseSync) return;
-  const updates = {};
-  LIVE_MEMBER_ROSTER.forEach(name => { updates[rosterFirebaseKey(name)] = null; });
-  rowData.forEach(item => {
+  const departures = rowData.map(item => {
     const enteredName = (item.row.querySelector('.name-text')?.textContent || '').trim();
     const name = canonicalRosterName(enteredName);
-    const key = rosterFirebaseKey(name);
-    if(!name || !key) return;
-    updates[key] = {
-      name,
-      departureTime:item.depTime,
-      launchTime:new Date(item.depTime).toISOString(),
-      updatedAt:firebaseNow()
-    };
-  });
+    return {key:rosterFirebaseKey(name), name, departureTime:item.depTime};
+  }).filter(item => item.name && item.key);
   try{
-    await firebaseSync.update(firebaseSync.ref(firebaseSync.database, 'activeRally/members'), updates);
+    await firebaseSync.publishDepartures(departures, LIVE_MEMBER_ROSTER.map(rosterFirebaseKey));
   }catch(error){
     console.warn('出発時刻を同期できませんでした', error);
     showToast('Firebase同期に失敗しました');
@@ -763,42 +724,6 @@ function updateAllMarchOptions(minSec = 10, maxSec = 120){
 updateAllMarchOptions();
 
 /* ======= 固定目標向け・行軍時間実測マスター ======= */
-const MARCH_TIME_MASTER = Object.freeze({
-  '592,590':[62,55,50,45], '594,590':[56,50,45,41], '596,590':[52,47,42,39],
-  '598,590':[50,45,41,37], '600,590':[50,45,41,37], '602,590':[52,47,42,39],
-  '604,590':[56,50,45,41], '606,590':[62,55,50,45],
-  '590,592':[62,55,50,45], '592,592':[54,48,44,40], '594,592':[48,43,39,36],
-  '596,592':[43,39,35,32], '598,592':[40,36,33,30], '600,592':[40,36,33,30],
-  '602,592':[43,39,35,32], '604,592':[48,43,39,36], '606,592':[54,48,44,40],
-  '608,592':[62,55,50,45],
-  '590,594':[56,50,45,41], '592,594':[48,43,39,36], '606,594':[48,43,39,36],
-  '608,594':[56,50,45,41],
-  '590,596':[52,47,42,39], '592,596':[43,39,35,32], '606,596':[43,39,35,32],
-  '608,596':[52,47,42,39],
-  '590,598':[50,45,41,37], '592,598':[40,36,33,30], '606,598':[40,36,33,30],
-  '608,598':[50,45,41,37],
-  '590,600':[50,45,41,37], '592,600':[40,36,33,30], '606,600':[40,36,33,30],
-  '608,600':[50,45,41,37],
-  '590,602':[52,47,42,39], '592,602':[43,39,35,32], '606,602':[43,39,35,32],
-  '608,602':[52,47,42,39],
-  '590,604':[56,50,45,41], '592,604':[48,43,39,36], '606,604':[48,43,39,36],
-  '608,604':[56,50,45,41],
-  '590,606':[62,55,50,45], '592,606':[54,48,44,40], '594,606':[48,43,39,36],
-  '596,606':[43,39,35,32], '598,606':[40,36,33,30], '600,606':[40,36,33,30],
-  '602,606':[43,39,35,32], '604,606':[48,43,39,36], '606,606':[54,48,44,40],
-  '608,606':[62,55,50,45],
-  '592,608':[62,55,50,45], '594,608':[56,50,45,41], '596,608':[52,47,42,39],
-  '598,608':[50,45,41,37], '600,608':[50,45,41,37], '602,608':[52,47,42,39],
-  '604,608':[56,50,45,41], '606,608':[62,55,50,45]
-});
-
-function lookupMarchTime(coordX, coordY, statBoost, petActive){
-  const values = MARCH_TIME_MASTER[`${coordX},${coordY}`];
-  if(!values) return null;
-  const columnIndex = (petActive ? 2 : 0) + (statBoost ? 1 : 0);
-  return values[columnIndex];
-}
-
 function refreshMemberAutoMarch(row, options = {}){
   if(!row) return null;
   const xInput = row.querySelector('.coord-x');
@@ -1587,36 +1512,7 @@ document.querySelectorAll('#players .member-row').forEach(attachSwipeToRow);
 
 /* ======= 行イベント（入力・選択用） ======= */
 /* ======= ID からプレイヤー名・アイコンを取得 ======= */
-const PLAYER_LOOKUP_URL = 'members.json';
-const ORACLE_PLAYER_URL = 'https://wosoracle.com/api/v1/players/';
-const ORACLE_TOKEN = 'jp_79b2864bf87dc99485d1c12971807608077b3581';
-
-async function fetchOraclePlayer(id){
-  const res = await fetch(`${ORACLE_PLAYER_URL}${id}`, {
-    headers: {Authorization: `Bearer ${ORACLE_TOKEN}`}
-  });
-  if(res.status === 404) return null;
-  if(!res.ok) throw new Error(String(res.status));
-  const data = await res.json();
-  return {name: data.name || '', avatar: data.avatar_url || ''};
-}
-let memberDirectoryPromise = null;
-
-function loadMemberDirectory(){
-  if(!memberDirectoryPromise){
-    memberDirectoryPromise = fetch(PLAYER_LOOKUP_URL, {cache:'no-cache'})
-      .then(res => {
-        if(!res.ok) throw new Error(String(res.status));
-        return res.json();
-      })
-      .then(data => data.players || {})
-      .catch(error => {
-        memberDirectoryPromise = null;
-        throw error;
-      });
-  }
-  return memberDirectoryPromise;
-}
+const playerApi = createPlayerApi();
 const PLAYER_ID_PATTERN = /^\d{5,12}$/;
 
 function renderMemberAvatar(row){
@@ -1651,13 +1547,7 @@ async function lookupPlayerForRow(row){
   row.dataset.lookingUp = id;
   avatar?.classList.add('loading');
   try{
-    let player = null;
-    try{
-      player = await fetchOraclePlayer(id);
-    }catch(error){
-      const directory = await loadMemberDirectory();
-      player = directory[id] || null;
-    }
+    const player = await playerApi.getPlayer(id);
     if(!player){
       showToast('IDが見つかりません');
       return;
@@ -1812,7 +1702,7 @@ function buildMemberRowHtml(member = {}){
   const fid = escapeMemberText(member.fid || '');
   const avatar = escapeMemberText(member.avatar || '');
   return `
-    <div class="delete-bg" onclick="deleteThisRow(this)">削除</div>
+    <div class="delete-bg">削除</div>
     <div class="member-row" data-fid="${fid}" data-avatar="${avatar}" data-nickname="${fid ? name : ''}">
       <div class="member-identity-row">
         <span class="member-avatar" aria-hidden="true"></span>
@@ -1944,7 +1834,8 @@ actionBtn.addEventListener('click',()=>{
   const rallyMin = parseInt(rallyMinSel.value,10);
 
   // 今から：現在時刻 + 準備時間 + 集結時間 + 最長行軍
-  arriveUtc=new Date(now.getTime() + prepSec*1000 + rallyMin*60*1000 + maxMarch*1000);
+  const timing = calculateCastle({nowMs:now.getTime(), prepSeconds:prepSec, rallyMinutes:rallyMin, maxMarchSeconds:maxMarch});
+  arriveUtc=new Date(timing.impactTime);
 
   const arriveStr=`${pad2(arriveUtc.getUTCHours())}:${pad2(arriveUtc.getUTCMinutes())}:${pad2(arriveUtc.getUTCSeconds())}`;
   impactTime.textContent=arriveStr;
@@ -1960,7 +1851,7 @@ actionBtn.addEventListener('click',()=>{
     let dep;
 
     // 今から：現在時刻 + 準備時間 + (最長行軍 - 個人行軍)
-    dep = new Date(now.getTime() + prepSec*1000 + (maxMarch - march)*1000);
+    dep = new Date(calculateDeparture(timing.firstDepartureTime, maxMarch, march));
 
     const depTime = dep.getTime();
     row.dataset.departureTime = String(depTime);
@@ -2395,210 +2286,10 @@ document.querySelectorAll('.page-tab-btn').forEach(btn => {
 });
 
 /* ======= 着弾時刻発行ページ ======= */
-(function(){
-  const savedLandingRally = parseInt(localStorage.getItem('landingRallyMin'));
-  const savedLandingPrep = parseInt(localStorage.getItem('landingPrepTime'));
-  const savedLandingDiff = parseInt(localStorage.getItem('landingDiffSeconds'));
-  if(Number.isFinite(savedLandingRally)){
-    ensureSelectOption(landingRallyMinSel, savedLandingRally, `${savedLandingRally}分`);
-  }
-  if(Number.isFinite(savedLandingPrep)){
-    ensureSelectOption(landingPrepTimeSel, savedLandingPrep, marchLabel(savedLandingPrep));
-  }
-  if(Number.isFinite(savedLandingDiff)){
-    const diffMinutes = Math.floor(savedLandingDiff / 60);
-    const diffSeconds = savedLandingDiff % 60;
-    ensureSelectOption(landingDiffMinSel, diffMinutes, `${diffMinutes}分`);
-    ensureSelectOption(landingDiffSecSel, diffSeconds, `${diffSeconds}秒`);
-  }
-  landingRallyMinSel.addEventListener('change', () => localStorage.setItem('landingRallyMin', landingRallyMinSel.value));
-  landingPrepTimeSel.addEventListener('change', () => localStorage.setItem('landingPrepTime', landingPrepTimeSel.value));
-  const saveLandingDiff = () => {
-    const totalSeconds = (parseInt(landingDiffMinSel.value) || 0) * 60 + (parseInt(landingDiffSecSel.value) || 0);
-    localStorage.setItem('landingDiffSeconds', String(totalSeconds));
-  };
-  landingDiffMinSel.addEventListener('change', saveLandingDiff);
-  landingDiffSecSel.addEventListener('change', saveLandingDiff);
-
-  // コピー共通処理
-  async function doCopy(timeStr, timeStr2){
-    const rallyMin = parseInt(document.getElementById('l-rally-min').value) || 1;
-    let text;
-    if(timeStr2){
-      text = `${rallyMin}分集結お願いします。🙇‍♂️\n①【${timeStr} UTC】着弾\n②【${timeStr2} UTC】着弾`;
-    } else {
-      text = `${rallyMin}分集結お願いします。🙇‍♂️\n【${timeStr} UTC】着弾\u3000`;
-    }
-    if(await copyText(text)){
-      flashResults('#l-result');
-      showToast();
-    }
-  }
-
-  // 計算ボタン：計算＋自動コピー
-  document.getElementById('l-action-btn').addEventListener('click', function(){
-    const btn = this;
-    btn.textContent = '計算中...';
-    btn.disabled = true;
-
-    setTimeout(function(){
-      const fromNow  = parseInt(document.getElementById('l-from-now').value)  || 30;
-      const rallyMin = parseInt(document.getElementById('l-rally-min').value) || 1;
-      const diffMin  = parseInt(document.getElementById('l-diff-min').value) || 0;
-      const diffSec  = parseInt(document.getElementById('l-diff-sec').value) || 0;
-      const diffTotalSeconds = diffMin * 60 + diffSec;
-      const twoWave  = diffTotalSeconds !== 0;
-
-      const now    = new Date();
-      const target = new Date(now.getTime() + (fromNow + rallyMin * 60) * 1000);
-      const timeStr = `${pad2(target.getUTCHours())}:${pad2(target.getUTCMinutes())}:${pad2(target.getUTCSeconds())}`;
-
-      // 1発目ラベル切替
-      document.getElementById('l-result-label').textContent = twoWave ? '① 着弾' : '着弾時刻';
-      document.getElementById('l-result-time').textContent = timeStr;
-      document.getElementById('l-result').style.display = 'block';
-
-      // 2発目
-      let timeStr2 = null;
-      if(twoWave){
-        const target2 = new Date(target.getTime() + diffTotalSeconds * 1000);
-        timeStr2 = `${pad2(target2.getUTCHours())}:${pad2(target2.getUTCMinutes())}:${pad2(target2.getUTCSeconds())}`;
-        document.getElementById('l-result-time2').textContent = timeStr2;
-        document.getElementById('l-result2-row').style.display = 'block';
-      } else {
-        document.getElementById('l-result2-row').style.display = 'none';
-      }
-
-      btn.textContent = '計算開始';
-      btn.disabled = false;
-
-      doCopy(timeStr, timeStr2);
-    }, 600);
-  });
-
-})();
+initLandingPage({landingRallyMinSel, landingPrepTimeSel, landingDiffMinSel, landingDiffSecSel, ensureSelectOption, marchLabel, copyText, flashResults, showToast});
 
 /* ======= スイッチページ ======= */
-(function(){
-  const swActionBtn = document.getElementById('sw-action-btn');
-  if(!swActionBtn || !swRallyMinSel || !swFromNowInput) return;
-
-  // 前回設定の復元
-  const savedSwBase = parseInt(localStorage.getItem('switchBaseMarchSeconds'), 10);
-  if(SWITCH_MARCH_SECONDS.includes(savedSwBase)){
-    swRallyMinSel.value = String(savedSwBase);
-  }
-  const savedSwFromNow = parseInt(localStorage.getItem('switchFromNowSeconds'), 10);
-  if(Number.isFinite(savedSwFromNow) && savedSwFromNow >= 1){
-    swFromNowInput.value = String(savedSwFromNow);
-  }
-  swRallyMinSel.addEventListener('change', () => localStorage.setItem('switchBaseMarchSeconds', swRallyMinSel.value));
-  swFromNowInput.addEventListener('change', () => localStorage.setItem('switchFromNowSeconds', swFromNowInput.value));
-
-  function formatSwitchUtc(date){
-    return `${pad2(date.getUTCHours())}:${pad2(date.getUTCMinutes())}:${pad2(date.getUTCSeconds())}`;
-  }
-
-  function buildSwitchPreview(impactDate, entries){
-    const lines = [];
-    lines.push('今からスイッチします！');
-    lines.push('該当の時刻に王城へ1軍部隊を送ってください。');
-    lines.push('');
-    lines.push('王城までの行軍 → 出発時刻');
-    lines.push('');
-    entries.forEach(e => {
-      lines.push(`${`${e.march}秒`.padEnd(6, ' ')}→ ${e.timeStr} UTC`);
-    });
-    lines.push('━━━━━━━━━━━');
-    lines.push(`着弾時刻：${formatSwitchUtc(impactDate)} UTC`);
-    lines.push('');
-    lines.push('端末を同期すると、');
-    lines.push('ゲーム内で時計やカウントダウンを利用できます。');
-    return lines.join('\n');
-  }
-
-  // 計算ボタン：計算＋プレビュー生成＋自動コピー
-  swActionBtn.addEventListener('click', function(){
-    const btn = this;
-    const originalLabel = btn.textContent;
-    btn.textContent = '計算中...';
-    btn.disabled = true;
-
-    setTimeout(async function(){
-      const baseMarch = SWITCH_MARCH_SECONDS.includes(parseInt(swRallyMinSel.value, 10))
-        ? parseInt(swRallyMinSel.value, 10) : 55;
-      // 基準出発時刻が必ず未来になるよう最低1秒を確保
-      const fromNowSec = Math.max(1, parseInt(swFromNowInput.value, 10) || 30);
-
-      // 1. 押した瞬間のUTCを取得
-      const now = new Date();
-      // 2. 基準出発時刻 = 現在UTC + 今から○秒後
-      const baseDeparture = new Date(now.getTime() + fromNowSec * 1000);
-      // 3. 着弾時刻 = 基準出発時刻 + 行軍基準秒
-      const impact = new Date(baseDeparture.getTime() + baseMarch * 1000);
-      // 4. 各行軍秒数の出発時刻 = 着弾時刻 - 各行軍秒数
-      const entries = SWITCH_MARCH_SECONDS.map(march => ({
-        march,
-        timeStr: formatSwitchUtc(new Date(impact.getTime() - march * 1000))
-      }));
-
-      document.getElementById('sw-impact-time').textContent = formatSwitchUtc(impact);
-      document.getElementById('sw-result').style.display = 'block';
-
-      // 5. チャット貼り付け用プレビューを生成
-      const previewMsg = buildSwitchPreview(impact, entries);
-      const previewText = document.getElementById('sw-preview-text');
-      if(previewText) previewText.textContent = previewMsg;
-
-      btn.textContent = originalLabel;
-      btn.disabled = false;
-      flashResults('#sw-result');
-
-      // 6. プレビュー全文を自動でクリップボードにコピー
-      const copied = await copyText(previewMsg);
-      if(copied) showToast('✓ コピーしました');
-    }, 600);
-  });
-
-  // プレビュー本体タップでコピー（開閉トグルはヘッダー側のみが担当するため競合しない）
-  const swPreviewInner = document.querySelector('#sw-preview-content .collapsible-content-inner');
-  if(swPreviewInner){
-    swPreviewInner.addEventListener('click', async function(){
-      const previewText = document.getElementById('sw-preview-text');
-      const text = previewText ? previewText.textContent : '';
-      if(!text) return;
-      const copied = await copyText(text);
-      if(copied) showToast('✓ コピーしました');
-    });
-  }
-
-  // プレビュー折りたたみ（page-calcの実装と同じ挙動を独立実装）
-  const swPreviewToggle = document.getElementById('sw-preview-toggle');
-  const swPreviewContent = document.getElementById('sw-preview-content');
-  const swPreviewArrow = document.getElementById('sw-preview-arrow');
-  let swPreviewExpanded = false;
-  if(swPreviewToggle && swPreviewContent && swPreviewArrow){
-    swPreviewContent.addEventListener('transitionend', function(){
-      if(swPreviewExpanded) swPreviewContent.style.height = 'auto';
-    });
-    swPreviewToggle.addEventListener('click', function(){
-      if(swPreviewExpanded){
-        const currentHeight = swPreviewContent.scrollHeight;
-        swPreviewContent.style.height = currentHeight + 'px';
-        swPreviewContent.offsetHeight; // 強制リフロー
-        swPreviewContent.style.height = '0';
-        swPreviewContent.setAttribute('aria-hidden','true');
-        swPreviewArrow.classList.remove('is-open');
-      }else{
-        const targetHeight = swPreviewContent.scrollHeight;
-        swPreviewContent.style.height = targetHeight + 'px';
-        swPreviewContent.setAttribute('aria-hidden','false');
-        swPreviewArrow.classList.add('is-open');
-      }
-      swPreviewExpanded = !swPreviewExpanded;
-    });
-  }
-})();
+initSwitchPage({swRallyMinSel, swFromNowInput, SWITCH_MARCH_SECONDS, copyText, flashResults, showToast});
 
 /* ======= ペット通知システム ======= */
 const petNotificationTimers = {};
@@ -2702,198 +2393,10 @@ window.addEventListener('load', function() {
   document.addEventListener('pointerdown',e=>{ if(!e.target.closest('#players')) players.querySelectorAll('.member-row-wrapper.is-editing').forEach(el=>el.classList.remove('is-editing')); },true);
 })();
 
-/* ======================================================================
-   自動再生デモ：実際の画面の上に指アイコンと小窓の模擬表示だけを重ねて
-   使い方を短く見せる。実際の設定・同期状態は一切変更しない。
-   ====================================================================== */
-(function(){
-  const finger = document.getElementById('demo-finger');
-  const caption = document.getElementById('demo-caption');
-  const skipBtn = document.getElementById('demo-skip');
-  const replayBtn = document.getElementById('demo-replay');
-  const miniClock = document.getElementById('demo-mini-clock');
-  const miniTime = document.getElementById('demo-mini-time');
-  const miniCountdown = document.getElementById('demo-mini-countdown');
-  const miniName = document.getElementById('demo-mini-name');
-  const miniValue = document.getElementById('demo-mini-value');
-  const syncList = document.getElementById('demo-sync-list');
-  const syncListItem = syncList ? syncList.querySelector('.demo-sync-list-item') : null;
-  if(!finger || !caption || !skipBtn || !replayBtn || !miniClock || !syncList || !syncListItem) return;
+initGuidedDemo({formatRemainingSeconds, setClockQuickMenu});
 
-  const ua = navigator.userAgent || '';
-  const isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) || location.search.includes('forceDemo=1');
-  const seenKey = 'rallyGuidedDemoSeenV1';
-  if(!isIOS) return;
-
-  const DEMO_NAME = 'マリン';
-
-  let playToken = 0;
-  let clockTimerId = null;
-
-  function wait(ms){ return new Promise(resolve => setTimeout(resolve, ms)); }
-  function centerOf(el){ const r = el.getBoundingClientRect(); return {x:r.left + r.width/2, y:r.top + r.height/2}; }
-  function moveFingerTo(x,y){ finger.style.left = x+'px'; finger.style.top = y+'px'; }
-  function tapFinger(){ finger.classList.remove('tap'); void finger.offsetWidth; finger.classList.add('tap'); }
-  function showCaption(text){ caption.textContent = text; caption.classList.add('show'); }
-  function hideCaption(){ caption.classList.remove('show'); }
-
-  function startMiniClockTicker(){
-    stopMiniClockTicker();
-    const tick = () => {
-      const d = new Date();
-      miniTime.textContent = `${pad2(d.getUTCHours())}:${pad2(d.getUTCMinutes())}:${pad2(d.getUTCSeconds())}`;
-    };
-    tick();
-    clockTimerId = setInterval(tick, 1000);
-  }
-  function stopMiniClockTicker(){
-    if(clockTimerId){ clearInterval(clockTimerId); clockTimerId = null; }
-  }
-
-  function morphClockToPip(){
-    const clock = document.getElementById('utc-clock-trigger');
-    const rect = clock.getBoundingClientRect();
-    miniClock.style.transition = 'none';
-    miniClock.style.top = rect.top + 'px';
-    miniClock.style.left = rect.left + 'px';
-    miniClock.style.width = rect.width + 'px';
-    miniClock.style.height = rect.height + 'px';
-    miniClock.style.borderRadius = '18px';
-    miniClock.style.background = '#ffffff';
-    miniTime.style.color = '#1c1c1e';
-    miniClock.classList.add('show');
-    startMiniClockTicker();
-    void miniClock.getBoundingClientRect();
-    requestAnimationFrame(() => {
-      miniClock.style.transition = '';
-      const w = 128, h = 76;
-      miniClock.style.top = (window.innerHeight - h - Math.max(28, window.innerHeight * 0 + 28)) + 'px';
-      miniClock.style.left = (window.innerWidth - w - 16) + 'px';
-      miniClock.style.width = w + 'px';
-      miniClock.style.height = h + 'px';
-      miniClock.style.borderRadius = '16px';
-      miniClock.style.background = '#1c1c1e';
-      miniTime.style.color = '#ffffff';
-    });
-  }
-
-  function swapMiniClockToCountdown(){
-    stopMiniClockTicker();
-    miniTime.hidden = true;
-    miniCountdown.hidden = false;
-    miniName.textContent = DEMO_NAME;
-  }
-
-  function positionSyncListNear(el){
-    const r = el.getBoundingClientRect();
-    syncList.style.left = 'auto';
-    syncList.style.right = (window.innerWidth - r.right) + 'px';
-    syncList.style.top = (r.bottom + 6) + 'px';
-  }
-
-  function runFastCountdown(token){
-    return new Promise(resolve => {
-      let v = 9.8;
-      miniValue.textContent = formatRemainingSeconds(v * 1000);
-      const id = setInterval(() => {
-        if(token !== playToken){ clearInterval(id); resolve(); return; }
-        v -= 0.35 + Math.random() * 0.3;
-        if(v <= 0.4){
-          miniValue.textContent = formatRemainingSeconds(400);
-          clearInterval(id);
-          resolve();
-          return;
-        }
-        miniValue.textContent = formatRemainingSeconds(v * 1000);
-      }, 90);
-    });
-  }
-
-  function resetVisualState(){
-    finger.classList.remove('show', 'tap');
-    miniClock.classList.remove('show');
-    miniClock.removeAttribute('style');
-    miniTime.removeAttribute('style');
-    miniTime.hidden = false;
-    miniCountdown.hidden = true;
-    syncList.classList.remove('show');
-    syncList.removeAttribute('style');
-    hideCaption();
-    stopMiniClockTicker();
-    if(typeof setClockQuickMenu === 'function') setClockQuickMenu(false);
-  }
-
-  function endDemo(){
-    resetVisualState();
-    skipBtn.hidden = true;
-    replayBtn.hidden = false;
-    localStorage.setItem(seenKey, '1');
-  }
-
-  async function play(){
-    const myToken = ++playToken;
-    const alive = () => myToken === playToken;
-
-    resetVisualState();
-    skipBtn.hidden = false;
-    replayBtn.hidden = true;
-
-    await wait(500); if(!alive()) return;
-
-    const clock = document.getElementById('utc-clock-trigger');
-    let p = centerOf(clock);
-    moveFingerTo(p.x, p.y);
-    finger.classList.add('show');
-    await wait(650); if(!alive()) return;
-    tapFinger();
-    await wait(300); if(!alive()) return;
-
-    morphClockToPip();
-    showCaption('時計をタップすると小窓（PiP）表示になります');
-    await wait(1700); if(!alive()) return;
-    hideCaption();
-
-    const menuBtn = document.getElementById('app-settings-button');
-    p = centerOf(menuBtn);
-    moveFingerTo(p.x, p.y);
-    await wait(550); if(!alive()) return;
-    tapFinger();
-    if(typeof setClockQuickMenu === 'function') setClockQuickMenu(true);
-    await wait(350); if(!alive()) return;
-
-    const syncBtn = document.getElementById('quick-sync-btn');
-    p = centerOf(syncBtn);
-    moveFingerTo(p.x, p.y);
-    showCaption('「…」から端末同期でメンバーと出発時刻を合わせられます');
-    await wait(650); if(!alive()) return;
-    tapFinger();
-    await wait(250); if(!alive()) return;
-    if(typeof setClockQuickMenu === 'function') setClockQuickMenu(false);
-    positionSyncListNear(menuBtn);
-    syncList.classList.add('show');
-    await wait(400); if(!alive()) return;
-
-    p = centerOf(syncListItem);
-    moveFingerTo(p.x, p.y);
-    hideCaption();
-    await wait(600); if(!alive()) return;
-    tapFinger();
-    await wait(250); if(!alive()) return;
-    syncList.classList.remove('show');
-    finger.classList.remove('show');
-
-    swapMiniClockToCountdown();
-    showCaption('同期が完了すると出発までのカウントダウン表示に変わります');
-    await runFastCountdown(myToken); if(!alive()) return;
-
-    await wait(1600); if(!alive()) return;
-    endDemo();
-  }
-
-  skipBtn.addEventListener('click', () => { playToken++; endDemo(); });
-  replayBtn.addEventListener('click', () => { play(); });
-
-  if(localStorage.getItem(seenKey) !== '1'){
-    requestAnimationFrame(() => { play(); });
-  }
-})();
+// Delegation covers both initial rows and rows added after settings restoration.
+document.getElementById('players').addEventListener('click', event => {
+  const deleteButton = event.target.closest('.delete-bg');
+  if(deleteButton) deleteThisRow(deleteButton);
+});

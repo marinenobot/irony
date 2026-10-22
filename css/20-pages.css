@@ -1,0 +1,422 @@
+/* ===== Tab1 (王城決戦) スコープ限定 ===== */
+#page-calc #impact-display .impact-display{ display:block; }
+/* ===== /Tab1 ===== */
+
+/* ===== Tab2 (着弾時刻発行) スコープ限定 ===== */
+#page-landing .mode-card{
+  padding:12px !important;
+  margin:12px 0 !important;
+}
+#l-result .impact-display{ display:block; }
+/* ===== /Tab2 ===== */
+
+/* ===== Tab3 (スイッチ) スコープ限定 ===== */
+#page-switch .mode-card{
+  padding:12px;
+  margin:12px 0;
+}
+#page-switch .sw-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px 2px;
+  border-bottom:1px solid var(--border);
+}
+#page-switch .sw-row:last-of-type{
+  border-bottom:none;
+}
+/* ラベル・単位の文字サイズ/色を王城決戦・着弾時刻の同種の行（departure-setting-name / departure-after-text）に揃える */
+#page-switch .sw-row-label{
+  font-size:17px;
+  font-weight:600;
+  color:var(--text-primary);
+}
+#page-switch .sw-row-control{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+#page-switch .sw-row-control select{
+  -webkit-appearance:none;
+  appearance:none;
+  background-image:none;
+  font-family:inherit;
+}
+/* 同じ行にある select（55秒）と書体を揃える。font-numだと「30」だけ字形が変わり、
+   同じスイッチタブの中で行ごとに高さ・太さの見え方がずれて見える原因になっていた */
+#page-switch .impact-display{
+  display:block;
+}
+#page-switch .sw-chevron{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:20px;
+  min-width:20px;
+  min-height:44px;
+  margin:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  color:var(--border);
+  font-size:0;
+}
+#page-switch .sw-chevron::after{
+  content:"";
+  display:block;
+  width:7px;
+  height:7px;
+  border-right:2px solid currentColor;
+  border-bottom:2px solid currentColor;
+  border-radius:1px;
+  transform:rotate(-45deg);
+}
+#page-switch .sw-chevron:hover, #page-switch .sw-chevron:focus, #page-switch .sw-chevron:active{
+  color:var(--accent);
+  background:transparent;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+}
+/* ===== /Tab3 ===== */
+
+/* signal色はこの計算完了フラッシュ専用。他のUI(ホバー/選択/バッジ等)には流用しない */
+@keyframes tableFlashEffect{
+  0%{
+    border-color:transparent;
+    box-shadow:0 0 0 rgba(var(--signal-rgb),0);
+  }
+  30%{
+    border-color:var(--signal);
+    box-shadow:0 0 20px rgba(var(--signal-rgb),0.45);
+  }
+  70%{
+    border-color:var(--signal);
+    box-shadow:0 0 20px rgba(var(--signal-rgb),0.45);
+  }
+  100%{
+    border-color:transparent;
+    box-shadow:0 0 0 rgba(var(--signal-rgb),0);
+  }
+}
+.dep{font-size:1.05rem;font-weight:700;color:var(--accent)}
+.copy{white-space:pre-line;background:var(--surface);border:1px solid var(--border);padding:8px;min-height:40px;font-size:14px;line-height:1.4;margin-top:8px;border-radius:var(--radius);color:var(--text-secondary);font-weight:500}
+.footer{text-align:center;color:var(--text-tertiary);font-size:12px;margin-top:20px;user-select:none}
+body #page-calc #action-btn.calculating{background:var(--btn-disabled);cursor:not-allowed;box-shadow:none}
+
+/* シングルライン */
+.inline-select{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--control-radius);
+  padding:10px 12px;
+  font-size:17px;
+  font-weight:600;
+  color:var(--text-secondary);
+  cursor:pointer;
+  min-width:60px;
+  min-height:var(--touch-target);
+  line-height:1.5;
+  font-variant-numeric:tabular-nums;
+  transition:border-color 0.2s;
+}
+.inline-select:focus{
+  outline:none;
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(var(--accent-rgb),.10);
+}
+.btn-primary{
+  cursor:pointer;
+  transition:background-color .2s,color .2s,border-color .2s,box-shadow .2s,transform .1s;
+}
+.btn-primary:active{
+  transform:translateY(1px);
+}
+.btn-primary:focus, .btn-primary:focus-visible{
+  outline:none;
+}
+
+/* コピー時のトースト */
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:18px;
+  transform:translateX(-50%);
+  background:var(--accent);
+  color:var(--surface);
+  padding:10px 18px;
+  border-radius:8px;
+  font-size:14px;
+  font-weight:600;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.3s;
+  box-shadow:0 2px 8px rgba(0,0,0,0.15);
+  z-index:9999;
+  white-space:nowrap;
+}
+.toast.show{opacity:1}
+
+/* オートコンプリートドロップダウン */
+.autocomplete-dropdown{
+  position:absolute;
+  background:var(--surface);
+  border:1px solid var(--accent);
+  border-radius:var(--radius);
+  box-shadow:0 4px 8px rgba(0,0,0,0.12);
+  max-height:200px;
+  overflow-y:auto;
+  z-index:1000;
+  display:none;
+  min-width:200px;
+}
+.autocomplete-dropdown.show{
+  display:block;
+}
+.autocomplete-item{
+  padding:10px 12px;
+  cursor:pointer;
+  border-bottom:1px solid var(--border);
+  transition:background 0.15s;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+}
+.autocomplete-item:last-child{
+  border-bottom:none;
+}
+.autocomplete-item:hover, .autocomplete-item.selected{
+  background:var(--bg-blue-light);
+}
+.autocomplete-name{
+  font-weight:600;
+  color:var(--text-secondary);
+  flex:1;
+  font-size:15px;
+}
+.autocomplete-march{
+  font-size:13px;
+  color:var(--text-muted);
+  background:var(--bg-light);
+  padding:3px 8px;
+  border-radius:4px;
+  font-weight:500;
+  white-space:nowrap;
+}
+
+/* ===== ページタブ ===== */
+.page-tabs{
+  display:flex;
+  gap:var(--space-4);
+  margin-bottom:var(--spacing);
+  border-bottom:1px solid var(--border);
+  background:transparent;
+}
+.page-tab-btn{
+  flex:0 0 auto;
+  width:auto;
+  background:transparent;
+  border:none;
+  border-bottom:2px solid transparent;
+  border-radius:0;
+  margin-bottom:-1px;
+  padding:10px 2px;
+  font-size:15px;
+  font-weight:500;
+  color:var(--text-muted);
+  cursor:pointer;
+  min-height:44px;
+  transition:border-color 0.2s;
+  font-family:inherit;
+  -webkit-tap-highlight-color:transparent;
+  white-space:nowrap;
+  outline:none;
+  -webkit-appearance:none;
+}
+.page-tab-btn:hover, .page-tab-btn:focus, .page-tab-btn:active{
+  background:transparent;
+  outline:none;
+}
+.page-tab-btn.active{
+  color:var(--text-primary);
+  border-bottom-color:var(--accent);
+  font-weight:700;
+}
+.page-content{
+  display:none;
+}
+.page-content.active{
+  display:block;
+}
+
+
+/* ===== 着弾時刻発行：iOS風レイアウト ===== */
+.clock-time-line{
+  display:inline-flex;
+  align-items:baseline;
+}
+body.landing-active{
+  background:var(--bg);
+  padding:28px 18px max(24px, env(safe-area-inset-bottom));
+}
+body.landing-active .container{
+  max-width:480px;
+}
+body.landing-active .header{
+  margin:18px 2px 28px;
+  text-align:left;
+}
+body.landing-active #utc-now{
+  color:var(--text-primary);
+  font-size:clamp(36px, 11vw, 52px);
+  font-weight:800;
+  letter-spacing:-.08em;
+}
+body.landing-active .page-tabs{
+  display:flex;
+  gap:3px;
+  margin:0 0 30px;
+  padding:3px;
+  border:0;
+  border-radius:13px;
+  background:var(--surface-secondary);
+}
+body.landing-active .page-tab-btn{
+  min-height:42px;
+  margin:0;
+  padding:8px 10px;
+  border:0;
+  border-radius:10px;
+  color:var(--text);
+  font-size:15px;
+  font-weight:700;
+  transition:background .2s, box-shadow .2s;
+}
+body.landing-active .page-tab-btn.active{
+  color:var(--text-primary);
+  background:transparent;
+  border-radius:0;
+  border-bottom:2px solid var(--accent);
+  font-weight:700;
+}
+#page-landing .landing-settings-card{
+  margin:0 !important;
+  padding:0 !important;
+  overflow:hidden;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+#page-landing .l-setting-row, #page-landing .l-wave-options{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  min-height:66px;
+  margin:0 16px;
+  padding:0 2px;
+  border-bottom:1px solid #e7e7e7;
+  color:var(--text-primary);
+  cursor:pointer;
+}
+#page-landing .l-setting-row:last-of-type{
+  border-bottom:0;
+}
+#page-landing .l-setting-name{
+  color:var(--text-primary);
+  font-size:17px;
+  font-weight:600;
+  white-space:nowrap;
+}
+#page-landing .l-setting-control{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+  min-width:0;
+}
+#page-landing .l-setting-control select{
+  width:auto;
+  min-width:0;
+  min-height:44px;
+  padding:6px 0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:var(--text-secondary);
+  font-size:17px;
+  font-weight:700;
+  text-align:right;
+  text-align-last:right;
+  box-shadow:none;
+  -webkit-appearance:none;
+  appearance:none;
+}
+#page-landing .l-chevron{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:28px;
+  min-width:28px;
+  min-height:44px;
+  margin:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:var(--border);
+  font-size:30px;
+  font-weight:300;
+  line-height:1;
+  box-shadow:none;
+  transform:none;
+}
+#page-landing .l-chevron:hover, #page-landing .l-chevron:focus, #page-landing .l-chevron:active{
+  background:transparent;
+  color:var(--accent);
+  box-shadow:none;
+  transform:none;
+}
+#page-landing .l-wave-options{
+  min-height:60px;
+  border-bottom:0;
+}
+#page-landing #l-result{
+  margin-top:18px;
+}
+#page-landing #l-result-inner{
+  overflow:hidden;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+#page-landing #l-result .impact-display{
+  margin:0 !important;
+}
+#page-landing #l-result2-row{
+  border-top:1px solid #e7e7e7;
+}
+body.landing-active #page-landing .footer{
+  margin-top:34px;
+  color:var(--border);
+  font-size:13px;
+  font-weight:600;
+}
+
+@media (max-width:380px){
+body.landing-active{
+    padding-left:12px;
+    padding-right:12px;
+  }
+body.landing-active #utc-now{
+    font-size:34px;
+  }
+#page-landing .l-setting-name, #page-landing .l-setting-control select{
+    font-size:15px;
+  }
+}
+
