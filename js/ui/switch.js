@@ -1,6 +1,6 @@
 import {pad2, calculateSwitchImpact} from '../domain/timing.js';
 
-export function initSwitchPage({swRallyMinSel, swFromNowInput, SWITCH_MARCH_SECONDS, copyText, flashResults, showToast}){
+export function initSwitchPage({nowMs = Date.now, swRallyMinSel, swFromNowInput, SWITCH_MARCH_SECONDS, copyText, flashResults, showToast}){
   const swActionBtn = document.getElementById('sw-action-btn');
   if(!swActionBtn || !swRallyMinSel || !swFromNowInput) return;
 
@@ -52,7 +52,7 @@ export function initSwitchPage({swRallyMinSel, swFromNowInput, SWITCH_MARCH_SECO
       const fromNowSec = Math.max(1, parseInt(swFromNowInput.value, 10) || 30);
 
       // 1. 押した瞬間のUTCを取得
-      const now = new Date();
+      const now = new Date(nowMs());
       // 2. 基準出発時刻 = 現在UTC + 今から○秒後
       const impact = new Date(calculateSwitchImpact(now.getTime(), fromNowSec, baseMarch));
       // 4. 各行軍秒数の出発時刻 = 着弾時刻 - 各行軍秒数

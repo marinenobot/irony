@@ -131,7 +131,7 @@ body.modal-open .member-row-wrapper {
 .member-settings-toggle:focus,
 .member-settings-toggle:active,
 .member-settings-toggle[aria-expanded="true"] {
-  background: var(--accent-soft);
+  background: transparent;
   color: var(--accent);
   box-shadow: none;
   transform: none;
@@ -288,8 +288,11 @@ body.modal-open .member-row-wrapper {
 }
 
 /* ペット発動中の集結主行 */
-.member-row.pet-active {
-  background: var(--accent-soft);
+body #page-calc .member-row.pet-active {
+  background: var(--pet-row-bg);
+}
+body #page-calc .member-row.pet-active .name-text {
+  color: var(--text);
 }
 
 /* 名前：入力枠なし、テキストだけ */

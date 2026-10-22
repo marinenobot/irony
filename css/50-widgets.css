@@ -360,7 +360,7 @@ body.landing-active .clock-time-line {
 }
 body #utc-now,
 body.landing-active #utc-now {
-  font-size: clamp(48px, 13.3vw, 58px);
+  font-size: clamp(34px, 9.6vw, 40px);
   font-weight: 650;
   letter-spacing: -0.045em;
   line-height: 0.98;
@@ -369,7 +369,7 @@ body.landing-active #utc-now {
 body #utc-millis,
 body.landing-active #utc-millis {
   margin-left: 3px;
-  font-size: clamp(18px, 5vw, 22px);
+  font-size: clamp(14px, 3.8vw, 16px);
   font-weight: 600;
   line-height: 1;
   text-shadow: none;
@@ -439,8 +439,8 @@ body .clock-quick-menu-title {
 /* UTC時計：単色。色の発光はやめ、テーマごとの差は境界線と文字にだけ入れる */
 body .clock,
 body.landing-active .clock {
-  min-height: 94px;
-  padding: 10px 16px;
+  min-height: 64px;
+  padding: 8px 16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -901,11 +901,6 @@ body .device-settings-row select {
   border-radius: 0;
   box-shadow: none;
 }
-body .member-row.pet-active,
-body .member-settings-toggle:hover,
-body .member-settings-toggle:focus,
-body .member-settings-toggle:active,
-body .member-settings-toggle[aria-expanded="true"],
 body .name-text:focus,
 body .march-select:focus,
 body .departure-preset-option:hover,

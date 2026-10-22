@@ -1,6 +1,6 @@
 import {pad2, calculateLanding} from '../domain/timing.js';
 
-export function initLandingPage({landingRallyMinSel, landingPrepTimeSel, landingDiffMinSel, landingDiffSecSel, ensureSelectOption, marchLabel, copyText, flashResults, showToast}){
+export function initLandingPage({nowMs = Date.now, landingRallyMinSel, landingPrepTimeSel, landingDiffMinSel, landingDiffSecSel, ensureSelectOption, marchLabel, copyText, flashResults, showToast}){
   const savedLandingRally = parseInt(localStorage.getItem('landingRallyMin'));
   const savedLandingPrep = parseInt(localStorage.getItem('landingPrepTime'));
   const savedLandingDiff = parseInt(localStorage.getItem('landingDiffSeconds'));
@@ -55,7 +55,7 @@ export function initLandingPage({landingRallyMinSel, landingPrepTimeSel, landing
       const diffTotalSeconds = diffMin * 60 + diffSec;
       const twoWave  = diffTotalSeconds !== 0;
 
-      const now    = new Date();
+      const now    = new Date(nowMs());
       const target = new Date(calculateLanding(now.getTime(), fromNow, rallyMin));
       const timeStr = `${pad2(target.getUTCHours())}:${pad2(target.getUTCMinutes())}:${pad2(target.getUTCSeconds())}`;
 

@@ -432,7 +432,7 @@ function drawUtcVideoFrame(timeText, millisText, departureData){
 }
 
 function tickUTC(){
-  const d=new Date();
+  const d=new Date(firebaseNow());
   const utcText = `${pad2(d.getUTCHours())}:${pad2(d.getUTCMinutes())}:${pad2(d.getUTCSeconds())}`;
   const millisText = (d.getUTCMilliseconds() / 1000).toFixed(1).slice(1);
   document.getElementById('utc-now').textContent = utcText;
@@ -650,7 +650,7 @@ function formatPetRemaining(remainingMs){
 }
 
 function updateMemberDepartureCountdowns(){
-  const now = Date.now();
+  const now = firebaseNow();
   document.querySelectorAll('#players .member-row').forEach(row => {
     const status = row.querySelector('.member-departure-status');
     if(!status) return;
@@ -1737,28 +1737,30 @@ function generateCopyMessage(sortedRowData){
   const rallyMin = rallyMinSel.value;
   const commonImpactTime = document.getElementById('common-impact-time').textContent;
 
+  const rows = sortedRowData
+    ? sortedRowData.map(item => item.row)
+    : [...document.querySelectorAll('#players .member-row')];
+  const entries = rows.map(row => ({
+    name:(row.querySelector('.name-text').textContent||'').trim(),
+    dep:row.querySelector('.dep').textContent.trim()||'-'
+  }));
+  const namedEntries = entries.filter(entry => entry.name);
+  const sameDeparture = namedEntries.length > 0 && namedEntries.every(entry => entry.dep === namedEntries[0].dep);
+
   const lines=[];
-  lines.push(`${rallyMin}分集結お願いします！🙇‍♂️🙇‍♂️✨`);
-  lines.push('');
-
-  if(sortedRowData){
-    // ソート済みのデータを使用
-    sortedRowData.forEach(item=>{
-      const name=(item.row.querySelector('.name-text').textContent||'').trim()||'集結主';
-      const dep=item.row.querySelector('.dep').textContent.trim()||'-';
-      lines.push(`${name} → ${dep} UTC`);
-    });
+  if(sameDeparture){
+    lines.push(`${rallyMin}分集結お願いします`);
+    lines.push('');
+    lines.push(`着弾時刻:${commonImpactTime} UTC`);
+    lines.push('');
+    namedEntries.forEach(entry => lines.push(`・${entry.name}`));
   }else{
-    // ソート前（通常の呼び出し）
-    document.querySelectorAll('#players .member-row').forEach(row=>{
-      const name=(row.querySelector('.name-text').textContent||'').trim()||'集結主';
-      const dep=row.querySelector('.dep').textContent.trim()||'-';
-      lines.push(`${name} → ${dep} UTC`);
-    });
+    lines.push(`${rallyMin}分集結お願いします！🙇‍♂️🙇‍♂️✨`);
+    lines.push('');
+    entries.forEach(entry => lines.push(`${entry.name || '集結主'} → ${entry.dep} UTC`));
+    lines.push('━━━━━━━━━━━');
+    lines.push(`着弾時刻：${commonImpactTime} UTC`);
   }
-
-  lines.push('━━━━━━━━━━━');
-  lines.push(`着弾時刻：${commonImpactTime} UTC`);
   const msg = lines.join('\n');
   document.getElementById('copy').textContent = msg;
   
@@ -1814,7 +1816,7 @@ actionBtn.addEventListener('click',()=>{
   actionBtn.disabled = true;
   actionBtn.textContent = '計算中...';
 
-  const now=new Date();
+  const now=new Date(firebaseNow());
 
   // 最長行軍（メンバー行から自動スキャン）
   let maxMarch = 0;
@@ -2302,10 +2304,10 @@ document.querySelectorAll('.page-tab-btn').forEach(btn => {
 });
 
 /* ======= 着弾時刻発行ページ ======= */
-initLandingPage({landingRallyMinSel, landingPrepTimeSel, landingDiffMinSel, landingDiffSecSel, ensureSelectOption, marchLabel, copyText, flashResults, showToast});
+initLandingPage({nowMs:firebaseNow, landingRallyMinSel, landingPrepTimeSel, landingDiffMinSel, landingDiffSecSel, ensureSelectOption, marchLabel, copyText, flashResults, showToast});
 
 /* ======= スイッチページ ======= */
-initSwitchPage({swRallyMinSel, swFromNowInput, SWITCH_MARCH_SECONDS, copyText, flashResults, showToast});
+initSwitchPage({nowMs:firebaseNow, swRallyMinSel, swFromNowInput, SWITCH_MARCH_SECONDS, copyText, flashResults, showToast});
 
 /* ======= ペット通知システム ======= */
 const petNotificationTimers = {};

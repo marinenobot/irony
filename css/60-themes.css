@@ -13,6 +13,7 @@ body[data-theme="light"] {
   --accent: #636366;
   --accent-rgb: 99, 99, 102;
   --accent-soft: #f2f2f7;
+  --pet-row-bg: rgba(0, 122, 255, 0.12);
   --button-bg: #f2f2f7;
   --button-text: #636366;
   --input-bg: #ffffff;
@@ -48,6 +49,7 @@ body[data-theme="dark"] {
   --accent: #c7c7cc;
   --accent-rgb: 199, 199, 204;
   --accent-soft: #2c2c2e;
+  --pet-row-bg: rgba(10, 132, 255, 0.26);
   --button-bg: #2c2c2e;
   --button-text: #c7c7cc;
   --input-bg: #1c1c1e;
