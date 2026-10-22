@@ -31,41 +31,6 @@ function saveRallyPresets(values){
   return presets;
 }
 
-function injectRallyPresetStyles(){
-  if(document.getElementById('rally-preset-style')) return;
-  const style = document.createElement('style');
-  style.id = 'rally-preset-style';
-  style.textContent = `
-    .rally-preset-card{margin-bottom:10px;padding:14px;background:var(--card-bg,#fff);border:1px solid var(--border-color,#d8d8dc);border-radius:12px}
-    .rally-preset-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-    .rally-preset-title{font-size:13px;font-weight:700;color:inherit}
-    .rally-preset-settings{border:0;background:transparent;padding:4px 2px;color:#777;font-size:12px;font-weight:600}
-    .rally-preset-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
-    .rally-preset-button{min-width:0;height:42px;border:1px solid #cfcfd4;border-radius:8px;background:transparent;color:inherit;font:inherit;font-size:13px;font-weight:700;white-space:nowrap}
-    .rally-preset-button.selected{background:#1d1d1f;border-color:#1d1d1f;color:#fff}
-    #rally-row[hidden],#l-rally-row[hidden]{display:none!important}
-    .rally-preset-backdrop{position:fixed;inset:0;z-index:2200;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.28)}
-    .rally-preset-backdrop[hidden]{display:none}
-    .rally-preset-sheet{width:min(100%,430px);background:#f7f7f9;border-radius:18px 18px 0 0;padding:12px 14px max(22px,env(safe-area-inset-bottom));box-shadow:0 -10px 32px rgba(0,0,0,.14)}
-    .rally-preset-sheet-head{display:grid;grid-template-columns:60px 1fr 60px;align-items:center;height:38px}
-    .rally-preset-sheet-head strong{text-align:center;font-size:16px}
-    .rally-preset-sheet-head button{border:0;background:transparent;font:inherit;font-size:13px;color:#666;padding:6px 0}
-    .rally-preset-sheet-head .rally-preset-save{font-weight:700;color:inherit}
-    .rally-preset-editor{display:grid;gap:8px;margin-top:12px}
-    .rally-preset-editor-row{display:grid;grid-template-columns:74px 1fr 26px;align-items:center;gap:8px;padding:8px 10px;background:#fff;border:1px solid #dedee3;border-radius:10px}
-    .rally-preset-editor-row label{font-size:13px;color:#777}
-    .rally-preset-editor-row input{width:100%;height:36px;border:1px solid #d0d0d5;border-radius:8px;background:#fff;color:#1d1d1f;padding:0 10px;font:inherit;text-align:right}
-    .rally-preset-editor-row span{font-size:13px;color:#777}
-    [data-theme="dark"] .rally-preset-card{background:#1c1c1e;border-color:#343438}
-    [data-theme="dark"] .rally-preset-button{border-color:#4a4a4f}
-    [data-theme="dark"] .rally-preset-button.selected{background:#f2f2f7;border-color:#f2f2f7;color:#111}
-    [data-theme="dark"] .rally-preset-sheet{background:#18181b;color:#f5f5f7}
-    [data-theme="dark"] .rally-preset-editor-row{background:#242428;border-color:#3a3a3f}
-    [data-theme="dark"] .rally-preset-editor-row input{background:#18181b;border-color:#48484d;color:#f5f5f7}
-  `;
-  document.head.appendChild(style);
-}
-
 function createRallyPresetEditor(onSave){
   let backdrop = document.getElementById('rally-preset-editor');
   if(backdrop) return backdrop;
@@ -99,7 +64,6 @@ function createRallyPresetEditor(onSave){
 }
 
 function installRallyPresetCards({landingRallyMinSel, ensureSelectOption}){
-  injectRallyPresetStyles();
   const castleRallyMinSel = document.getElementById('rally-min');
   const targets = [
     {row:document.getElementById('rally-row'), select:castleRallyMinSel, storageKey:null},
@@ -150,17 +114,32 @@ function installRallyPresetCards({landingRallyMinSel, ensureSelectOption}){
     editor.hidden = false;
   };
 
+  const quickMenuMain = document.querySelector('#clock-quick-menu .clock-quick-menu-main');
+  if(quickMenuMain && !document.getElementById('quick-rally-presets-btn')){
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.id = 'quick-rally-presets-btn';
+    button.className = 'clock-quick-menu-item';
+    button.setAttribute('role', 'menuitem');
+    button.innerHTML = '<span class="clock-quick-menu-title">集結時間プリセット</span><span class="clock-quick-menu-chevron" aria-hidden="true">›</span>';
+    quickMenuMain.appendChild(button);
+    button.addEventListener('click', () => {
+      const menu = document.getElementById('clock-quick-menu');
+      const settingsButton = document.getElementById('app-settings-button');
+      menu?.classList.remove('show');
+      menu?.setAttribute('aria-hidden', 'true');
+      settingsButton?.setAttribute('aria-expanded', 'false');
+      openEditor();
+    });
+  }
+
   targets.forEach(target => {
     if(target.row.previousElementSibling?.classList.contains('rally-preset-card')) return;
     const card = document.createElement('div');
     card.className = 'rally-preset-card';
-    card.innerHTML = `<div class="rally-preset-head"><span class="rally-preset-title">集結時間</span><button type="button" class="rally-preset-settings">設定</button></div><div class="rally-preset-grid"></div>`;
+    card.innerHTML = '<div class="rally-preset-title">集結時間</div><div class="rally-preset-grid"></div>';
     target.row.parentElement.insertBefore(card, target.row);
     target.row.hidden = true;
-    card.querySelector('.rally-preset-settings').addEventListener('click', event => {
-      event.stopPropagation();
-      openEditor();
-    });
     target.select.addEventListener('change', renderCards);
     cards.push({card, target});
   });
@@ -251,7 +230,4 @@ export function initLandingPage({nowMs = Date.now, landingRallyMinSel, landingPr
       doCopy(timeStr, timeStr2);
     }, 600);
   });
-
 }
-
-// Preview build trigger.
