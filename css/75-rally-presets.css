@@ -49,6 +49,13 @@
   display: none !important;
 }
 
+.page-content .mode-card:has(.rally-preset-card) {
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+}
+
 /* 右上の共通設定から開くプリセット編集シート */
 .rally-preset-backdrop {
   position: fixed;
