@@ -1,8 +1,10 @@
-/* Cascade order is intentional; see README.md before moving rules. */
+/* トークン・基本スタイル → 各画面 → ウィジェット → 配色 → 共通部品。 */
 @import url("css/00-base.css");
 @import url("css/10-members.css");
 @import url("css/20-pages.css");
 @import url("css/30-layout.css");
 @import url("css/40-responsive.css");
-@import url("css/50-compatibility.css");
+@import url("css/50-widgets.css");
 @import url("css/60-themes.css");
+
+@import url("css/70-components.css");

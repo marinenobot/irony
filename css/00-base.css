@@ -1,89 +1,88 @@
-/* ===== デザインシステム: 実用的で整然としたUI ===== */
-/* 色階層: 背景 / surface / accent はテーマトークンだけで切り替える */
-:root{
-  /* ===== 統一デザイントークン（確定版） ===== */
-  --font-ui:-apple-system,BlinkMacSystemFont,"SF Pro Text","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
-  --font-num:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",sans-serif;
-  /* Color: lightを初期値にし、旧名は下で互換エイリアスにする */
-  --bg:#F2F2F7;
-  --surface:#FFFFFF;
-  --surface-secondary:#F7F7FA;
-  --text:#1C1C1E;
-  --text-subtle:#636366;
-  --text-muted:#8E8E93;
-  --border:rgba(60,60,67,.18);
-  --border-strong:rgba(60,60,67,.28);
-  --divider:rgba(60,60,67,.12);
-  --accent:#636366;
-  --accent-rgb:99,99,102;
-  --accent-soft:#F2F2F7;
-  --button-bg:#F2F2F7;
-  --button-text:#636366;
-  --input-bg:#FFFFFF;
-  --time-primary:#1C1C1E;
-  --time-secondary:#636366;
-  --toggle-bg:#C7C7CC;
-  --toggle-active:#636366;
-  --danger-bg:rgba(179,69,61,.10);
-  --danger-text:#B3453D;
-  --success:#34C759;
-  --disabled-bg:#C7C7CC;
-  --blue-primary:var(--accent);
-  --blue-hover:var(--accent);
-  --blue-active:var(--accent);
-  --blue-text:var(--accent);
-  --theme-accent:var(--accent);
-  --theme-accent-rgb:var(--accent-rgb);
-  --theme-soft:var(--accent-soft);
-  --theme-line:var(--card-border);
-  --signal:var(--accent);
-  --signal-rgb:var(--accent-rgb);
-  --text-primary:var(--text);
-  --text-secondary:var(--text-subtle);
-  --card-bg:var(--surface);
-  --bg-light:var(--surface-secondary);
-  --bg-lighter:var(--surface-secondary);
-  --bg-blue-light:var(--surface-secondary);
-  --red-error:var(--danger-text);
-  --red-error-hover:var(--danger-text);
-  --red-error-bg:var(--danger-bg);
-  --btn-disabled:var(--disabled-bg);
-  --text-tertiary:var(--divider);
-  /* Radius: 0を基本にしつつ、操作要素とカードだけ小さな丸みを許可 */
-  --radius:0;
-  --radius-control:10px;
-  --control-radius:10px;
-  --radius-control-sm:8px;
-  --card-radius:12px;
-  --radius-card:var(--card-radius);
-  --preview-radius:10px;
-  --card-border:var(--border);
-  --preview-border:var(--border);
-  /* Shadow: 常設カード用の控えめな影と、一時的に浮くオーバーレイ用の2種類のみ */
-  --shadow:0 1px 3px rgba(0,0,0,0.05);
-  --shadow-rest:0 1px 2px rgba(0,0,0,0.04), 0 6px 16px rgba(0,0,0,0.04);
-  --clock-shadow:0 2px 6px rgba(28,28,30,.03),0 8px 18px rgba(28,28,30,.035);
-  --shadow-overlay:0 8px 24px rgba(0,0,0,0.18);
-  --member-settings-icon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='3' fill='none' stroke='black' stroke-width='2'/%3E%3Cpath d='M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.09A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3v-4h.09A1.7 1.7 0 0 0 4.6 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3h4v.09A1.7 1.7 0 0 0 15.4 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.14.38.36.72.66 1 .3.27.68.41 1.08.4H21v4h-.09A1.7 1.7 0 0 0 19.4 15Z' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  --spacing:12px;
-  --space-1:8px;
-  --space-2:12px;
-  --space-3:16px;
-  --space-4:24px;
-  --space-5:32px;
-  --touch-target:44px;
-  --control-height:44px;
-  --motion-signal-dur:.8s;
-  /* 王城決戦・着弾時刻・スイッチ、3タブ共通のレイアウト寸法。
-     タブ下から「計算開始」までの縦位置をここだけで揃える */
-  --settings-row-height:56px;
-  --settings-top-gap:6px;
-  --settings-bottom-gap:24px;
-  --settings-rows-max:3;
-  --settings-area-height:calc(var(--settings-row-height) * var(--settings-rows-max));
+/* 基本トークン・リセット・汎用要素 */
+:root {
+  --font-auxiliary:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    sans-serif;
+  --font-ui:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "Hiragino Sans",
+    "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  --font-num:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue",
+    sans-serif;
+  --bg: #f2f2f7;
+  --surface: #ffffff;
+  --surface-secondary: #f7f7fa;
+  --text: #1c1c1e;
+  --text-subtle: #636366;
+  --text-muted: #8e8e93;
+  --border: rgba(60, 60, 67, 0.18);
+  --border-strong: rgba(60, 60, 67, 0.28);
+  --divider: rgba(60, 60, 67, 0.12);
+  --accent: #636366;
+  --accent-rgb: 99, 99, 102;
+  --accent-soft: #f2f2f7;
+  --button-bg: #f2f2f7;
+  --button-text: #636366;
+  --input-bg: #ffffff;
+  --time-primary: #1c1c1e;
+  --time-secondary: #636366;
+  --toggle-bg: #c7c7cc;
+  --toggle-active: #636366;
+  --danger-bg: rgba(179, 69, 61, 0.1);
+  --success: #34c759;
+  --disabled-bg: #c7c7cc;
+  --theme-accent-rgb: var(--accent-rgb);
+  --signal: var(--accent);
+  --signal-rgb: var(--accent-rgb);
+  --text-primary: var(--text);
+  --text-secondary: var(--text-subtle);
+  --bg-light: var(--surface-secondary);
+  --bg-blue-light: var(--surface-secondary);
+  --red-error: var(--danger-text);
+  --text-tertiary: var(--divider);
+  --radius: 0;
+  --control-radius: 10px;
+  --card-radius: 12px;
+  --radius-card: var(--card-radius);
+  --preview-radius: 10px;
+  --card-border: var(--border);
+  --preview-border: var(--border);
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --clock-shadow:
+    0 2px 6px rgba(28, 28, 30, 0.03), 0 8px 18px rgba(28, 28, 30, 0.035);
+  --shadow-overlay: 0 8px 24px rgba(0, 0, 0, 0.18);
+  --member-settings-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='3' fill='none' stroke='black' stroke-width='2'/%3E%3Cpath d='M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.09A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3v-4h.09A1.7 1.7 0 0 0 4.6 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3h4v.09A1.7 1.7 0 0 0 15.4 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.4 9c.14.38.36.72.66 1 .3.27.68.41 1.08.4H21v4h-.09A1.7 1.7 0 0 0 19.4 15Z' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --spacing: 12px;
+  --space-2: 12px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --touch-target: 44px;
+  --control-height: 44px;
+  --motion-signal-dur: 0.8s;
+  --settings-top-gap: 6px;
+  --surface-tertiary: var(--accent-soft);
+  --label-strong: var(--text);
+  --label-secondary: var(--text-subtle);
+  --label-tertiary: var(--text-muted);
+  --action-primary: var(--accent);
+  --danger-text: var(--red-error);
+  --row-chevron-w: 28px;
+  --final-section-gap: 16px;
+  --three-tab-row-h: 56px;
+  --compact-gap: 14px;
+  --component-row-height: 46px;
+  --component-inset: 16px;
+  --component-control-height: 44px;
+  --component-action-gap: 10px;
+  --component-result-height: 68px;
 }
-*{box-sizing:border-box;margin:0;padding:0}
-@media (prefers-reduced-motion:no-preference){
+/* 色階層: 背景 / surface / accent はテーマトークンだけで切り替える */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
   body,
   button,
   input,
@@ -91,11 +90,7 @@
   .clock,
   .page-tabs,
   .page-tab-btn,
-  .mode-card,
-  .collapsible-card,
-  .collapsible-header,
-  .copy-preview-card,
-  .preview-text-box,
+  .collapsible-card:where(:not(.copy-preview-card)),
   .device-settings-modal,
   .device-settings-panel,
   .device-settings-group,
@@ -104,226 +99,148 @@
   .clock-quick-menu-item,
   .toast,
   svg,
-  svg *{
-    transition-property:background-color,color,border-color,box-shadow,fill,stroke;
-    transition-duration:.25s;
-    transition-timing-function:ease;
+  svg * {
+    transition-property:
+      background-color, color, border-color, box-shadow, fill, stroke;
+    transition-duration: 0.25s;
+    transition-timing-function: ease;
   }
 }
-body{
-  background:var(--bg);
-  font-family:var(--font-ui);
-  color:var(--text-primary);
-  font-size:16px;
-  line-height:1.6;
-  margin:0;
-  padding:var(--spacing);
-  padding-bottom:16px;
-  -webkit-font-smoothing:antialiased;
+body {
+  margin: 0;
+  padding: var(--spacing);
+  padding-bottom: 16px;
 }
-.container{
-  max-width:450px;
-  margin:0 auto;
+.container {
+  margin: 0 auto;
 }
-
-/* ===== 共通パーツ ===== */
-label{
-  font-size:15px;
-  font-weight:600;
-  color:var(--text-secondary);
-  margin-bottom:8px;
+label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
 }
-select{
-  background:var(--input-bg);
-  border:1px solid var(--border);
-  border-radius:var(--control-radius);
-  padding:10px 12px;
-  font-size:16px;
-  font-weight:600;
-  color:var(--text-secondary);
-  cursor:pointer;
-  min-height:var(--touch-target);
-  transition:border-color 0.2s;
+select {
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--control-radius);
+  padding: 10px 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  min-height: var(--touch-target);
+  transition: border-color 0.2s;
 }
-select:focus{
-  outline:none;
-  border-color:var(--accent);
-  box-shadow:0 0 0 3px rgba(var(--accent-rgb),.10);
+select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.1);
 }
-input{
-  background:var(--input-bg);
-  border:1px solid var(--border);
-  border-radius:var(--control-radius);
-  padding:10px 12px;
-  font-size:16px;
-  color:var(--text-secondary);
-  min-height:var(--touch-target);
-  transition:border-color 0.2s;
+input {
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--control-radius);
+  padding: 10px 12px;
+  font-size: 16px;
+  color: var(--text-secondary);
+  min-height: var(--touch-target);
+  transition: border-color 0.2s;
 }
-input:focus{
-  outline:none;
-  border-color:var(--accent);
-  box-shadow:0 0 0 3px rgba(var(--accent-rgb),.10);
+input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.1);
 }
-
-/* ===== ボタン ===== */
-button{
-  background:var(--button-bg);
-  color:var(--button-text);
-  border:none;
-  border-radius:var(--radius);
-  padding:12px 20px;
-  font-size:17px;
-  font-weight:700;
-  width:100%;
-  cursor:pointer;
-  margin-top:var(--spacing);
-  min-height:var(--touch-target);
-  transition:background 0.2s, transform 0.1s;
+button {
+  background: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  border-radius: var(--radius);
+  padding: 12px 20px;
+  font-size: 17px;
+  font-weight: 700;
+  width: 100%;
+  cursor: pointer;
+  margin-top: var(--spacing);
+  min-height: var(--touch-target);
+  transition:
+    background 0.2s,
+    transform 0.1s;
 }
-.collapsible-header{
-  -webkit-tap-highlight-color:transparent;
+button:hover {
+  background: var(--button-bg);
 }
-button:hover{
-  background:var(--button-bg);
+button:active {
+  background: var(--button-bg);
+  transform: scale(0.98);
 }
-button:active{
-  background:var(--button-bg);
-  transform:scale(0.98);
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.2);
 }
-button:focus{
-  outline:none;
-  box-shadow:0 0 0 3px rgba(var(--accent-rgb),.20);
+.header {
+  margin-bottom: var(--spacing);
 }
-
-/* ===== ヘッダー（UTC時計） ===== */
-.header{
-  text-align:center;
-  margin-bottom:var(--spacing);
+.clock {
+  font-size: 40px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
-.clock{
-  font-size:40px;
-  font-weight:700;
-  color:var(--accent);
-  font-variant-numeric:tabular-nums;
-  font-family:var(--font-num);
+#utc-now {
+  text-shadow: none;
 }
-#utc-now{
-  text-shadow:none;
+.utc-label {
+  font-size: 0.5em;
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-left: 4px;
 }
-.utc-label{
-  font-size:0.5em;
-  color:var(--text-secondary);
-  font-weight:500;
-  margin-left:4px;
+.impact-display {
+  display: none;
+  text-align: center;
 }
-.mode-card{
-  background:var(--surface);
-  border:1px solid var(--card-border);
-  border-radius:var(--radius);
-  margin:var(--spacing) 0;
-  box-shadow:var(--shadow);
-  box-sizing:border-box;
-  width:100%;
-  padding:var(--spacing);
+.collapsible-card:where(:not(.copy-preview-card)) {
+  background: var(--surface);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-card);
+  margin: var(--spacing) 0;
+  box-shadow: var(--shadow);
+  box-sizing: border-box;
+  width: 100%;
+  overflow: hidden;
+  margin-top: 0 !important;
 }
-.impact-display{
-  display:none;
-  text-align:center;
+.collapsible-content {
+  overflow: hidden;
+  transition: height 0.3s ease;
 }
-.impact-display-inner{
-  display:flex;
-  align-items:baseline;
-  justify-content:center;
-  gap:6px;
-  line-height:1.5;
-  margin-left:-20px;
+.collapsible-content[aria-hidden="true"] {
+  height: 0;
+  overflow: hidden;
 }
-.collapsible-card{
-  background:var(--surface);
-  border:1px solid var(--card-border);
-  border-radius:var(--radius-card);
-  margin:var(--spacing) 0;
-  box-shadow:var(--shadow);
-  box-sizing:border-box;
-  width:100%;
-  overflow:hidden;
-  margin-top:0 !important;
+#time-input-group {
+  margin-right: 4px;
 }
-.collapsible-header{
-  padding:6px var(--spacing);
-  cursor:pointer;
-  padding-top:4px !important;
-  padding-bottom:4px !important;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  background:var(--bg-light);
-  user-select:none;
-  -webkit-tap-highlight-color:transparent;
-  min-height:30px;
-  transition:background 0.2s;
-  border:none;
-  width:100%;
-  text-align:left;
-  font-family:inherit;
-  font-size:inherit;
+.hidden {
+  display: none;
 }
-.collapsible-header:hover{
-  background:var(--bg-lighter);
+.aligned-box {
+  width: 100%;
+  margin: 0;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--surface);
+  text-align: center;
+  box-shadow: var(--shadow);
 }
-.collapsible-header:focus{
-  outline:2px solid var(--accent);
-  outline-offset:-2px;
-  box-shadow:0 0 0 3px rgba(var(--accent-rgb),.10);
-}
-.collapsible-header-title{
-  font-size:15px;
-  font-weight:600;
-  color:var(--text-secondary);
-}
-.collapsible-arrow{
-  font-size:16px;
-  color:var(--text-muted);
-}
-.collapsible-content{
-  overflow:hidden;
-  transition:height 0.3s ease;
-}
-.collapsible-content[aria-hidden="true"]{
-  height:0;
-  overflow:hidden;
-}
-.collapsible-content-inner{
-  padding:0;
-  background:var(--surface);
-  border-radius:0;
-  border:1px solid var(--divider);
-}
-#time-input-group{
-  margin-right:4px;
-}
-.hidden{
-  display:none;
-}
-.aligned-box{
-  width:100%;
-  margin:0;
-  border:1px solid var(--accent);
-  border-radius:var(--radius);
-  background:var(--surface);
-  text-align:center;
-  box-shadow:var(--shadow);
-}
-/* ===== セクション（カード風アコーディオン） ===== */
 
 /* “カードっぽさ”は最小限 */
 
 /* 結果ボックス（強調） */
 /* メンバーテーブル */
-#sec-members{
-  overflow-x:hidden;
-  padding:0;
-  margin:0;
+#sec-members {
+  overflow-x: hidden;
+  padding: 0;
+  margin: 0;
 }
-

@@ -1,0 +1,1272 @@
+/* 一覧・時計・メニュー・操作デモ */
+body .page-tabs,
+body.landing-active .page-tabs {
+  margin: 0 4px var(--settings-top-gap) 4px;
+}
+
+/* 設定エリア（mode-card）：内側の余白を0にし、行の高さだけで積み上げる。
+   コンテンツが少ないタブは min-height で不足分を空白として補い、
+   常に3行分の高さ（--settings-area-height）で揃える */
+
+/* 各設定行の行高を3タブ共通で64pxに */
+
+/* ボタン（計算開始）：高さ・角丸・配色を3タブ共通の1ルールにまとめる */
+body .clock,
+body.landing-active .clock {
+  flex-direction: row;
+  gap: 10px;
+}
+body .clock-pip-icon {
+  display: none;
+  position: absolute;
+  top: 27px;
+  right: 58px;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  color: var(--label-tertiary);
+}
+body .clock-pip-icon svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+body .utc-clock-overlay-countdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+}
+body .utc-clock-overlay-countdown-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+body .utc-clock-overlay-countdown-label {
+  color: var(--time-secondary);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 500;
+}
+body .utc-clock-overlay-countdown-name {
+  color: var(--time-primary);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+}
+body .utc-clock-overlay-countdown-time {
+  color: var(--time-primary);
+  font-family: var(--font-num);
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+body .utc-clock-overlay-countdown-unit {
+  color: var(--time-secondary);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+}
+body .utc-clock-overlay-countdown-value {
+  color: var(--time-primary);
+  font-family: var(--font-num);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+body .utc-clock-overlay-countdown-suffix {
+  color: var(--time-secondary);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* チャット貼り付け用プレビュー：文字と上下余白を少し詰める */
+
+/* 設定画面：見出しにアイコンを追加、PiP欄をカード＋行タップに変更 */
+body .device-settings-group-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+body .device-settings-row-chevron {
+  color: var(--text-muted);
+  font-size: 19px;
+  line-height: 1;
+}
+
+/* タブ（王城決戦／着弾時刻／スイッチ）：文字幅任せの左寄せをやめ、3等分で均等配置 */
+body .page-tab-btn,
+body.landing-active .page-tab-btn {
+  flex: 1 1 0;
+  text-align: center;
+}
+
+/* 設定ボタン：丸い背景と登録済みを示す緑の点を非表示に */
+
+/* 連番は名前より控えめに。並べ替え・削除でも自動で振り直される */
+body .member-identity-row::before {
+  min-width: 16px;
+  font-variant-numeric: tabular-nums;
+}
+body .member-identity-row {
+  cursor: pointer;
+}
+
+/* 閉：› ／ 開：⌄ */
+body .member-settings-toggle {
+  width: var(--row-chevron-w);
+  min-width: var(--row-chevron-w);
+}
+body .member-settings-toggle::before {
+  margin: 0;
+  transform: rotate(-45deg);
+}
+body .member-settings-toggle[aria-expanded="true"] {
+  transform: rotate(90deg);
+}
+
+/* 座標と行軍時間は同じ1行（左＝座標／右＝行軍時間） */
+body .member-setting-pair {
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: 36px;
+}
+body .member-setting-pair .member-setting-row {
+  flex: 0 0 auto;
+}
+body .member-setting-pair div.member-setting-row:last-child {
+  justify-content: flex-end;
+}
+
+/* ステ強化・ペットは1項目1行、右端にトグル */
+body .member-auto-settings > label.member-setting-row {
+  justify-content: space-between;
+  min-height: 36px;
+}
+body .member-setting-label {
+  font-size: 15px;
+}
+body .member-pet-remaining {
+  display: inline;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* 入力行数が違うタブに空白行を足さない。最後の入力行から同じ余白でボタンへ。 */
+
+/* スイッチ2行目も、他の入力行と同じグリッドへ含める。 */
+body #page-calc .departure-settings-card > div:last-of-type,
+body #page-landing .landing-settings-card > div:last-of-type,
+body #page-switch .switch-settings-card > div:last-of-type {
+  border-bottom: 0;
+}
+
+/* 左ラベルは全タブ同じサイズ・太さ。 */
+
+/* 右の値エリアは全タブ同じ基準。 */
+
+/* 値の文字サイズを統一。Safariのnative select矢印は表示しない。 */
+
+/* 共通chevron。 */
+
+/* 計算開始：最後の入力行から16px。3タブ同じ寸法。 */
+
+/* 結果表示：タイトル・時刻・UTCの文字基準を3タブ共通化。 */
+body #page-calc > #impact-display,
+body #page-landing > #l-result,
+body #page-switch > #sw-result {
+  width: 100% !important;
+  margin: 0 0 var(--final-section-gap) !important;
+  box-sizing: border-box;
+}
+body .impact-display,
+body #page-calc .impact-display,
+body #page-landing #l-result .impact-display,
+body #page-switch #sw-result .impact-display {
+  padding: 10px 0 0 !important;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+}
+
+/* チャットに実際にコピーされるプレビューを、同じ枠・同じ文字で表示。 */
+@keyframes copyPreviewFlash {
+  0% {
+    box-shadow: inset 0 0 0 0 rgba(var(--signal-rgb), 0);
+  }
+  35%,
+  70% {
+    box-shadow:
+      inset 0 0 0 2px rgba(var(--signal-rgb), 0.95),
+      0 0 16px rgba(var(--signal-rgb), 0.25);
+  }
+  100% {
+    box-shadow: inset 0 0 0 0 rgba(var(--signal-rgb), 0);
+  }
+}
+body .footer,
+body #page-calc .footer,
+body #page-landing .footer,
+body #page-switch .footer,
+body.landing-active #page-landing .footer {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* hidden互換コントロールはレイアウトに一切参加させない */
+body #time-input-group[hidden] {
+  display: none !important;
+}
+
+/* コピー完了の光はレイアウトを動かさない inset shadow で統一 */
+body #page-calc .members-table,
+body #page-landing #l-result-inner,
+body #page-switch #sw-result-inner {
+  width: 100% !important;
+  box-sizing: border-box;
+  border: 0;
+  outline: 0;
+}
+.header {
+  position: relative;
+}
+.clock-quick-menu {
+  position: absolute;
+  top: 66px;
+  right: 0;
+  z-index: 15000;
+  width: min(238px, calc(100vw - 40px));
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-overlay);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px) scale(0.985);
+  transform-origin: top right;
+  transition:
+    opacity 0.16s ease,
+    transform 0.16s ease,
+    visibility 0s 0.16s;
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+.clock-quick-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  transition:
+    opacity 0.16s ease,
+    transform 0.16s ease;
+}
+.clock-quick-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 54px;
+  margin: 0;
+  padding: 0 14px;
+  border: 0;
+  border-bottom: 1px solid var(--divider);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  box-shadow: none;
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+}
+.clock-quick-menu-item:last-child {
+  border-bottom: 0;
+}
+.clock-quick-menu-item:active {
+  background: var(--accent-soft);
+}
+.clock-quick-menu-title {
+  white-space: nowrap;
+}
+.clock-quick-menu-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.clock-quick-menu-chevron {
+  flex: 0 0 auto;
+  margin-left: 10px;
+  color: var(--text-muted);
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1;
+}
+/* 同期専用画面：既存設定画面と同一の行・余白・背景 */
+.device-sync-modal .device-settings-panel {
+  background: var(--bg);
+}
+.device-sync-select-wrap {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.device-sync-select-wrap select {
+  flex: 1;
+  min-width: 0;
+  color: var(--text-subtle);
+  font-size: 16px;
+  font-weight: 500;
+  text-align: right;
+  text-align-last: right;
+}
+/* 「…」は見た目は裸、タップ領域のみ十分確保 */
+body .clock:active,
+body.landing-active .clock:active {
+  box-shadow: var(--clock-shadow) !important;
+}
+/* …は円や背景を持たず、文字だけ */
+/* 集結主一覧は補助情報として一段弱く */
+body #page-calc .member-identity-row .name-text {
+  font-size: 17px;
+  font-weight: 600;
+}
+body #page-calc .member-departure-status {
+  font-size: 14px;
+  font-weight: 500;
+}
+/* 貼り付けプレビューも主役より弱く */
+/* 端末同期メニューは「端末同期：マリン」の一文表示 */
+.clock-quick-menu-value {
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+/* 自動再生デモ：実際の画面の上に指アイコンと小窓の模擬表示だけを重ねる（設定・同期状態は変更しない） */
+.demo-finger {
+  position: fixed;
+  z-index: 20002;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 30%,
+    rgba(255, 255, 255, 0.9),
+    rgba(255, 255, 255, 0.35) 60%,
+    rgba(255, 255, 255, 0) 72%
+  );
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(1);
+  transition:
+    left 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    top 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.25s ease;
+}
+.demo-finger.show {
+  opacity: 1;
+}
+.demo-finger.tap {
+  animation: demoFingerTap 0.45s ease;
+}
+@keyframes demoFingerTap {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  40% {
+    transform: translate(-50%, -50%) scale(0.72);
+  }
+}
+.demo-mini-clock {
+  position: fixed;
+  z-index: 20000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition:
+    top 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    left 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    border-radius 0.5s ease,
+    opacity 0.25s ease;
+}
+.demo-mini-clock.show {
+  opacity: 1;
+}
+.demo-mini-time {
+  color: var(--time-primary);
+  font-family: var(--font-num);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(14px, 7vw, 22px);
+  letter-spacing: -0.02em;
+}
+.demo-mini-countdown {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  color: var(--time-primary);
+}
+.demo-mini-name {
+  font-size: 11px;
+  font-weight: 700;
+}
+.demo-mini-label {
+  font-size: 10px;
+  color: var(--time-secondary);
+}
+.demo-mini-value {
+  font-family: var(--font-num);
+  font-size: 17px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.demo-mini-unit {
+  font-size: 10px;
+  color: var(--time-secondary);
+}
+.demo-sync-list {
+  position: fixed;
+  z-index: 20000;
+  min-width: 120px;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow-overlay);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px) scale(0.97);
+  transform-origin: top right;
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+.demo-sync-list.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.demo-sync-list-item {
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+.demo-caption {
+  position: fixed;
+  left: 50%;
+  bottom: max(28px, calc(env(safe-area-inset-bottom) + 14px));
+  z-index: 20001;
+  transform: translateX(-50%) translateY(6px);
+  margin: 0;
+  max-width: min(320px, calc(100vw - 48px));
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--surface-secondary);
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.4;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+.demo-caption.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.demo-skip {
+  position: fixed;
+  top: max(14px, env(safe-area-inset-top));
+  right: 14px;
+  z-index: 20002;
+  background: var(--accent-soft);
+  border: 0;
+  border-radius: 999px;
+  color: var(--text-subtle);
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 7px 14px;
+  min-height: 0;
+  width: auto;
+  margin: 0;
+  cursor: pointer;
+}
+.demo-replay {
+  position: fixed;
+  left: 50%;
+  bottom: max(32px, calc(env(safe-area-inset-bottom) + 18px));
+  transform: translateX(-50%);
+  z-index: 20002;
+  background: var(--accent);
+  color: var(--surface);
+  border: 0;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 20px;
+  min-height: 0;
+  width: auto;
+  margin: 0;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+}
+/* UTC時計：形は共通。テーマ差はよく見れば分かる程度 */
+body .header,
+body.landing-active .header {
+  padding-top: var(--compact-gap);
+  margin-bottom: var(--compact-gap);
+}
+body .clock,
+body.landing-active .clock {
+  position: relative;
+  width: calc(100% - 8px);
+  margin: 0 auto;
+  overflow: hidden;
+}
+body .clock-time-line,
+body.landing-active .clock-time-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0;
+  width: 100%;
+  line-height: 1;
+}
+body #utc-now,
+body.landing-active #utc-now {
+  font-size: clamp(48px, 13.3vw, 58px);
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+  color: var(--time-primary);
+}
+body #utc-millis,
+body.landing-active #utc-millis {
+  margin-left: 3px;
+  font-size: clamp(18px, 5vw, 22px);
+  font-weight: 600;
+  line-height: 1;
+  text-shadow: none;
+  color: var(--time-secondary);
+}
+body .utc-label,
+body.landing-active .utc-label {
+  margin-left: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  text-shadow: none;
+  color: var(--time-secondary);
+}
+/* テーマ選択は「…」メニュー内で完結 */
+.quick-theme-panel {
+  display: none;
+  border-top: 1px solid var(--divider);
+}
+.clock-quick-menu.theme-open .clock-quick-menu-main {
+  display: none;
+}
+.clock-quick-menu.theme-open .quick-theme-panel {
+  display: block;
+}
+.quick-theme-head {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--divider);
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--text);
+}
+.quick-theme-back {
+  width: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  margin: 0 4px 0 -6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-subtle);
+  font-size: 25px;
+  font-weight: 300;
+  line-height: 1;
+}
+.quick-theme-choice {
+  font-size: 15px;
+  font-weight: 500;
+  text-align: left;
+}
+.quick-theme-choice:last-child {
+  border-bottom: 0;
+}
+.quick-theme-choice::after {
+  margin-left: auto;
+}
+
+/* 文字色：黒・紺・茶の混在をなくす */
+body .name-text,
+body .quick-theme-choice,
+body .clock-quick-menu-title {
+  color: var(--text-primary);
+}
+/* UTC時計：単色。色の発光はやめ、テーマごとの差は境界線と文字にだけ入れる */
+body .clock,
+body.landing-active .clock {
+  min-height: 94px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  border: 1px solid var(--card-border);
+}
+
+/* コピー対象の光：上下左右同じ余白。テーマ色はごく薄く */
+body #page-calc #impact-display,
+body #page-landing #l-result-inner,
+body #page-switch #sw-result-inner {
+  padding: 12px 8px !important;
+  border-radius: 10px;
+}
+body #page-calc .members-table.flash {
+  border-color: transparent !important;
+}
+
+/* 集結主：1 マリン / 出発まで残り / 23.5秒 の視覚階層 */
+body .member-identity-row {
+  min-height: 56px;
+  padding: 0 10px 0 14px;
+  gap: 8px;
+}
+body .member-row-wrapper {
+  counter-increment: member-row;
+}
+body .member-identity-row::before {
+  content: counter(member-row);
+  flex: 0 0 22px;
+  width: 22px;
+  color: var(--text-muted);
+  font-family: var(--font-num);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+body .name-text {
+  font-size: 16px;
+  font-weight: 650;
+}
+body .member-departure-inline {
+  margin-left: auto;
+}
+body .member-departure-status {
+  padding: 0;
+  gap: 5px;
+  min-height: auto;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+body .member-departure-status.counting::before {
+  content: "出発まで残り";
+  margin-right: 5px;
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 500;
+}
+body .member-settings-toggle {
+  background: transparent;
+  color: var(--text-secondary);
+}
+body .member-row {
+  border-bottom-color: var(--border);
+}
+
+.quick-theme-head,
+.quick-theme-choice {
+  min-height: 46px;
+}
+
+/* 区切り線・chevronを同じ薄さに */
+
+/* 設定エリアは全タブ3行分を必ず確保。
+   王城決戦/スイッチの3行目は「空白行」として残るためボタンが上がらない。 */
+
+/* 1行目・2行目・3行目を完全に同じピッチへ。 */
+
+/* 計算開始は3タブで同じY座標・同じ高さ。 */
+
+/* 結果の開始位置も同じ。 */
+
+/* 王城決戦：計算前も結果1段分を予約し、集結主一覧が計算後に下へ跳ねない。
+   計算後は実際の結果がその予約領域を使う。 */
+body
+  #page-calc
+  > #impact-display[style*="display: block"]
+  + .collapsible-card:where(:not(.copy-preview-card)) {
+  margin-top: 0 !important;
+}
+
+/* 結果表示内のラベル/時刻は各タブで同じ中央位置。 */
+
+/* チャット貼り付け用プレビュー：高さ・上下余白・文字を全タブ共通化 */
+
+/* 集結主の連番：0にならないよう実際の行でカウントする */
+
+/* 王城決戦：着弾時刻と入力済み集結主を同じsignalで光らせる */
+
+/* Palette tokens: flavor names are intentionally not shown in UI. */
+
+/* Clock: keep size, narrow the glow to the digits only. */
+body #utc-now,
+body.landing-active #utc-now {
+  text-shadow: 0 2px 4px rgba(var(--theme-accent-rgb, 143, 169, 178), 0.1);
+}
+
+/* Settings -> button: no invisible third row. Same relative rhythm in all tabs. */
+
+/* Calculate buttons: same dimensions, slightly quieter and tighter. */
+
+/* Result: compact, equal internal whitespace, only result receives calculation glow. */
+body #page-calc > #impact-display,
+body #page-landing > #l-result,
+body #page-switch > #sw-result {
+  margin-top: 0 !important;
+  margin-bottom: var(--compact-gap) !important;
+}
+@keyframes resultSoftGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--theme-accent-rgb), 0);
+  }
+  40%,
+  70% {
+    box-shadow:
+      0 0 0 1px rgba(var(--theme-accent-rgb), 0.28),
+      0 0 10px rgba(var(--theme-accent-rgb), 0.11);
+  }
+}
+
+/* Remove pre-reserved result space: content follows naturally before calculation. */
+body
+  #page-calc
+  > #impact-display:not([style*="display: block"])
+  + .collapsible-card:where(:not(.copy-preview-card)) {
+  margin-top: 0 !important;
+}
+
+/* Member numbering and active editing glow. */
+body #players {
+  counter-reset: member-index;
+}
+body #players .member-row-wrapper {
+  counter-increment: none;
+}
+body #players .member-identity-row {
+  counter-increment: member-index;
+}
+body #players .member-identity-row::before {
+  min-width: 18px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* Preview: one centered chevron, compact 36px header in every tab. */
+
+/* Theme panel: vertical, icon-only mode + 3-color palettes; labels stay accessible only. */
+.quick-theme-panel {
+  background: var(--surface);
+}
+.quick-theme-choice {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 48px;
+  min-height: 48px;
+  margin: 0;
+  padding: 0 14px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-primary);
+}
+.quick-theme-choice::after {
+  content: "";
+  position: absolute;
+  right: 17px;
+  width: 6px;
+  height: 10px;
+  border-right: 2px solid transparent;
+  border-bottom: 2px solid transparent;
+  transform: rotate(45deg);
+}
+.quick-theme-choice::before {
+  display: none;
+  content: none;
+}
+.theme-palette {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+}
+.theme-palette i {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid var(--divider);
+  margin-left: -5px;
+}
+.theme-palette i:first-child {
+  margin-left: 0;
+}
+
+/* テーマ変数を使用する各部品の色・操作状態 */
+body #utc-now {
+  color: var(--time-primary);
+  -webkit-text-fill-color: var(--time-primary);
+}
+body #utc-millis,
+body .utc-label,
+body .utc-clock-overlay-unit {
+  color: var(--time-secondary);
+  -webkit-text-fill-color: var(--time-secondary);
+}
+body #utc-now {
+  text-shadow: 0 1px 4px rgba(var(--accent-rgb), 0.08);
+}
+body .clock,
+body.landing-active .clock {
+  background: var(--surface);
+  background-image: none;
+  border-color: var(--card-border);
+  box-shadow: var(--clock-shadow);
+}
+body #players .member-row-wrapper.is-editing .member-row {
+  background: rgba(var(--accent-rgb), 0.045);
+  box-shadow:
+    inset 0 0 0 1px rgba(var(--accent-rgb), 0.16),
+    0 0 7px rgba(var(--accent-rgb), 0.055);
+}
+.theme-choice-list {
+  display: flex;
+  flex-direction: column;
+}
+.theme-choice-list .quick-theme-choice {
+  height: 48px;
+  min-height: 48px;
+}
+.theme-symbol {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.quick-theme-choice[aria-checked="true"] {
+  background: rgba(var(--accent-rgb), 0.055);
+}
+.quick-theme-choice[aria-checked="true"]::after {
+  border-color: var(--accent);
+}
+.palette-mint .theme-palette i:nth-child(1) {
+  background: #eaf3f0;
+}
+.palette-mint .theme-palette i:nth-child(2) {
+  background: #8fbdb1;
+}
+.palette-mint .theme-palette i:nth-child(3) {
+  background: #5f4d45;
+}
+.palette-cookies .theme-palette i:nth-child(1) {
+  background: #f3f6f7;
+}
+.palette-cookies .theme-palette i:nth-child(2) {
+  background: #b7cbd4;
+}
+.palette-cookies .theme-palette i:nth-child(3) {
+  background: #56616a;
+}
+.palette-truffle .theme-palette i:nth-child(1) {
+  background: #f3efec;
+}
+.palette-truffle .theme-palette i:nth-child(2) {
+  background: #b8a397;
+}
+.palette-truffle .theme-palette i:nth-child(3) {
+  background: #665247;
+}
+body .l-setting-name-help {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+body .prep-help-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 18px;
+  height: 18px;
+  min-height: 18px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  font: 600 13px/1 var(--font-ui);
+  box-shadow: none;
+}
+body .prep-help-button:hover,
+body .prep-help-button:focus,
+body .prep-help-button:active {
+  background: transparent;
+  color: var(--text-muted);
+  box-shadow: none;
+  transform: none;
+}
+body .prep-help-popover {
+  position: absolute;
+  z-index: 20;
+  left: 0;
+  top: calc(100% + 8px);
+  width: max-content;
+  max-width: 260px;
+  padding: 8px 10px;
+  border: 1px solid var(--card-border);
+  border-radius: var(--control-radius);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-overlay);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: normal;
+}
+body #page-landing .footer,
+body.landing-active #page-landing .footer {
+  margin-top: 0;
+}
+body .app-settings-button,
+body.landing-active .app-settings-button {
+  top: -16px;
+  right: 4px;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  min-height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface-secondary);
+  box-shadow: none;
+  color: var(--text-secondary);
+  font-size: 20px;
+  font-weight: 600;
+}
+body .app-settings-button::before,
+body .app-settings-button::after,
+body.landing-active .app-settings-button::before,
+body.landing-active .app-settings-button::after {
+  content: none;
+  display: none;
+}
+body .app-settings-button:hover,
+body .app-settings-button:focus,
+body .app-settings-button:active,
+body.landing-active .app-settings-button:hover,
+body.landing-active .app-settings-button:focus,
+body.landing-active .app-settings-button:active {
+  background: var(--accent-soft);
+  color: var(--text);
+  box-shadow: none;
+  transform: none;
+}
+body .app-settings-button.registered::after,
+body.landing-active .app-settings-button.registered::after {
+  content: "";
+  display: block;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 7px;
+  height: 7px;
+  border: 1.5px solid var(--bg);
+  border-radius: 50%;
+  background: var(--success);
+}
+body .clock-quick-menu {
+  border-color: var(--card-border);
+  background: var(--surface);
+}
+body .clock-quick-menu-item,
+body .quick-theme-head,
+body .quick-theme-choice {
+  border-bottom-color: var(--divider);
+  background: transparent;
+  color: var(--text);
+}
+body .clock-quick-menu-item:active,
+body .quick-theme-choice:hover,
+body .quick-theme-choice:focus,
+body .quick-theme-choice:active,
+body .quick-theme-choice[aria-checked="true"] {
+  background: var(--accent-soft);
+}
+body .clock-quick-menu-value,
+body .quick-theme-back {
+  color: var(--text-subtle);
+  -webkit-text-fill-color: var(--text-subtle);
+}
+body .clock-quick-menu-chevron {
+  color: var(--text-muted);
+}
+body .quick-theme-panel {
+  border-top-color: var(--divider);
+  background: var(--surface);
+}
+@keyframes copyTargetFlashBalanced {
+  0% {
+    box-shadow:
+      0 0 0 0 rgba(var(--signal-rgb), 0),
+      0 0 0 rgba(var(--signal-rgb), 0);
+  }
+  35%,
+  70% {
+    box-shadow:
+      0 0 0 1.5px rgba(var(--signal-rgb), 0.82),
+      0 0 11px rgba(var(--signal-rgb), 0.2);
+  }
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(var(--signal-rgb), 0),
+      0 0 0 rgba(var(--signal-rgb), 0);
+  }
+}
+body #page-calc .members-table.flash {
+  animation: copyTargetFlashBalanced var(--motion-signal-dur) ease !important;
+  border-radius: 8px !important;
+}
+body select:focus,
+body input:focus,
+body .coord-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.16);
+}
+body button:focus-visible,
+body .page-tab-btn:focus-visible,
+body .departure-preset-option:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.16);
+}
+body .quick-theme-back,
+body .quick-theme-back:hover,
+body .quick-theme-back:focus,
+body .quick-theme-back:focus-visible,
+body .quick-theme-back:active,
+body .clock-quick-menu-chevron,
+body .device-settings-row-chevron {
+  outline: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+body button:disabled {
+  background: var(--disabled-bg);
+  border-color: var(--disabled-bg);
+  color: var(--surface);
+  cursor: not-allowed;
+  opacity: 0.78;
+  box-shadow: none;
+  transform: none;
+  transition: none;
+}
+body .member-row-wrapper .delete-bg,
+body .delete-bg,
+body .departure-preset-delete {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+}
+body .member-row,
+body .member-auto-settings,
+body .settings-card,
+body .collapsible-card:not(.copy-preview-card),
+body #page-calc .member-row,
+body #page-calc .member-row-wrapper,
+body #page-calc .button-controls,
+body .departure-edit-sheet,
+body .departure-edit-fields,
+body .departure-preset-list,
+body .departure-preset-row,
+body .departure-preset-option,
+body .departure-sheet-cancel,
+body .device-settings-group {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--card-border);
+}
+body .member-row,
+body .member-setting-row,
+body .departure-preset-option {
+  border-color: var(--divider);
+}
+body .member-setting-label,
+body .clock-quick-menu-title {
+  color: var(--text);
+}
+body .member-setting-value,
+body .footer {
+  color: var(--text-muted);
+}
+body input,
+body select,
+body .coord-input {
+  background: var(--input-bg);
+  color: var(--text);
+  border-color: var(--border);
+  border-radius: var(--control-radius);
+}
+body .march-select,
+body .device-settings-row select {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+body .member-departure-status.counting,
+body .member-row.pet-active,
+body .member-settings-toggle:hover,
+body .member-settings-toggle:focus,
+body .member-settings-toggle:active,
+body .member-settings-toggle[aria-expanded="true"],
+body .name-text:focus,
+body .march-select:focus,
+body .departure-preset-option:hover,
+body .departure-preset-option:focus,
+body .departure-preset-option:active,
+body .departure-sheet-cancel:hover,
+body .departure-sheet-cancel:focus,
+body .departure-sheet-cancel:active,
+body .clock-quick-menu-item:active {
+  background: var(--accent-soft);
+}
+body .stat-boost-switch {
+  background: var(--toggle-bg);
+}
+body .stat-boost-toggle:checked + .stat-boost-switch,
+body .member-settings-pet-toggle:checked + .stat-boost-switch {
+  background: var(--toggle-active);
+}
+body .stat-boost-switch::after {
+  background: var(--surface);
+}
+body .device-settings-modal,
+body .device-settings-panel,
+body .departure-edit-modal {
+  background: var(--bg);
+}
+body .device-settings-header button {
+  color: var(--accent);
+}
+body .device-settings-group-title,
+body .device-sync-status {
+  color: var(--text-muted);
+}
+body .device-settings-row,
+body .device-settings-row select {
+  color: var(--text);
+}
+body .device-settings-row select {
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: none;
+  -webkit-text-fill-color: var(--text-subtle);
+}
+body .toast {
+  background: var(--accent);
+  color: var(--surface);
+  border-color: var(--accent);
+}
+/* 集結主アイコン：画像がない間は連番を表示 */
+body #players .member-identity-row::before {
+  content: none;
+  display: none;
+}
+body .member-avatar {
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--accent-soft);
+  background-size: cover;
+  background-position: center;
+  color: var(--text-muted);
+  font-family: var(--font-num);
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+}
+body .member-avatar::before {
+  content: counter(member-index);
+}
+body .member-avatar.has-image::before {
+  content: none;
+}
+body .member-avatar.loading::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--text-muted);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: memberAvatarSpin 0.8s linear infinite;
+}
+@keyframes memberAvatarSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
