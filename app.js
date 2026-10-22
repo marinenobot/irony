@@ -5,7 +5,6 @@ import {pad2, calculateCastle, calculateDeparture} from './js/domain/timing.js';
 import {lookupMarchTime} from './js/domain/march.js';
 import {initLandingPage} from './js/ui/landing.js';
 import {initSwitchPage} from './js/ui/switch.js';
-import {initGuidedDemo} from './js/ui/demo.js';
 
 // UI composition root: DOM events, local settings and presentation state.
 // Network transports and time formulas live in js/api and js/domain.
@@ -209,10 +208,8 @@ const quickSyncBtn = document.getElementById('quick-sync-btn');
 const quickThemeBtn = document.getElementById('quick-theme-btn');
 const deviceSyncModal = document.getElementById('device-sync-modal');
 const deviceShortcutBtn = document.getElementById('device-shortcut-btn');
-const deviceShortcutHelp = document.getElementById('device-shortcut-help');
 const isAppleMobile = /iPhone|iPad|iPod/i.test(navigator.userAgent || '') || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 if(deviceShortcutBtn) deviceShortcutBtn.hidden = !isAppleMobile;
-if(deviceShortcutHelp) deviceShortcutHelp.hidden = !isAppleMobile;
 
 function setClockQuickMenu(open){
   if(!clockQuickMenu || !appSettingsButton) return;
@@ -2414,7 +2411,6 @@ window.addEventListener('load', function() {
   document.addEventListener('pointerdown',e=>{ if(!e.target.closest('#players')) players.querySelectorAll('.member-row-wrapper.is-editing').forEach(el=>el.classList.remove('is-editing')); },true);
 })();
 
-initGuidedDemo({formatRemainingSeconds, setClockQuickMenu});
 
 // Delegation covers both initial rows and rows added after settings restoration.
 document.getElementById('players').addEventListener('click', event => {
