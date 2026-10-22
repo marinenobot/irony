@@ -1908,7 +1908,14 @@ function loadHistory(){
   try{
     const raw = localStorage.getItem('memberHistory');
     if(!raw) return {};
-    return JSON.parse(raw);
+    const data = JSON.parse(raw);
+    if(!data || typeof data !== 'object' || Array.isArray(data)) return {};
+    return Object.fromEntries(Object.entries(data).map(([key, items]) => [key,
+      Array.isArray(items) ? items.filter(item =>
+        item && typeof item.name === 'string' && item.name.trim() &&
+        Number.isFinite(Number(item.marchSec)) && Number(item.marchSec) > 0
+      ).map(item => ({...item, marchSec:Number(item.marchSec)})) : []
+    ]));
   }catch(e){
     return {};
   }
@@ -2109,18 +2116,23 @@ function loadSettings(){
   const raw=localStorage.getItem('arrivalMarineSettings'); if(!raw) return;
   try{
     const d=JSON.parse(raw);
+    if(!d || typeof d !== 'object' || Array.isArray(d)) return;
 
-    if(d.rallyMin){
-      const savedRally = ['5', '10'].includes(String(d.rallyMin)) ? String(d.rallyMin) : '5';
-      rallyMinSel.value=savedRally;
+    const savedRally = Number(d.rallyMin);
+    if(Number.isInteger(savedRally) && savedRally >= 1 && savedRally <= 120){
+      ensureSelectOption(rallyMinSel, savedRally, `${savedRally}分`);
     }
-    if(d.prepTime !== undefined) prepTimeSel.value=String(d.prepTime);
+    const savedPrep = Number(d.prepTime);
+    if(d.prepTime !== null && d.prepTime !== '' && Number.isInteger(savedPrep) && savedPrep >= 0 && savedPrep <= 3659){
+      ensureSelectOption(prepTimeSel, savedPrep, marchLabel(savedPrep));
+    }
 
-    if(d.members && d.members.length>0){
+    const members = Array.isArray(d.members) ? d.members.filter(m => m && typeof m === 'object' && typeof m.name === 'string') : [];
+    if(members.length>0){
       const container=document.querySelector('#players');
       container.innerHTML='';
       const minSec = 10, maxSec = 300;
-      d.members.forEach(m=>{
+      members.forEach(m=>{
         const wrapper=document.createElement('div');
         wrapper.classList.add('member-row-wrapper');
         wrapper.innerHTML=buildMemberRowHtml(m);
@@ -2231,8 +2243,17 @@ if(previewInner){
 /* ======= ペット管理 ======= */
 // ペットデータの構造: { name: string, status: 'waiting'|'active'|'ended', endTime?: timestamp }
 function loadPets(){
-  const data = localStorage.getItem('pets');
-  return data ? JSON.parse(data) : {};
+  try{
+    const data = JSON.parse(localStorage.getItem('pets') || '{}');
+    if(!data || typeof data !== 'object' || Array.isArray(data)) return {};
+    return Object.fromEntries(Object.entries(data).filter(([, pet]) =>
+      pet && typeof pet === 'object' && !Array.isArray(pet) &&
+      ['waiting', 'active', 'ended'].includes(pet.status) &&
+      (pet.status !== 'active' || (Number.isFinite(pet.endTime) && pet.endTime > 0))
+    ));
+  }catch(error){
+    return {};
+  }
 }
 
 function savePets(pets){

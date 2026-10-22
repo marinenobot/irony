@@ -47,7 +47,8 @@ export function initLandingPage({landingRallyMinSel, landingPrepTimeSel, landing
     btn.disabled = true;
 
     setTimeout(function(){
-      const fromNow  = parseInt(document.getElementById('l-from-now').value)  || 30;
+      const prepValue = parseInt(document.getElementById('l-from-now').value, 10);
+      const fromNow = Number.isFinite(prepValue) && prepValue >= 0 ? prepValue : 30;
       const rallyMin = parseInt(document.getElementById('l-rally-min').value) || 1;
       const diffMin  = parseInt(document.getElementById('l-diff-min').value) || 0;
       const diffSec  = parseInt(document.getElementById('l-diff-sec').value) || 0;
