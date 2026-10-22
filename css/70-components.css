@@ -1,0 +1,450 @@
+/* 3タブ共通の設定行・計算ボタン・結果・コピープレビュー */
+/* 3タブ共通部品。寸法・文字・状態はここを編集する。テーマは変数だけで切り替える。 */
+
+/* 設定行 */
+.page-content .setting-row {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 8px;
+  height: var(--component-row-height);
+  min-height: var(--component-row-height);
+  max-height: var(--three-tab-row-h);
+  margin: 0 var(--component-inset);
+  padding: 0;
+  border-top: 0;
+  border-bottom: 1px solid var(--divider);
+  border-top-color: currentColor;
+  border-right-color: var(--divider);
+  border-bottom-color: var(--divider);
+  border-left-color: var(--divider);
+}
+#page-landing .setting-row {
+  color: var(--text-primary);
+  cursor: pointer;
+}
+#page-landing .setting-row:last-child,
+#page-switch .setting-row:last-child {
+  border-bottom-width: 0;
+}
+.page-content .setting-label {
+  grid-column: 1;
+  justify-self: start;
+  margin: 0;
+  padding: 0;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.page-content .setting-control {
+  grid-column: 2;
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 0;
+  min-height: var(--component-control-height);
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 17px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.page-content .setting-control select {
+  width: auto;
+  min-width: 0;
+  min-height: var(--component-control-height);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  text-align-last: right;
+  appearance: none;
+  -webkit-appearance: none;
+  pointer-events: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+#page-calc .setting-control select {
+  line-height: 1.25;
+}
+#page-switch .setting-control select {
+  min-width: 60px;
+}
+.page-content .departure-after-text {
+  margin: 0;
+  color: var(--text-muted);
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.page-content .setting-chevron {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  min-width: 28px;
+  height: var(--component-control-height);
+  min-height: var(--component-control-height);
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-muted);
+  font-size: 28px;
+  font-weight: 300;
+  line-height: 1;
+  transform: none;
+}
+.page-content .setting-chevron::before,
+.page-content .setting-chevron::after {
+  content: none;
+  display: none;
+}
+.page-content .setting-chevron:hover,
+.page-content .setting-chevron:focus,
+.page-content .setting-chevron:focus-visible,
+.page-content .setting-chevron:active {
+  outline: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+}
+
+/* 計算ボタン */
+.page-content .btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% - 2 * var(--component-inset));
+  max-width: none;
+  height: var(--component-control-height);
+  min-height: var(--component-control-height);
+  margin: 0 auto var(--component-action-gap);
+  padding: 0 var(--component-inset);
+  border: 1.25px solid var(--border-strong);
+  border-radius: var(--control-radius);
+  background: var(--button-bg);
+  box-shadow: var(--shadow);
+  color: var(--button-text);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.1s;
+}
+.page-content .btn-primary:active {
+  background: var(--button-bg);
+  color: var(--button-text);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow);
+  transform: translateY(1px);
+}
+.page-content .btn-primary:focus,
+.page-content .btn-primary:focus-visible {
+  outline: none;
+}
+.page-content .btn-primary:disabled,
+.page-content .btn-primary.calculating {
+  background: var(--button-bg);
+  border-color: var(--border-strong);
+  color: var(--button-text);
+  cursor: not-allowed;
+  opacity: 0.78;
+  box-shadow: var(--shadow);
+  transform: none;
+  transition: none;
+}
+
+.page-content .btn-primary.calculating {
+  background: var(--disabled-bg);
+  box-shadow: none;
+}
+
+/* 着弾結果 */
+.impact-display-inner {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-template-areas: "label label" "time unit";
+  align-items: end;
+  justify-content: center;
+  gap: 2px 8px;
+  width: calc(100% - 2 * var(--component-inset));
+  height: var(--component-result-height);
+  min-height: var(--component-result-height);
+  margin: 0 auto;
+  padding: 7px 12px;
+  border: 1px solid transparent;
+  background: var(--result-bg);
+  line-height: 1.5;
+  border-radius: 12px;
+}
+.impact-display-inner > .impact-label:first-child {
+  grid-area: label;
+  flex: 0 0 100%;
+  margin: 0 0 1px;
+  color: var(--label-secondary);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.1;
+  text-align: center;
+}
+.impact-time {
+  grid-area: time;
+  color: var(--time-primary);
+  -webkit-text-fill-color: var(--time-primary);
+  font-family: var(--font-num);
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.impact-display-inner > .impact-label:last-child {
+  grid-area: unit;
+  align-self: end;
+  padding-bottom: 2px;
+  color: var(--label-secondary);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.impact-display-inner.flash {
+  animation: resultSoftGlow 0.8s ease;
+}
+
+/* 入力エリア：行数だけがページごとの差分。 */
+.page-content .mode-card {
+  width: 100%;
+  max-width: none;
+  height: calc(var(--component-row-height) * 2);
+  min-height: calc(var(--component-row-height) * 2);
+  margin: 6px 0 var(--component-action-gap);
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: hidden;
+  color: var(--text);
+}
+#page-landing .mode-card {
+  height: calc(var(--component-row-height) * 3);
+  min-height: calc(var(--component-row-height) * 3);
+}
+
+/* 既存画面で意図的に異なる、準備時間の補助表示。 */
+#page-calc .departure-schedule-label {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+#page-calc .departure-after-text {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.25;
+}
+#sw-from-now-row {
+  gap: normal;
+}
+
+/* コピー用プレビュー */
+.collapsible-card.copy-preview-card {
+  width: 100%;
+  max-width: none;
+  margin: 0 0 var(--compact-gap);
+  padding: 0;
+  border: 1px solid var(--preview-border);
+  border-radius: var(--preview-radius);
+  background: var(--surface);
+  box-shadow: none;
+  overflow: hidden;
+}
+.copy-preview-card .collapsible-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 36px;
+  min-height: 36px;
+  margin: var(--spacing) 0 0;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: inherit;
+  text-align: left;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.2s;
+}
+.copy-preview-card .collapsible-header:hover {
+  background: transparent;
+}
+.copy-preview-card .collapsible-header:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.1);
+}
+.copy-preview-card .collapsible-header:focus-visible {
+  outline-offset: 2px;
+  box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.16);
+}
+.copy-preview-card .collapsible-header-title {
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.copy-preview-card .collapsible-content-inner {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.copy-preview-card .preview-text-box {
+  margin: 0;
+  padding: 6px 12px;
+  border: 0;
+  border-top: 1px solid var(--preview-border);
+  border-radius: 0;
+  background: var(--surface-secondary);
+  color: var(--text-subtle);
+  font-family: var(--font-num);
+  font-size: 13px;
+  line-height: 1.42;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.copy-preview-card .collapsible-arrow {
+  flex: 0 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  outline: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-muted);
+  font-size: 0;
+  transform: none;
+}
+.copy-preview-card .collapsible-arrow::before {
+  display: none;
+  content: none;
+}
+.copy-preview-card .collapsible-arrow::after {
+  content: "";
+  display: block;
+  width: 7px;
+  height: 7px;
+  margin: 0;
+  border: 0;
+  border-radius: 1px;
+  border-right: 1.75px solid currentColor;
+  border-bottom: 1.75px solid currentColor;
+  transform: rotate(45deg);
+  transform-origin: center;
+}
+.copy-preview-card .collapsible-arrow.is-open {
+  transform: rotate(180deg);
+}
+.copy-preview-card .collapsible-arrow.is-open::after {
+  transform: rotate(225deg);
+}
+.copy-preview-card.flash {
+  animation: copyPreviewFlash var(--motion-signal-dur) ease;
+}
+
+#page-calc .copy-preview-card .collapsible-header {
+  min-height: 52px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--divider);
+  background: var(--surface);
+}
+#page-calc .copy-preview-card .collapsible-header:hover,
+#page-calc .copy-preview-card .collapsible-header:active {
+  background: var(--surface-secondary);
+}
+#page-calc .copy-preview-card .collapsible-content-inner {
+  background: var(--surface);
+}
+@media (max-width: 600px) {
+  #page-calc .copy-preview-card .collapsible-header {
+    min-height: 48px;
+    padding: 8px 14px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .page-content .mode-card,
+  .copy-preview-card,
+  .copy-preview-card .preview-text-box {
+    transition-property:
+      background-color, color, border-color, box-shadow, fill, stroke;
+    transition-duration: 0.25s;
+    transition-timing-function: ease;
+  }
+}
+
+/* スイッチは元のネイティブ選択と補助文字の書式を維持する。 */
+#sw-from-now-row .setting-control {
+  min-width: auto;
+}
+#sw-from-now {
+  pointer-events: auto;
+}
+#page-switch .departure-after-text {
+  font-family: var(--font-auxiliary);
+  letter-spacing: -0.16px;
+  text-align: right;
+}

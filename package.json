@@ -1,0 +1,10 @@
+{
+  "name": "irony-rally-calculator",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "test:css": "node scripts/check-css.cjs",
+    "test:browser": "node scripts/check-behavior.cjs"
+  }
+}

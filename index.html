@@ -128,7 +128,7 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
         <div id="sec-members">
           <div id="players" class="members-list members-table">
             <div class="member-row-wrapper">
-              <div class="delete-bg" onclick="deleteThisRow(this)">削除</div>
+              <div class="delete-bg">削除</div>
               <div class="member-row">
                 <div class="member-identity-row">
                   <span class="member-avatar" aria-hidden="true"></span>
@@ -142,7 +142,7 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
               </div>
             </div>
             <div class="member-row-wrapper">
-              <div class="delete-bg" onclick="deleteThisRow(this)">削除</div>
+              <div class="delete-bg">削除</div>
               <div class="member-row">
                 <div class="member-identity-row">
                   <span class="member-avatar" aria-hidden="true"></span>
@@ -369,23 +369,6 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
 <canvas id="utc-pip-canvas" class="utc-pip-source" width="640" height="360" aria-hidden="true"></canvas>
 <video id="utc-pip-video" class="utc-pip-media" muted autoplay playsinline webkit-playsinline autopictureinpicture aria-hidden="true"></video>
 
-<!-- 自動再生デモ：実際の画面の上に指アイコンと小窓の模擬表示だけを重ねる（設定・同期状態は変更しない） -->
-<div id="demo-mini-clock" class="demo-mini-clock" aria-hidden="true">
-  <div id="demo-mini-time" class="demo-mini-time"></div>
-  <div id="demo-mini-countdown" class="demo-mini-countdown" hidden>
-    <span id="demo-mini-name" class="demo-mini-name"></span>
-    <span class="demo-mini-label">出発まで</span>
-    <span id="demo-mini-value" class="demo-mini-value"></span>
-  </div>
-</div>
-<div id="demo-sync-list" class="demo-sync-list" aria-hidden="true">
-  <div class="demo-sync-list-item">マリン</div>
-</div>
-<div id="demo-finger" class="demo-finger" aria-hidden="true"></div>
-<p id="demo-caption" class="demo-caption" aria-hidden="true"></p>
-<button type="button" id="demo-skip" class="demo-skip" hidden>スキップ</button>
-<button type="button" id="demo-replay" class="demo-replay" hidden>もう一度見る</button>
-
 <!-- 端末同期：時計横メニューから開く専用画面 -->
 <div id="device-sync-modal" class="device-settings-modal device-sync-modal" aria-hidden="true">
   <div class="device-settings-panel" role="dialog" aria-modal="true" aria-labelledby="device-sync-title">
@@ -408,7 +391,6 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
         <span class="device-settings-row-chevron" aria-hidden="true">›</span>
       </button>
     </div>
-    <p id="device-shortcut-help" class="device-sync-status" hidden>iPhoneでゲーム内時計を使う場合は、ショートカットをホーム画面に追加してください。</p>
   </div>
 </div>
 
@@ -437,7 +419,7 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
 <!-- トースト -->
 <div id="toast" class="toast">✓ コピーしました</div>
 
-<script src="app.js"></script>
+<script type="module" src="app.js"></script>
 
 
 

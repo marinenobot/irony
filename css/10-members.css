@@ -1,0 +1,435 @@
+/* 集結主一覧・座標・ペットの基本部品 */
+.members-list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+}
+
+/* メンバー行ラッパー */
+.member-row-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+/* モーダル表示中はスワイプ無効 */
+body.modal-open .member-row-wrapper {
+  pointer-events: none;
+}
+.member-row-wrapper .delete-bg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 80px;
+  background: var(--danger-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--danger-text);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 0;
+  visibility: hidden;
+}
+.member-row-wrapper.swiping .delete-bg {
+  visibility: visible;
+}
+
+/* 集結主行 */
+.member-row {
+  display: block;
+  padding: 0;
+  border-bottom: 1px solid var(--divider);
+  background: var(--surface);
+  min-height: 44px;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.member-identity-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 6px 10px 6px 14px;
+}
+.member-identity-row .name-text {
+  flex: 1;
+  min-width: 0;
+}
+.member-departure-inline {
+  display: inline-flex;
+  align-items: baseline;
+  margin-left: auto;
+  white-space: nowrap;
+}
+.member-departure-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 30px;
+  padding: 3px 7px;
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+}
+.member-departure-status.counting {
+  background: var(--accent-soft);
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px rgba(var(--accent-rgb), 0.1);
+}
+.member-departure-status.departed {
+  background: var(--surface-secondary);
+  color: var(--text-secondary);
+}
+
+@media (max-width: 350px) {
+  .member-departure-status {
+    gap: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 11px;
+  }
+}
+.member-settings-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  background: var(--surface-secondary);
+  color: var(--text-secondary);
+  font-size: 0;
+  line-height: 1;
+  box-shadow: none;
+  transform: none;
+}
+.member-settings-toggle::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  background-color: currentColor;
+  -webkit-mask: var(--member-settings-icon) center / contain no-repeat;
+  mask: var(--member-settings-icon) center / contain no-repeat;
+}
+.member-settings-toggle:hover,
+.member-settings-toggle:focus,
+.member-settings-toggle:active,
+.member-settings-toggle[aria-expanded="true"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+  box-shadow: none;
+  transform: none;
+}
+.member-auto-settings {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  min-height: 44px;
+  padding: 10px 12px 12px;
+  border-top: 1px solid var(--divider);
+  background: var(--surface-secondary);
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.member-auto-settings[hidden] {
+  display: none !important;
+}
+.member-coordinates {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  color: var(--text-subtle);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.member-settings-pet-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--text-subtle);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.member-settings-pet-toggle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.member-settings-pet-toggle:checked + .stat-boost-switch {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+.member-settings-pet-toggle:checked + .stat-boost-switch::after {
+  display: block;
+}
+.member-pet-remaining {
+  color: var(--text-secondary);
+  font-family: var(--font-num);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.coord-input {
+  width: 46px;
+  min-width: 46px;
+  min-height: 36px;
+  height: 36px;
+  padding: 3px 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--control-radius);
+  background: var(--input-bg);
+  color: var(--text-primary);
+  font-family: var(--font-num);
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+  user-select: text;
+}
+.coord-input:focus {
+  border-color: var(--accent);
+  background: var(--input-bg);
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.12);
+}
+.stat-boost-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--text-subtle);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.stat-boost-toggle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.stat-boost-switch {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  border: 2px solid var(--toggle-bg);
+  border-radius: 5px;
+  background: var(--surface);
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+.stat-boost-switch::after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: 2px solid var(--surface);
+  border-top: 0;
+  border-left: 0;
+  transform: rotate(42deg);
+}
+.stat-boost-toggle:checked + .stat-boost-switch {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+.stat-boost-toggle:checked + .stat-boost-switch::after {
+  display: block;
+}
+.march-control {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+  min-width: 0;
+}
+.march-auto-badge {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.auto-march-active .march-auto-badge {
+  color: var(--accent);
+}
+.auto-march-missing .march-auto-badge {
+  color: var(--danger-text);
+}
+
+/* ペット発動中の集結主行 */
+.member-row.pet-active {
+  background: var(--accent-soft);
+}
+
+/* 名前：入力枠なし、テキストだけ */
+.name-text {
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  outline: none;
+  min-height: 1.2em;
+  min-width: 50px;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.name-text:empty:before {
+  content: attr(data-placeholder);
+  color: var(--text-muted);
+}
+.name-text:focus {
+  background: var(--accent-soft);
+}
+
+/* 行軍セレクト */
+.march-select {
+  width: 68px;
+  min-height: 36px;
+  padding: 6px 4px 6px 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--font-ui);
+  font-size: 15px !important;
+  font-weight: 600;
+  color: var(--text-primary);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: calc(100% - 2px) center;
+  background-size: 10px;
+  padding-right: 14px;
+  justify-self: start;
+  text-align: left;
+}
+.march-select:focus {
+  background-color: var(--accent-soft);
+}
+.march-select:disabled {
+  opacity: 1;
+  color: var(--accent);
+  cursor: default;
+  background-image: none;
+  -webkit-text-fill-color: var(--accent);
+}
+
+@media (max-width: 380px) {
+  .member-auto-settings {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  .coord-input {
+    width: 42px;
+    min-width: 42px;
+  }
+  .stat-boost-control,
+  .member-coordinates,
+  .member-settings-pet-control {
+    font-size: 12px;
+  }
+  .march-select {
+    width: 64px;
+    font-size: 14px !important;
+  }
+  .member-pet-remaining {
+    font-size: 12px;
+  }
+}
+
+/* 時刻（自動） */
+
+/* 削除ボタン - 非表示 */
+.button-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 12px 12px;
+  justify-content: space-between;
+}
+
+/* コントロールボタン */
+.control-btn {
+  flex: 1;
+  background: var(--surface);
+  color: var(--accent);
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  padding: 12px 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: var(--touch-target);
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.1s;
+  margin: 0;
+}
+.control-btn:hover {
+  background: var(--accent);
+  color: var(--surface);
+}
+.control-btn:active {
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: scale(0.98);
+}
+
+/* プレビューテキストボックス */
+
+/* 集結主テーブルの外枠 */
+.members-table {
+  border: 2px solid transparent;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+.members-table.flash {
+  animation: tableFlashEffect var(--motion-signal-dur) ease;
+}
+#l-result-inner {
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
