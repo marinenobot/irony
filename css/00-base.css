@@ -244,3 +244,16 @@ button:focus {
   padding: 0;
   margin: 0;
 }
+
+/* 計算・コピー完了は短いフェードだけで示す。 */
+@keyframes contentReveal {
+  from { opacity: 0.72; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

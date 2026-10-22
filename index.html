@@ -19,9 +19,7 @@
 <script>
 (() => {
   const normalizeTheme = theme => {
-    if(theme === 'caramel') return 'truffle';
-    if(theme === 'default') return 'light';
-    return ['light','mint','cookies','truffle','dark'].includes(theme) ? theme : 'light';
+    return theme === 'dark' ? 'dark' : 'light';
   };
   let theme = 'light';
   try{
@@ -30,7 +28,7 @@
   document.documentElement.dataset.theme = theme;
   document.documentElement.style.colorScheme = theme === 'dark' ? 'dark' : 'light';
   window.__initialTheme = theme;
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', {light:'#F2F2F7',dark:'#101014',mint:'#F5F8F6',cookies:'#F4F7F9',truffle:'#F8F5F1'}[theme]);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', {light:'#F2F2F7',dark:'#101014'}[theme]);
 })();
 </script>
 <link rel="stylesheet" href="style.css" />
@@ -67,9 +65,6 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
           <button type="button" class="quick-theme-choice theme-dark" data-theme-choice="dark" aria-checked="false" aria-label="ダーク">
             <svg class="theme-symbol" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.3 15.2A8.5 8.5 0 0 1 8.8 3.7a8.5 8.5 0 1 0 11.5 11.5Z"/></svg>
           </button>
-          <button type="button" class="quick-theme-choice palette-mint" data-theme-choice="mint" aria-checked="false" aria-label="ミント系"><span class="theme-palette" aria-hidden="true"><i></i><i></i><i></i></span></button>
-          <button type="button" class="quick-theme-choice palette-cookies" data-theme-choice="cookies" aria-checked="false" aria-label="水色系"><span class="theme-palette" aria-hidden="true"><i></i><i></i><i></i></span></button>
-          <button type="button" class="quick-theme-choice palette-truffle" data-theme-choice="truffle" aria-checked="false" aria-label="ブラウン系"><span class="theme-palette" aria-hidden="true"><i></i><i></i><i></i></span></button>
         </div>
       </div>
     </div>

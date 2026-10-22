@@ -209,7 +209,7 @@ const { execFileSync } = require("node:child_process");
       await page.clock.install({ time: new Date("2026-10-22T12:00:00Z") });
       await page.clock.setFixedTime(new Date("2026-10-22T12:00:00Z"));
       for (const theme of (
-        process.env.QA_THEMES || "light,mint,cookies,truffle,dark"
+        process.env.QA_THEMES || "light,dark"
       ).split(",")) {
         await page.goto(`${origin}/${project}/`);
         await page.waitForFunction(

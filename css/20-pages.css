@@ -13,24 +13,6 @@
 }
 
 /* signal色はこの計算完了フラッシュ専用。他のUI(ホバー/選択/バッジ等)には流用しない */
-@keyframes tableFlashEffect {
-  0% {
-    border-color: transparent;
-    box-shadow: 0 0 0 rgba(var(--signal-rgb), 0);
-  }
-  30% {
-    border-color: var(--signal);
-    box-shadow: 0 0 20px rgba(var(--signal-rgb), 0.45);
-  }
-  70% {
-    border-color: var(--signal);
-    box-shadow: 0 0 20px rgba(var(--signal-rgb), 0.45);
-  }
-  100% {
-    border-color: transparent;
-    box-shadow: 0 0 0 rgba(var(--signal-rgb), 0);
-  }
-}
 .dep {
   font-size: 1.05rem;
   font-weight: 700;

@@ -249,7 +249,7 @@
   line-height: 1.2;
 }
 .impact-display-inner.flash {
-  animation: resultSoftGlow 0.8s ease;
+  animation: contentReveal 160ms ease-out;
 }
 
 /* 入力エリア：行数だけがページごとの差分。 */
@@ -402,7 +402,7 @@
   transform: rotate(225deg);
 }
 .copy-preview-card.flash {
-  animation: copyPreviewFlash var(--motion-signal-dur) ease;
+  animation: contentReveal 160ms ease-out;
 }
 
 #page-calc .copy-preview-card .collapsible-header {

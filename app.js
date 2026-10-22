@@ -262,9 +262,7 @@ const themeOptions = Array.from(document.querySelectorAll('[data-theme-choice]')
 const quickThemeBack = document.getElementById('quick-theme-back');
 const THEME_KEY = 'rallyThemeV3';
 function normalizeTheme(theme){
-  if(theme === 'caramel') return 'truffle';
-  if(theme === 'default') return 'light';
-  return ['light','mint','cookies','truffle','dark'].includes(theme) ? theme : 'light';
+  return theme === 'dark' ? 'dark' : 'light';
 }
 function applyTheme(theme,persist=true){
   const selected=normalizeTheme(theme);
@@ -279,7 +277,7 @@ function updateThemeMeta(){
   const meta=document.querySelector('meta[name="theme-color"]');
   if(!meta) return;
   const selected=document.body.getAttribute('data-theme');
-  const colors={light:'#F2F2F7',dark:'#101014',mint:'#F5F8F6',cookies:'#F4F7F9',truffle:'#F8F5F1'};
+  const colors={light:'#F2F2F7',dark:'#101014'};
   meta.setAttribute('content',colors[selected] || colors.light);
 }
 function openThemeMenu(){ clockQuickMenu?.classList.add('theme-open'); }

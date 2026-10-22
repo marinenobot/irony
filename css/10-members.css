@@ -75,7 +75,7 @@ body.modal-open .member-row-wrapper {
   min-height: 30px;
   padding: 3px 7px;
   border-radius: 8px;
-  background: var(--bg);
+  background: transparent;
   color: var(--text-secondary);
   font-size: 12px;
   font-weight: 800;
@@ -84,12 +84,12 @@ body.modal-open .member-row-wrapper {
   font-variant-numeric: tabular-nums;
 }
 .member-departure-status.counting {
-  background: var(--accent-soft);
+  background: transparent;
   color: var(--accent);
-  box-shadow: inset 0 0 0 1px rgba(var(--accent-rgb), 0.1);
+  box-shadow: none;
 }
 .member-departure-status.departed {
-  background: var(--surface-secondary);
+  background: transparent;
   color: var(--text-secondary);
 }
 
@@ -424,7 +424,7 @@ body.modal-open .member-row-wrapper {
     box-shadow 0.3s ease;
 }
 .members-table.flash {
-  animation: tableFlashEffect var(--motion-signal-dur) ease;
+  animation: contentReveal 160ms ease-out;
 }
 #l-result-inner {
   border: 2px solid transparent;
