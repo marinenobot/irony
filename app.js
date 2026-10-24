@@ -2,7 +2,6 @@ import {DEFAULT_FIREBASE_CONFIG} from './js/config.js';
 import {connectRallySync, isSyncConfigured} from './js/api/rally-sync.js?v=20261024-pipcd';
 import {createPlayerApi} from './js/api/players.js';
 import {pad2, calculateCastle, calculateDeparture} from './js/domain/timing.js';
-import {lookupMarchTime} from './js/domain/march.js';
 import {initLandingPage} from './js/ui/landing.js?v=20261024-refresh2';
 import {initSwitchPage} from './js/ui/switch.js?v=20261024-fast';
 
@@ -98,6 +97,7 @@ let firebaseMemberUnsubscribe = null;
 let currentRemoteDeparture = null;
 let utcPipLastDeparture = null;
 let lastCastleImpactTime = null;
+let lastCastleFirstDeparture = null;
 
 function firebaseNow(){
   return firebaseSync ? firebaseSync.now() : Date.now();
@@ -189,7 +189,7 @@ async function publishRosterDepartureTimes(rowData){
   const departures = rowData.map(item => {
     const enteredName = (item.row.querySelector('.name-text')?.textContent || '').trim();
     const name = canonicalRosterName(enteredName);
-    return {key:rosterFirebaseKey(name), name, departureTime:item.depTime, impactTime:lastCastleImpactTime};
+    return {key:rosterFirebaseKey(name), name, departureTime:item.depTime, impactTime:item.impactTime ?? lastCastleImpactTime};
   }).filter(item => item.name && item.key);
   try{
     await firebaseSync.publishDepartures(departures, LIVE_MEMBER_ROSTER.map(rosterFirebaseKey));
@@ -636,7 +636,6 @@ function isPetActiveForMember(memberName){
 }
 
 function updateMemberRowHighlights(){
-  let marchChanged = false;
   document.querySelectorAll('#players .member-row-wrapper').forEach(wrapper => {
     const row = wrapper.querySelector('.member-row');
     if(!row) return;
@@ -648,13 +647,8 @@ function updateMemberRowHighlights(){
     } else {
       row.classList.remove('pet-active');
     }
-    const beforeMarch = row.querySelector('.march-select')?.value;
     refreshMemberAutoMarch(row, {save:false});
-    if(beforeMarch !== row.querySelector('.march-select')?.value) marchChanged = true;
   });
-  if(marchChanged){
-    saveSettings();
-  }
 }
 
 
@@ -740,58 +734,26 @@ function updateAllMarchOptions(minSec = 10, maxSec = 120){
 }
 updateAllMarchOptions();
 
-/* ======= 固定目標向け・行軍時間実測マスター ======= */
+/* ======= 集結主のペット表示 ======= */
 function refreshMemberAutoMarch(row, options = {}){
   if(!row) return null;
-  const xInput = row.querySelector('.coord-x');
-  const yInput = row.querySelector('.coord-y');
-  const boostToggle = row.querySelector('.stat-boost-toggle');
-  const marchSelect = row.querySelector('.march-select');
-  const badge = row.querySelector('.march-auto-badge');
   const petToggle = row.querySelector('.member-settings-pet-toggle');
   const petRemaining = row.querySelector('.member-pet-remaining');
-  if(!xInput || !yInput || !boostToggle || !marchSelect) return null;
-
   const name = (row.querySelector('.name-text')?.textContent || '').trim();
   const petRecord = name ? loadPets()[name] : null;
   const remainingPetMs = petRecord?.status === 'active' && petRecord.endTime
     ? petRecord.endTime - Date.now()
     : 0;
   const petActive = remainingPetMs > 0;
-  if(petToggle) petToggle.checked = petActive;
+  if(petToggle){
+    petToggle.checked = petActive;
+    petToggle.disabled = false;
+  }
   if(petRemaining){
     petRemaining.textContent = petActive ? `残り${formatPetRemaining(remainingPetMs)}` : '';
   }
-  const coordX = xInput.value.trim();
-  const coordY = yInput.value.trim();
-  const hasCoordinates = coordX !== '' && coordY !== '';
-  const autoSeconds = hasCoordinates
-    ? lookupMarchTime(parseInt(coordX, 10), parseInt(coordY, 10), boostToggle.checked, petActive)
-    : null;
-
-  if(autoSeconds !== null){
-    if(parseInt(marchSelect.value, 10) !== autoSeconds || marchSelect.dataset.autoMarch !== 'true'){
-      generateMarchOptions(marchSelect, autoSeconds, 10, 300);
-    }
-    marchSelect.dataset.autoMarch = 'true';
-    marchSelect.disabled = true;
-    row.classList.add('auto-march-active');
-    row.classList.remove('auto-march-missing');
-    if(badge) badge.textContent = '自動';
-    boostToggle.disabled = false;
-    if(petToggle) petToggle.disabled = false;
-  }else{
-    marchSelect.dataset.autoMarch = 'false';
-    marchSelect.disabled = false;
-    row.classList.remove('auto-march-active');
-    row.classList.toggle('auto-march-missing', hasCoordinates);
-    if(badge) badge.textContent = '手動';
-    boostToggle.disabled = true;
-    if(petToggle) petToggle.disabled = true;
-  }
-
   if(options.save !== false) saveSettings();
-  return autoSeconds;
+  return null;
 }
 
 function refreshAllMemberAutoMarchTimes(options = {}){
@@ -881,6 +843,7 @@ const DEFAULT_DEPARTURE_PRESETS = Object.freeze({
   'castle-prep':[...FROM_NOW_SECONDS],
   prep:[0, 10, 30, 60, 120],
   diff:[30, 60, 90, 120, 180],
+  'castle-diff':[0, 3, 5, 10, 30, 60],
   'switch-rally':[...SWITCH_MARCH_SECONDS],
   'switch-from-now':[...FROM_NOW_SECONDS]
 });
@@ -890,6 +853,7 @@ const DEPARTURE_PRESET_KIND_BY_EDITOR = Object.freeze({
   prep:'castle-prep',
   'landing-prep':'prep',
   'landing-diff':'diff',
+  'castle-diff':'castle-diff',
   'switch-rally':'switch-rally',
   'switch-from-now':'switch-from-now'
   // 'clock' は意図的に含めない -> プリセットなし -> 常にカスタム(ホイール)表示
@@ -900,6 +864,7 @@ const DEPARTURE_EDITOR_TITLES = Object.freeze({
   rally:'集結時間を編集',
   prep:'準備時間を編集',
   'landing-diff':'時差を編集',
+  'castle-diff':'時差を編集',
   'switch-rally':'基準の行軍時間を編集',
   'switch-from-now':'今からを編集'
 });
@@ -984,6 +949,7 @@ function getCurrentDepartureValue(editorType){
   if(editorType === 'landing-prep') return parseInt(landingPrepTimeSel.value) || 0;
   if(editorType === 'prep') return parseInt(prepTimeSel.value) || 0;
   if(editorType === 'landing-diff') return (parseInt(landingDiffMinSel.value) || 0) * 60 + (parseInt(landingDiffSecSel.value) || 0);
+  if(editorType === 'castle-diff') return getCastleDiffSeconds();
   if(editorType === 'switch-rally') return parseInt(swRallyMinSel.value) || 0;
   if(editorType === 'switch-from-now') return parseInt(swFromNowInput.value) || 0;
   return null;
@@ -1138,6 +1104,11 @@ function getDepartureEditorValue(){
     const seconds = parseInt(document.getElementById('departure-edit-landing-diff-sec')?.dataset.value) || 0;
     return minutes * 60 + seconds;
   }
+  if(currentDepartureEditor === 'castle-diff'){
+    const minutes = parseInt(document.getElementById('departure-edit-castle-diff-min')?.dataset.value) || 0;
+    const seconds = parseInt(document.getElementById('departure-edit-castle-diff-sec')?.dataset.value) || 0;
+    return minutes * 60 + seconds;
+  }
   if(currentDepartureEditor === 'switch-rally'){
     return parseInt(document.getElementById('departure-edit-switch-rally')?.dataset.value) || 0;
   }
@@ -1214,6 +1185,11 @@ function buildDepartureCustomFields(editorType){
     departureEditFields.innerHTML =
       createWheelHtml('departure-edit-landing-diff-min', Array.from({length:61}, (_, index) => index), Math.min(60, Math.floor(totalSeconds / 60)), '分') +
       createWheelHtml('departure-edit-landing-diff-sec', Array.from({length:60}, (_, index) => index), totalSeconds % 60, '秒', true);
+  }else if(editorType === 'castle-diff'){
+    const totalSeconds = getCastleDiffSeconds();
+    departureEditFields.innerHTML =
+      createWheelHtml('departure-edit-castle-diff-min', Array.from({length:61}, (_, index) => index), Math.min(60, Math.floor(totalSeconds / 60)), '分') +
+      createWheelHtml('departure-edit-castle-diff-sec', Array.from({length:60}, (_, index) => index), totalSeconds % 60, '秒', true);
   }else if(editorType === 'switch-rally'){
     const seconds = parseInt(swRallyMinSel.value) || SWITCH_MARCH_SECONDS[0];
     departureEditFields.innerHTML = createWheelHtml(
@@ -1307,6 +1283,9 @@ function applyEditorValue(editorType, value){
     landingDiffMinSel.dispatchEvent(new Event('change'));
     landingDiffSecSel.dispatchEvent(new Event('change'));
     localStorage.setItem('landingDiffSeconds', String(totalSeconds));
+  }else if(editorType === 'castle-diff'){
+    setCastleDiffSeconds(value || 0);
+    onCastleDiffChanged();
   }else if(editorType === 'switch-rally'){
     const seconds = value || SWITCH_MARCH_SECONDS[0];
     ensureSelectOption(swRallyMinSel, seconds, marchLabel(seconds));
@@ -1336,6 +1315,7 @@ wireDepartureRowTrigger(document.getElementById('prep-input-group'), 'prep');
 wireDepartureRowTrigger(document.getElementById('l-rally-row'), 'landing-rally');
 wireDepartureRowTrigger(document.getElementById('l-prep-row'), 'landing-prep');
 wireDepartureRowTrigger(document.getElementById('l-two-wave-section'), 'landing-diff');
+wireDepartureRowTrigger(document.getElementById('diff-row'), 'castle-diff');
 wireDepartureRowTrigger(document.getElementById('sw-rally-row'), 'switch-rally');
 wireDepartureRowTrigger(document.getElementById('sw-from-now-row'), 'switch-from-now');
 
@@ -1431,6 +1411,7 @@ function attachSwipeToRow(row){
     
     // ツールバーからのタッチは無視
     if(e.target.closest('.app-toolbar')) return;
+    if(e.target.closest('.member-drag-handle')) return;
     
     // 他の行をリセット
     document.querySelectorAll('.member-row-wrapper .member-row').forEach(r => {
@@ -1502,6 +1483,7 @@ function attachSwipeToRow(row){
 
       setTimeout(() => {
         wrapper.remove();
+        renderMemberGroups();
         generateCopyMessage();
         saveSettings();
       }, 300);
@@ -1604,7 +1586,7 @@ function collectDepartureRowData(){
   document.querySelectorAll('#players .member-row-wrapper').forEach(wrapper => {
     const row = wrapper.querySelector('.member-row');
     const depTime = Number(row?.dataset.departureTime || 0);
-    if(row && depTime && !isMemberResting(row)) rowData.push({wrapper, row, depTime});
+    if(row && depTime && !isMemberResting(row)) rowData.push({wrapper, row, depTime, impactTime:rowImpactTime(row)});
   });
   return rowData.sort((a, b) => a.depTime - b.depTime);
 }
@@ -1621,8 +1603,7 @@ function setMemberResting(row, resting){
   updateMemberDepartureCountdowns();
   saveSettings();
   const rowData = collectDepartureRowData();
-  if(rowData.length) generateCopyMessage(rowData);
-  else generateCopyMessage();
+  generateCopyMessage();
   if(resting) publishRosterDepartureTimes(rowData);
 }
 
@@ -1683,22 +1664,6 @@ function attachRowEvents(row){
     }
   });
 
-  row.querySelector('.march-select').addEventListener('change', function(){
-    saveSettings();
-  });
-
-  row.querySelectorAll('.coord-input').forEach(input => {
-    input.addEventListener('input', function(){
-      this.value = this.value.replace(/\D/g, '').slice(0, 4);
-      refreshMemberAutoMarch(row);
-    });
-    input.addEventListener('change', () => refreshMemberAutoMarch(row));
-  });
-
-  row.querySelector('.stat-boost-toggle').addEventListener('change', () => {
-    refreshMemberAutoMarch(row);
-  });
-
   row.querySelector('.member-settings-pet-toggle').addEventListener('change', function(event){
     event.stopPropagation();
     const name = (row.querySelector('.name-text').textContent || '').trim();
@@ -1729,6 +1694,7 @@ function attachRowEvents(row){
     if(event.target.closest('.name-text')) return;
     if(event.target.closest('.member-settings-toggle')) return;
     if(event.target.closest('.member-active-check')) return;
+    if(event.target.closest('.member-drag-handle')) return;
     toggleMemberSettings();
   });
 
@@ -1751,24 +1717,23 @@ function escapeMemberText(value){
 
 function buildMemberRowHtml(member = {}){
   const name = escapeMemberText(member.name || '');
-  const coordX = escapeMemberText(member.coordX ?? '');
-  const coordY = escapeMemberText(member.coordY ?? '');
-  const boostChecked = member.statBoost ? ' checked' : '';
+  const group = member.group === '2' ? '2' : '1';
   const fid = escapeMemberText(member.fid || '');
   const avatar = escapeMemberText(member.avatar || '');
   const resting = !!member.resting;
   return `
     <div class="delete-bg">削除</div>
-    <div class="member-row${resting ? ' is-resting' : ''}" data-fid="${fid}" data-avatar="${avatar}" data-nickname="${fid ? name : ''}">
+    <div class="member-row${resting ? ' is-resting' : ''}" data-group="${group}" data-fid="${fid}" data-avatar="${avatar}" data-nickname="${fid ? name : ''}">
       <div class="member-identity-row">
         <button type="button" class="member-active-check" role="switch" aria-checked="${resting ? 'false' : 'true'}" aria-label="参加"></button>
         <span class="member-avatar" aria-hidden="true"></span>
         <span class="name-text" contenteditable="true" data-placeholder="名前・ID">${name}</span>
         <span class="member-departure-inline"><span class="member-departure-status">—</span><span class="dep" hidden>-</span></span>
         <button type="button" class="member-settings-toggle" aria-expanded="false" aria-label="集結主設定"></button>
+        <span class="member-drag-handle" aria-label="ドラッグで①②を移動" role="button"><i></i><i></i><i></i></span>
       </div>
       <div class="member-auto-settings" hidden>
-        <div class="member-setting-pair"><div class="member-setting-row"><span class="member-setting-value member-coordinates"><span class="coord-axis">X</span><input class="coord-input coord-x" inputmode="numeric" pattern="[0-9]*" placeholder="598" aria-label="X座標" value="${coordX}"><span class="coord-axis">Y</span><input class="coord-input coord-y" inputmode="numeric" pattern="[0-9]*" placeholder="606" aria-label="Y座標" value="${coordY}"></span></div><div class="member-setting-row"><span class="member-setting-value march-control"><select class="march-select"></select><small class="march-auto-badge">手動</small></span></div></div><label class="member-setting-row stat-boost-control"><span class="member-setting-label">ステ強化</span><span class="member-setting-value"><input type="checkbox" class="stat-boost-toggle"${boostChecked}><span class="stat-boost-switch"></span></span></label><label class="member-setting-row member-settings-pet-control"><span class="member-setting-label">ペット</span><span class="member-setting-value"><span class="member-pet-remaining"></span><input type="checkbox" class="member-settings-pet-toggle"><span class="stat-boost-switch"></span></span></label>
+        <label class="member-setting-row member-settings-pet-control"><span class="member-setting-label">ペット</span><span class="member-setting-value"><span class="member-pet-remaining"></span><input type="checkbox" class="member-settings-pet-toggle"><span class="stat-boost-switch"></span></span></label>
       </div>
     </div>`;
 }
@@ -1780,12 +1745,10 @@ function addMemberRow(name = '', marchSec = null, memberSettings = {}){
   wrapper.innerHTML=buildMemberRowHtml({name, ...memberSettings});
   const row = wrapper.querySelector('.member-row');
   container.appendChild(wrapper);
-  const minSec = 10;
-  const maxSec = 300;
-  generateMarchOptions(row.querySelector('.march-select'), marchSec, minSec, maxSec);
   attachRowEvents(row);
   attachSwipeToRow(row);
   refreshMemberAutoMarch(row, {save:false});
+  renderMemberGroups();
   saveSettings();
   return row;
 }
@@ -1795,26 +1758,30 @@ document.getElementById('add-member').addEventListener('click',()=>{
 });
 
 /* ======= コピー用メッセージ生成 ======= */
-function generateCopyMessage(sortedRowData){
+function generateCopyMessage(){
   const rallyMin = rallyMinSel.value;
   const commonImpactTime = document.getElementById('common-impact-time').textContent;
-
-  const rows = (sortedRowData
-    ? sortedRowData.map(item => item.row)
-    : [...document.querySelectorAll('#players .member-row')])
-    .filter(row => !isMemberResting(row));
-  const entries = rows.map(row => ({
-    name:(row.querySelector('.name-text').textContent||'').trim(),
-    dep:row.querySelector('.dep').textContent.trim()||'-'
-  }));
-  const namedEntries = entries.filter(entry => entry.name);
+  const namesIn = group => [...document.querySelectorAll('#players .member-row')]
+    .filter(row => !isMemberResting(row))
+    .filter(row => !group || (row.dataset.group === '2' ? '2' : '1') === group)
+    .map(row => (row.querySelector('.name-text').textContent || '').trim())
+    .filter(Boolean);
 
   const lines=[];
   lines.push(`${rallyMin}分集結お願いします！🙇‍♂️🙇‍♂️✨`);
   lines.push('');
-  lines.push(`着弾時刻：${commonImpactTime} UTC`);
-  lines.push('');
-  namedEntries.forEach(entry => lines.push(`・${entry.name}`));
+  if(isCastleSplit()){
+    const impact1 = lastCastleImpactTime ? formatUtcTime(lastCastleImpactTime) : '--:--:--';
+    const impact2 = lastCastleImpactTime ? formatUtcTime(lastCastleImpactTime + getCastleDiffSeconds() * 1000) : '--:--:--';
+    lines.push(`①${impact1} UTC 着弾`);
+    namesIn('1').forEach(name => lines.push(`・${name}`));
+    lines.push(`②${impact2} UTC 着弾`);
+    namesIn('2').forEach(name => lines.push(`・${name}`));
+  }else{
+    lines.push(`着弾時刻：${commonImpactTime} UTC`);
+    lines.push('');
+    namesIn(null).forEach(name => lines.push(`・${name}`));
+  }
   const msg = lines.join('\n');
   document.getElementById('copy').textContent = msg;
   
@@ -1824,6 +1791,231 @@ function generateCopyMessage(sortedRowData){
     previewText.textContent = msg;
   }
 }
+
+
+/* ======= 王城決戦：時差と①②グループ ======= */
+function formatUtcTime(ms){
+  const d = new Date(ms);
+  return `${pad2(d.getUTCHours())}:${pad2(d.getUTCMinutes())}:${pad2(d.getUTCSeconds())}`;
+}
+
+function getCastleDiffSeconds(){
+  const minutes = parseInt(document.getElementById('diff-min')?.value, 10) || 0;
+  const seconds = parseInt(document.getElementById('diff-sec')?.value, 10) || 0;
+  return minutes * 60 + seconds;
+}
+
+function setCastleDiffSeconds(totalSeconds){
+  const minSel = document.getElementById('diff-min');
+  const secSel = document.getElementById('diff-sec');
+  if(!minSel || !secSel) return;
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  ensureSelectOption(minSel, minutes, `${minutes}分`);
+  ensureSelectOption(secSel, seconds, `${seconds}秒`);
+  minSel.classList.toggle('is-collapsed', minutes === 0);
+  secSel.classList.toggle('is-collapsed', minutes > 0 && seconds === 0);
+}
+
+function isCastleSplit(){
+  return getCastleDiffSeconds() > 0;
+}
+
+function memberGroup(row){
+  return row?.dataset.group === '2' ? '2' : '1';
+}
+
+function rowImpactTime(row){
+  if(!lastCastleImpactTime) return null;
+  return lastCastleImpactTime + (isCastleSplit() && memberGroup(row) === '2' ? getCastleDiffSeconds() * 1000 : 0);
+}
+
+function applyCastleDepartures(){
+  if(!lastCastleFirstDeparture) return;
+  const diffMs = isCastleSplit() ? getCastleDiffSeconds() * 1000 : 0;
+  const rowData = [];
+  document.querySelectorAll('#players .member-row-wrapper').forEach(wrapper => {
+    const row = wrapper.querySelector('.member-row');
+    if(!row) return;
+    if(isMemberResting(row)){
+      delete row.dataset.departureTime;
+      row.classList.remove('has-departure');
+      return;
+    }
+    const depTime = lastCastleFirstDeparture + (memberGroup(row) === '2' ? diffMs : 0);
+    row.dataset.departureTime = String(depTime);
+    row.querySelector('.dep').textContent = formatUtcTime(depTime);
+    row.classList.add('has-departure');
+    rowData.push({wrapper, row, depTime, impactTime:rowImpactTime(row)});
+  });
+  updateMemberDepartureCountdowns();
+  publishRosterDepartureTimes(rowData);
+  renderMemberGroups();
+  generateCopyMessage();
+}
+
+function buildMemberGroupHead(group){
+  const head = document.createElement('div');
+  head.className = 'member-group-head';
+  head.dataset.group = group;
+  const mark = document.createElement('span');
+  mark.className = 'member-group-mark';
+  mark.textContent = group === '2' ? '②' : '①';
+  head.appendChild(mark);
+  if(lastCastleImpactTime){
+    const time = document.createElement('span');
+    time.className = 'member-group-time';
+    time.textContent = formatUtcTime(lastCastleImpactTime + (group === '2' ? getCastleDiffSeconds() * 1000 : 0));
+    const unit = document.createElement('span');
+    unit.className = 'member-group-unit';
+    unit.textContent = 'UTC 着弾';
+    head.append(time, unit);
+  }
+  return head;
+}
+
+function renderMemberGroups(){
+  const container = document.getElementById('players');
+  if(!container) return;
+  const card = container.closest('.members-card');
+  const section = document.getElementById('sec-members');
+  const controls = section?.querySelector('.button-controls');
+  const split = isCastleSplit();
+
+  container.querySelectorAll(':scope > .member-group-head, :scope > .member-group-empty').forEach(el => el.remove());
+  const wrappers = [...container.querySelectorAll(':scope > .member-row-wrapper')];
+  wrappers.forEach(wrapper => wrapper.classList.remove('group-last'));
+  card?.classList.toggle('is-split', split);
+
+  if(impactDisplay){
+    impactDisplay.style.display = lastCastleImpactTime && !split ? 'block' : 'none';
+  }
+
+  if(!split){
+    wrappers.forEach(wrapper => container.appendChild(wrapper));
+    if(controls && controls.parentElement !== section) container.after(controls);
+    return;
+  }
+
+  const groupOne = wrappers.filter(wrapper => memberGroup(wrapper.querySelector('.member-row')) === '1');
+  const groupTwo = wrappers.filter(wrapper => memberGroup(wrapper.querySelector('.member-row')) === '2');
+  container.appendChild(buildMemberGroupHead('1'));
+  groupOne.forEach(wrapper => container.appendChild(wrapper));
+  if(controls) container.appendChild(controls);
+  container.appendChild(buildMemberGroupHead('2'));
+  if(groupTwo.length){
+    groupTwo.forEach(wrapper => container.appendChild(wrapper));
+    groupTwo[groupTwo.length - 1].classList.add('group-last');
+  }else{
+    const empty = document.createElement('div');
+    empty.className = 'member-group-empty';
+    empty.textContent = '≡ でここへドラッグ';
+    container.appendChild(empty);
+  }
+}
+
+function onCastleDiffChanged(){
+  setCastleDiffSeconds(getCastleDiffSeconds());
+  renderMemberGroups();
+  if(lastCastleFirstDeparture) applyCastleDepartures();
+  else generateCopyMessage();
+  saveSettings();
+}
+
+/* ≡ をつかんで①②の間を移動 */
+let memberDrag = null;
+
+function memberDropTarget(clientY){
+  const container = document.getElementById('players');
+  const headTwo = container.querySelector(':scope > .member-group-head[data-group="2"]');
+  const group = headTwo && clientY > headTwo.getBoundingClientRect().top ? '2' : '1';
+  let before = null;
+  const candidates = [...container.querySelectorAll(':scope > .member-row-wrapper')]
+    .filter(wrapper => wrapper !== memberDrag.wrapper && memberGroup(wrapper.querySelector('.member-row')) === group);
+  for(const wrapper of candidates){
+    const rect = wrapper.getBoundingClientRect();
+    if(clientY < rect.top + rect.height / 2){ before = wrapper; break; }
+  }
+  return {group, before, last:candidates[candidates.length - 1] || null, headTwo};
+}
+
+function moveMemberDrag(clientY){
+  if(!memberDrag) return;
+  memberDrag.ghost.style.top = `${clientY - memberDrag.offsetY}px`;
+  const {group, before, last, headTwo} = memberDropTarget(clientY);
+  const container = document.getElementById('players');
+  if(before) before.before(memberDrag.line);
+  else if(group === '1'){
+    const controls = container.querySelector(':scope > .button-controls');
+    (controls || headTwo).before(memberDrag.line);
+  }else if(last) last.after(memberDrag.line);
+  else headTwo.after(memberDrag.line);
+}
+
+function endMemberDrag(clientY){
+  if(!memberDrag) return;
+  const {group, before, last} = memberDropTarget(clientY);
+  const {wrapper, ghost, line} = memberDrag;
+  ghost.remove();
+  line.remove();
+  wrapper.classList.remove('is-lifted');
+  memberDrag = null;
+
+  const row = wrapper.querySelector('.member-row');
+  row.dataset.group = group;
+  if(before) before.before(wrapper);
+  else if(last) last.after(wrapper);
+  else document.getElementById('players').appendChild(wrapper);
+
+  renderMemberGroups();
+  if(lastCastleFirstDeparture) applyCastleDepartures();
+  else generateCopyMessage();
+  saveSettings();
+}
+
+document.addEventListener('pointerdown', event => {
+  const handle = event.target.closest('#players .member-drag-handle');
+  if(!handle || !isCastleSplit() || memberDrag) return;
+  const wrapper = handle.closest('.member-row-wrapper');
+  if(!wrapper) return;
+  event.preventDefault();
+  hideAutocomplete();
+
+  const rect = wrapper.getBoundingClientRect();
+  const ghost = document.createElement('div');
+  ghost.className = 'member-drag-ghost';
+  const clone = wrapper.querySelector('.member-row').cloneNode(true);
+  clone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+  clone.querySelector('.member-auto-settings')?.setAttribute('hidden', '');
+  ghost.appendChild(clone);
+  ghost.style.left = `${rect.left}px`;
+  ghost.style.width = `${rect.width}px`;
+  document.getElementById('players').appendChild(ghost);
+
+  const line = document.createElement('div');
+  line.className = 'member-drop-line';
+  wrapper.classList.add('is-lifted');
+  memberDrag = {wrapper, ghost, line, offsetY:event.clientY - rect.top};
+  moveMemberDrag(event.clientY);
+
+  const onMove = moveEvent => {
+    moveEvent.preventDefault();
+    moveMemberDrag(moveEvent.clientY);
+  };
+  const onUp = upEvent => {
+    document.removeEventListener('pointermove', onMove);
+    document.removeEventListener('pointerup', onUp);
+    document.removeEventListener('pointercancel', onUp);
+    endMemberDrag(upEvent.clientY);
+  };
+  document.addEventListener('pointermove', onMove, {passive:false});
+  document.addEventListener('pointerup', onUp);
+  document.addEventListener('pointercancel', onUp);
+});
+
+document.addEventListener('touchmove', event => {
+  if(memberDrag) event.preventDefault();
+}, {passive:false});
 
 /* ======= コピーボタン（トースト通知） ======= */
 const toast = document.getElementById('toast');
@@ -1871,79 +2063,16 @@ actionBtn.addEventListener('click',()=>{
   actionBtn.textContent = '計算中...';
 
   const now=new Date(firebaseNow());
-
-  // 最長行軍（メンバー行から自動スキャン）
-  let maxMarch = 0;
-  document.querySelectorAll('#players .member-row').forEach(row=>{
-    if(isMemberResting(row)) return;
-    const march = parseInt(row.querySelector('.march-select').value,10) || 0;
-    if(march > maxMarch) maxMarch = march;
-  });
-
-  let arriveUtc;
   const prepSec = parseInt(prepTimeSel.value,10);
-
   const rallyMin = parseInt(rallyMinSel.value,10);
 
-  // 今から：現在時刻 + 準備時間 + 集結時間 + 最長行軍
-  const timing = calculateCastle({nowMs:now.getTime(), prepSeconds:prepSec, rallyMinutes:rallyMin, maxMarchSeconds:maxMarch});
-  arriveUtc=new Date(timing.impactTime);
+  // 今から：現在時刻 + 準備時間 + 集結時間（行軍は各自がゲーム内で合わせる）
+  const timing = calculateCastle({nowMs:now.getTime(), prepSeconds:prepSec, rallyMinutes:rallyMin, maxMarchSeconds:0});
   lastCastleImpactTime = timing.impactTime;
+  lastCastleFirstDeparture = timing.firstDepartureTime;
 
-  const arriveStr=`${pad2(arriveUtc.getUTCHours())}:${pad2(arriveUtc.getUTCMinutes())}:${pad2(arriveUtc.getUTCSeconds())}`;
-  impactTime.textContent=arriveStr;
-
-  // 着弾時刻は両モードで表示
-  impactDisplay.style.display='block';
-
-  // 各人の出発時刻
-  const rowData=[];
-  const restingWrappers=[];
-  document.querySelectorAll('#players .member-row-wrapper').forEach(wrapper=>{
-    const row = wrapper.querySelector('.member-row');
-    if(isMemberResting(row)){
-      delete row.dataset.departureTime;
-      row.classList.remove('has-departure');
-      restingWrappers.push(wrapper);
-      return;
-    }
-    const march=parseInt(row.querySelector('.march-select').value,10)||0;
-    let dep;
-
-    // 今から：現在時刻 + 準備時間 + (最長行軍 - 個人行軍)
-    dep = new Date(calculateDeparture(timing.firstDepartureTime, maxMarch, march));
-
-    const depTime = dep.getTime();
-    row.dataset.departureTime = String(depTime);
-    row.querySelector('.dep').textContent =
-      `${pad2(dep.getUTCHours())}:${pad2(dep.getUTCMinutes())}:${pad2(dep.getUTCSeconds())}`;
-    row.classList.add('has-departure');
-    rowData.push({wrapper, row, depTime});
-  });
-  updateMemberDepartureCountdowns();
-  publishRosterDepartureTimes(rowData);
-
-  // 出発時刻が早い順にソート
-  rowData.sort((a, b) => a.depTime - b.depTime);
-
-  // ソートされた順序でテーブルを並び替え（wrapperごと移動）
-  const tbody = document.querySelector('#players');
-  rowData.forEach(item => {
-    tbody.appendChild(item.wrapper);
-  });
-  restingWrappers.forEach(wrapper => tbody.appendChild(wrapper));
-
-  generateCopyMessage(rowData);
-
-  // 履歴に記録
-  document.querySelectorAll('#players .member-row').forEach(row=>{
-    if(isMemberResting(row)) return;
-    const name = (row.querySelector('.name-text').textContent||'').trim();
-    const march = parseInt(row.querySelector('.march-select').value, 10);
-    if(name && march){
-      recordHistory(name, march);
-    }
-  });
+  impactTime.textContent = formatUtcTime(timing.impactTime);
+  applyCastleDepartures();
 
   // 最後に解除してコピー実行
   setTimeout(async ()=>{
@@ -1958,6 +2087,52 @@ actionBtn.addEventListener('click',()=>{
     showToast();
   }, 0);
 });
+
+
+/* ======= 同盟の集結主を最初から並べておく（おやすみ状態で追加、1回だけ） ======= */
+const DEFAULT_ROSTER_IDS = Object.freeze([
+  '227488806', '256920687', '248078612', '250652143', '245188561',
+  '218508831', '227571532', '251604818', '228526855', '228838005'
+]);
+const DEFAULT_ROSTER_FLAG = 'defaultRosterSeeded';
+
+async function seedDefaultRoster(){
+  try{
+    if(localStorage.getItem(DEFAULT_ROSTER_FLAG) === 'v1') return;
+  }catch(error){ return; }
+
+  const container = document.getElementById('players');
+  container.querySelectorAll(':scope > .member-row-wrapper').forEach(wrapper => {
+    const name = (wrapper.querySelector('.name-text')?.textContent || '').trim();
+    if(!name) wrapper.remove();
+  });
+
+  const rows = () => [...document.querySelectorAll('#players .member-row')];
+  const knownIds = new Set(rows().map(row => row.dataset.fid).filter(Boolean));
+  const players = await Promise.all(DEFAULT_ROSTER_IDS
+    .filter(id => !knownIds.has(id))
+    .map(id => playerApi.getPlayer(id).then(player => ({id, player})).catch(() => ({id, player:null}))));
+
+  players.forEach(({id, player}) => {
+    const nickname = (player?.name || '').trim();
+    if(nickname){
+      const existing = rows().find(row => (row.querySelector('.name-text').textContent || '').trim().toLowerCase() === nickname.toLowerCase());
+      if(existing){
+        if(!existing.dataset.fid) setPlayerOnRow(existing, id, nickname, player.avatar || '');
+        return;
+      }
+      addMemberRow(nickname, null, {fid:id, avatar:player.avatar || '', resting:true});
+    }else{
+      const row = addMemberRow(id, null, {resting:true});
+      setTimeout(() => lookupPlayerForRow(row), 1500);
+    }
+  });
+
+  renderMemberGroups();
+  generateCopyMessage();
+  saveSettings();
+  try{ localStorage.setItem(DEFAULT_ROSTER_FLAG, 'v1'); }catch(error){}
+}
 
 /* ======= 履歴管理 ======= */
 const MAX_HISTORY_PER_KEY = 50;
@@ -2157,10 +2332,7 @@ function saveSettings(){
   document.querySelectorAll('#players .member-row').forEach(row=>{
     members.push({
       name: row.querySelector('.name-text').textContent||'',
-      march: row.querySelector('.march-select').value,
-      coordX: row.querySelector('.coord-x')?.value || '',
-      coordY: row.querySelector('.coord-y')?.value || '',
-      statBoost: !!row.querySelector('.stat-boost-toggle')?.checked,
+      group: row.dataset.group === '2' ? '2' : '1',
       fid: row.dataset.fid || '',
       avatar: row.dataset.avatar || '',
       resting: isMemberResting(row)
@@ -2170,6 +2342,7 @@ function saveSettings(){
   const data={
     rallyMin:rallyMinSel.value,
     prepTime:prepTimeSel.value,
+    diffSec:getCastleDiffSeconds(),
     members: members
   };
   localStorage.setItem('arrivalMarineSettings', JSON.stringify(data));
@@ -2190,19 +2363,19 @@ function loadSettings(){
       ensureSelectOption(prepTimeSel, savedPrep, marchLabel(savedPrep));
     }
 
+    const savedDiff = Number(d.diffSec);
+    if(Number.isInteger(savedDiff) && savedDiff >= 0 && savedDiff <= 3659) setCastleDiffSeconds(savedDiff);
+
     const members = Array.isArray(d.members) ? d.members.filter(m => m && typeof m === 'object' && typeof m.name === 'string') : [];
     if(members.length>0){
       const container=document.querySelector('#players');
       container.innerHTML='';
-      const minSec = 10, maxSec = 300;
       members.forEach(m=>{
         const wrapper=document.createElement('div');
         wrapper.classList.add('member-row-wrapper');
         wrapper.innerHTML=buildMemberRowHtml(m);
         container.appendChild(wrapper);
         const row = wrapper.querySelector('.member-row');
-        // 保存値を優先渡し（範囲外でも generateMarchOptions が保持する）
-        generateMarchOptions(row.querySelector('.march-select'), m.march, minSec, maxSec);
         attachRowEvents(row);
         attachSwipeToRow(row);
         refreshMemberAutoMarch(row, {save:false});
@@ -2241,6 +2414,9 @@ function migrateHistoryData(){
 
 updateMode();
 loadSettings();
+setCastleDiffSeconds(getCastleDiffSeconds());
+renderMemberGroups();
+seedDefaultRoster();
 migrateHistoryData();
 updateMemberRowHighlights(); // ペット発動中の行ハイライト初期化
 

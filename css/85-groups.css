@@ -1,0 +1,139 @@
+/* ===== 王城決戦：時差 ===== */
+html[data-theme] body #diff-row .inline-select.is-collapsed {
+  display: none !important;
+}
+
+/* ===== 集結主の①②グループ ===== */
+.member-drag-handle {
+  display: none;
+}
+
+html[data-theme] body #page-calc .collapsible-card.members-card.is-split,
+html[data-theme] body #page-calc .members-card.is-split #sec-members,
+html[data-theme] body #page-calc .members-card.is-split #players {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+  overflow: visible !important;
+}
+
+html[data-theme] body .members-card.is-split .member-drag-handle {
+  display: inline-flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 32px;
+  height: 44px;
+  margin-right: -4px;
+  touch-action: none;
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+}
+html[data-theme] body .members-card.is-split .member-drag-handle i {
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--text-muted);
+  opacity: 0.6;
+}
+
+html[data-theme] body .members-card.is-split .member-group-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 10px 16px;
+  background-color: var(--surface);
+  background-image: linear-gradient(rgba(118, 118, 128, 0.12), rgba(118, 118, 128, 0.12));
+  border: 1px solid var(--card-border);
+  border-radius: var(--card-radius) var(--card-radius) 0 0;
+  counter-set: member-index 0;
+}
+html[data-theme] body .members-card.is-split .member-group-head[data-group="2"] {
+  margin-top: 14px;
+}
+html[data-theme] body .members-card.is-split .member-group-mark {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+html[data-theme] body .members-card.is-split .member-group-time {
+  font-family: var(--font-num);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.3px;
+}
+html[data-theme] body .members-card.is-split .member-group-unit {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+html[data-theme] body .members-card.is-split #players > .member-row-wrapper,
+html[data-theme] body .members-card.is-split #players > .button-controls,
+html[data-theme] body .members-card.is-split #players > .member-group-empty {
+  border-left: 1px solid var(--card-border);
+  border-right: 1px solid var(--card-border);
+  background: var(--surface);
+}
+html[data-theme] body .members-card.is-split #players > .button-controls,
+html[data-theme] body .members-card.is-split #players > .member-row-wrapper.group-last,
+html[data-theme] body .members-card.is-split #players > .member-group-empty {
+  border-bottom: 1px solid var(--card-border);
+  border-radius: 0 0 var(--card-radius) var(--card-radius);
+  overflow: hidden;
+}
+html[data-theme] body .members-card.is-split #players > .member-group-empty {
+  padding: 16px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+html[data-theme] body #players > .member-row-wrapper.is-lifted {
+  opacity: 0.3;
+}
+html[data-theme] body #players > .member-drag-ghost {
+  position: fixed;
+  z-index: 60;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+  transform: scale(1.02);
+}
+html[data-theme] body #players > .member-drop-line {
+  height: 3px;
+  margin: 0 16px;
+  border-radius: 2px;
+  background: #007aff;
+}
+
+/* ===== 選ばれていない（おやすみ）集結主は小さく ===== */
+html[data-theme] body #players .member-row.is-resting .member-identity-row {
+  min-height: 40px !important;
+  height: 40px !important;
+}
+html[data-theme] body #players .member-row.is-resting .name-text {
+  font-size: 14px;
+  font-weight: 500;
+}
+html[data-theme] body #players .member-row.is-resting .member-avatar {
+  transform: scale(0.75);
+}
+html[data-theme] body #players .member-row.is-resting .member-active-check {
+  transform: scale(0.85);
+}
+html[data-theme] body #players .member-row.is-resting .member-departure-status.resting {
+  font-size: 12px;
+  padding: 2px 6px;
+}
+html[data-theme] body #players .member-row.is-resting .member-settings-toggle {
+  transform: scale(0.85);
+}
