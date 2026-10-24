@@ -146,6 +146,16 @@ html[data-theme] body .page-content .btn-primary.calculating {
   box-shadow: none;
 }
 
+/* 集結主の▼を押したとき行を四角く囲まない */
+html[data-theme] body #players .member-row-wrapper.is-editing .member-row {
+  background: transparent;
+  box-shadow: none;
+}
+html[data-theme] body .page-content,
+html[data-theme] body .page-content * {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* 時差は 0分 を出さず「0秒」「1分」のように短く */
 html[data-theme] body #l-two-wave-section .inline-select.is-collapsed {
   display: none !important;
