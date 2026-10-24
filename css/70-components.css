@@ -252,24 +252,20 @@
   animation: contentReveal 160ms ease-out;
 }
 
-/* 入力エリア：行数だけがページごとの差分。 */
+/* 入力エリア：プリセット・設定行の実際の高さに合わせる。 */
 .page-content .mode-card {
   width: 100%;
   max-width: none;
-  height: calc(var(--component-row-height) * 2);
-  min-height: calc(var(--component-row-height) * 2);
+  height: auto;
+  min-height: 0;
   margin: 6px 0 var(--component-action-gap);
   padding: 0;
   border: 1px solid transparent;
   border-radius: 0;
   background: transparent;
   box-shadow: none;
-  overflow: hidden;
+  overflow: visible;
   color: var(--text);
-}
-#page-landing .mode-card {
-  height: calc(var(--component-row-height) * 3);
-  min-height: calc(var(--component-row-height) * 3);
 }
 
 /* 既存画面で意図的に異なる、準備時間の補助表示。 */
