@@ -353,7 +353,6 @@ function getUtcPipDepartureData(){
   return {
     name:utcPipLastDeparture.name,
     countdown,
-    countdownValue:countdown.replace(/秒$/, ''),
     departureTimeText,
     impactTimeText
   };
@@ -406,73 +405,27 @@ const UTC_PIP_LAYOUT = {
   valueSize:0.56,       // カウントダウンの数字
   secondSize:0.16,      // 「秒」
   valueY:0.68,
-  cdSideMargin:0.12,    // カウントダウン時の左右の余白
-  cdNameSize:0.26,      // カウントダウン時の名前
-  cdValueSize:0.62,     // カウントダウンの数字（整数）
-  cdUnitSize:0.24,      // 「分」「秒」
-  cdLabelSize:0.22,     // 「着弾」
-  cdTimeSize:0.30       // 着弾時刻
+  cdTopSize:0.22,       // カウントダウン上の段（名前・着弾時刻）
+  cdTopY:0.27,
+  cdValueSize:0.51,     // カウントダウン下の段（残り）
+  cdValueY:0.68
 };
 
-/* カウントダウン：名前は左、残り秒は中央、着弾時刻は右に固定して、文字の大きさを揃える */
+/* カウントダウン：上の段に名前と着弾時刻、下の段に残り（段ごとに大きさをそろえる） */
 function drawPipCountdown(ctx, W, H, data){
   const L = UTC_PIP_LAYOUT;
-  const margin = H * L.cdSideMargin;
-  const y = H * L.timeY;
-  const font = (size, weight) => `${weight} ${Math.round(size)}px ${UTC_PIP_FONT}`;
-  const measure = (text, size, weight) => { ctx.font = font(size, weight); return ctx.measureText(text).width; };
-
-  /* 「1分05秒」は数字だけ大きく、「分」「秒」は小さく */
-  const tokens = (data.countdown || '').match(/\d+|\D+/g) || [];
-  const valueParts = tokens.map(text => /^\d+$/.test(text)
-    ? {text, size:H * L.cdValueSize, weight:800}
-    : {text, size:H * L.cdUnitSize, weight:700});
-  const valueWidth = valueParts.reduce((sum, part) => sum + measure(part.text, part.size, part.weight), 0);
-  const gap = H * 0.12;
-
-  /* 着弾時刻は右端にそろえる */
-  let impactLeft = W - margin;
+  const inner = W - H * L.sideMargin * 2;
+  const top = [{text:data.name || '', size:H * L.cdTopSize, weight:700, color:'#ffffff'}];
   if(data.impactTimeText){
-    const timeSize = H * L.cdTimeSize;
-    const labelSize = H * L.cdLabelSize;
-    const labelText = '着弾 ';
-    const timeLeft = W - margin - measure(data.impactTimeText, timeSize, 700);
-    impactLeft = timeLeft - measure(labelText, labelSize, 500);
-    ctx.textAlign = 'left';
-    ctx.font = font(labelSize, 500);
-    ctx.fillStyle = '#9a9aa0';
-    ctx.fillText(labelText, impactLeft, y);
-    ctx.font = font(timeSize, 700);
-    ctx.fillStyle = '#ffffff';
-    ctx.fillText(data.impactTimeText, timeLeft, y);
+    top.push(
+      {text:'　着弾 ', size:H * L.cdTopSize, weight:500, color:'#9a9aa0'},
+      {text:data.impactTimeText, size:H * L.cdTopSize, weight:700, color:'#ffffff'}
+    );
   }
-
-  /* 残りは中央。着弾時刻にぶつかる時だけ左へ寄せる */
-  let x = Math.min(W / 2 - valueWidth / 2, impactLeft - gap - valueWidth);
-  const valueLeft = x;
-  ctx.textAlign = 'left';
-  ctx.fillStyle = '#ffffff';
-  valueParts.forEach(part => {
-    ctx.font = font(part.size, part.weight);
-    ctx.fillText(part.text, x, y);
-    x += ctx.measureText(part.text).width;
-  });
-
-  /* 名前は左の空きに収まるよう、名前だけ縮める（それでも長ければ省略） */
-  const nameMax = valueLeft - margin - gap;
-  let name = data.name || '';
-  let nameSize = H * L.cdNameSize;
-  const nameWidth = measure(name, nameSize, 700);
-  if(nameWidth > nameMax){
-    nameSize = Math.max(H * L.cdNameSize * 0.6, nameSize * nameMax / nameWidth);
-    while(name.length > 1 && measure(name, nameSize, 700) > nameMax){
-      name = name.slice(0, -2) + '…';
-    }
-  }
-  ctx.font = font(nameSize, 700);
-  ctx.fillStyle = '#ffffff';
-  ctx.fillText(name, margin, y);
-  ctx.textAlign = 'center';
+  drawPipLine(ctx, top, W / 2, H * L.cdTopY, inner);
+  drawPipLine(ctx, [
+    {text:data.countdown || '', size:H * L.cdValueSize, weight:800, color:'#ffffff'}
+  ], W / 2, H * L.cdValueY, inner);
 }
 
 function drawUtcVideoFrame(timeText, millisText, departureData){
@@ -533,7 +486,7 @@ function tickUTC(){
       pipCountdown.hidden = !departureData;
       if(departureData){
         if(pipCountdownName) pipCountdownName.textContent = departureData.name || '';
-        if(pipCountdownValue) pipCountdownValue.textContent = departureData.countdownValue;
+        if(pipCountdownValue) pipCountdownValue.textContent = departureData.countdown;
         if(pipCountdownTime) pipCountdownTime.textContent = departureData.impactTimeText;
         const pipImpact = pipDoc.getElementById('utc-pip-impact');
         if(pipImpact) pipImpact.hidden = !departureData.impactTimeText;
@@ -627,17 +580,15 @@ async function openUtcPipWindow(){
         .pip-line{display:flex;align-items:baseline;justify-content:center;gap:6px;white-space:nowrap}
         #utc-pip-time{font-size:9.5vh;font-weight:600;letter-spacing:-.02em}
         .pip-unit{color:#9a9aa0;font-size:4vh;font-weight:600}
-        .pip-cd{display:flex;align-items:baseline;justify-content:center;gap:.5em;white-space:nowrap;line-height:1}
-        .pip-cd b{font-size:4vh;font-weight:700}
-        .pip-cd-value{font-size:9vh;font-weight:800;letter-spacing:-.02em}
-        .pip-cd-value small{font-size:.38em;font-weight:700;margin-left:.1em}
-        .pip-cd-impact{display:inline-flex;align-items:baseline;gap:.35em;padding-left:.6em;border-left:1px solid #5a6478}
-        .pip-cd-impact span{color:#9a9aa0;font-size:3.4vh;font-weight:500}
-        .pip-cd-impact strong{font-size:4.6vh;font-weight:700}
+        .pip-cd{text-align:center;line-height:1.15;white-space:nowrap}
+        .pip-cd-head{display:flex;align-items:baseline;justify-content:center;gap:.4em;font-size:3.6vh;font-weight:700}
+        .pip-cd-head span{color:#9a9aa0;font-weight:500}
+        .pip-cd-head b{color:#fff;font-weight:700}
+        .pip-cd-value{font-size:8.4vh;font-weight:800;letter-spacing:-.02em}
       
 
 </style>`;
-      utcPipWindow.document.body.innerHTML = '<div><div id="utc-pip-normal" class="pip-line"><span id="utc-pip-time">--:--:--</span><span class="pip-unit">UTC</span></div><div id="utc-pip-countdown" class="pip-cd" hidden><b id="utc-pip-countdown-name"></b><span class="pip-cd-value"><span id="utc-pip-countdown-value">0</span><small>秒</small></span><span id="utc-pip-impact" class="pip-cd-impact"><span>着弾</span><strong id="utc-pip-countdown-time"></strong></span></div></div>';
+      utcPipWindow.document.body.innerHTML = '<div><div id="utc-pip-normal" class="pip-line"><span id="utc-pip-time">--:--:--</span><span class="pip-unit">UTC</span></div><div id="utc-pip-countdown" class="pip-cd" hidden><div class="pip-cd-head"><b id="utc-pip-countdown-name"></b><span id="utc-pip-impact" class="pip-cd-impact"><span>着弾</span> <b id="utc-pip-countdown-time"></b></span></div><div class="pip-cd-value" id="utc-pip-countdown-value">0秒</div></div></div>';
       utcPipWindow.addEventListener('pagehide', () => { utcPipWindow = null; });
       tickUTC();
       return true;
