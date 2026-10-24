@@ -31,7 +31,7 @@
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', {light:'#F2F2F7',dark:'#101014'}[theme]);
 })();
 </script>
-<link rel="stylesheet" href="style.css?v=20261024-selection-fix" />
+<link rel="stylesheet" href="style.css?v=20261024-refresh" />
 
 </head>
 <body class="landing-active" data-theme="light">
@@ -128,7 +128,7 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
                 <div class="member-identity-row">
                   <span class="member-avatar" aria-hidden="true"></span>
                   <span class="name-text" contenteditable="true" data-placeholder="名前・ID"></span>
-                  <span class="member-departure-inline"><span class="member-departure-status">未設定</span><span class="dep" hidden>-</span></span>
+                  <span class="member-departure-inline"><span class="member-departure-status">—</span><span class="dep" hidden>-</span></span>
                   <button type="button" class="member-settings-toggle" aria-expanded="false" aria-label="集結主設定"></button>
                 </div>
                 <div class="member-auto-settings" hidden>
@@ -142,7 +142,7 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
                 <div class="member-identity-row">
                   <span class="member-avatar" aria-hidden="true"></span>
                   <span class="name-text" contenteditable="true" data-placeholder="名前・ID"></span>
-                  <span class="member-departure-inline"><span class="member-departure-status">未設定</span><span class="dep" hidden>-</span></span>
+                  <span class="member-departure-inline"><span class="member-departure-status">—</span><span class="dep" hidden>-</span></span>
                   <button type="button" class="member-settings-toggle" aria-expanded="false" aria-label="集結主設定"></button>
                 </div>
                 <div class="member-auto-settings" hidden>
@@ -396,10 +396,10 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
   <div class="departure-edit-sheet" role="dialog" aria-modal="true" aria-labelledby="departure-edit-title">
     <div class="departure-edit-header">
       <h3 id="departure-edit-title">時間を編集</h3>
+      <button type="button" id="departure-preset-cancel" class="departure-sheet-cancel">キャンセル</button>
     </div>
     <div id="departure-preset-section" class="departure-preset-section" hidden>
       <div id="departure-preset-list" class="departure-preset-list"></div>
-      <button type="button" id="departure-preset-cancel" class="departure-sheet-cancel">キャンセル</button>
     </div>
     <div id="departure-custom-section" class="departure-custom-section" hidden>
       <div id="departure-edit-fields" class="departure-edit-fields"></div>
@@ -414,7 +414,7 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
 <!-- トースト -->
 <div id="toast" class="toast">✓ コピーしました</div>
 
-<script type="module" src="app.js?v=20261024-selection-fix"></script>
+<script type="module" src="app.js?v=20261024-refresh"></script>
 
 
 

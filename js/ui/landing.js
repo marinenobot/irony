@@ -138,7 +138,11 @@ function installRallyPresetCards({landingRallyMinSel, ensureSelectOption}){
     if(target.row.previousElementSibling?.classList.contains('rally-preset-card')) return;
     const card = document.createElement('div');
     card.className = 'rally-preset-card';
-    card.innerHTML = '<div class="rally-preset-title">集結時間</div><div class="rally-preset-grid"></div>';
+    card.innerHTML = '<div class="rally-preset-head"><span class="rally-preset-title">集結時間</span><button type="button" class="rally-preset-edit" aria-label="集結時間プリセットを編集">編集</button></div><div class="rally-preset-grid"></div>';
+    card.querySelector('.rally-preset-edit').addEventListener('click', event => {
+      event.stopPropagation();
+      openEditor();
+    });
     target.row.parentElement.insertBefore(card, target.row);
     target.row.hidden = true;
     target.select.addEventListener('change', renderCards);
@@ -172,6 +176,16 @@ export function initLandingPage({nowMs = Date.now, landingRallyMinSel, landingPr
   };
   landingDiffMinSel.addEventListener('change', saveLandingDiff);
   landingDiffSecSel.addEventListener('change', saveLandingDiff);
+
+  const updateLandingDiffDisplay = () => {
+    const minutes = parseInt(landingDiffMinSel.value, 10) || 0;
+    const seconds = parseInt(landingDiffSecSel.value, 10) || 0;
+    landingDiffMinSel.classList.toggle('is-collapsed', minutes === 0);
+    landingDiffSecSel.classList.toggle('is-collapsed', minutes > 0 && seconds === 0);
+  };
+  landingDiffMinSel.addEventListener('change', updateLandingDiffDisplay);
+  landingDiffSecSel.addEventListener('change', updateLandingDiffDisplay);
+  updateLandingDiffDisplay();
 
   installRallyPresetCards({landingRallyMinSel, ensureSelectOption});
 

@@ -3,7 +3,7 @@ import {connectRallySync, isSyncConfigured} from './js/api/rally-sync.js';
 import {createPlayerApi} from './js/api/players.js';
 import {pad2, calculateCastle, calculateDeparture} from './js/domain/timing.js';
 import {lookupMarchTime} from './js/domain/march.js';
-import {initLandingPage} from './js/ui/landing.js?v=20261024-selection-fix';
+import {initLandingPage} from './js/ui/landing.js?v=20261024-refresh';
 import {initSwitchPage} from './js/ui/switch.js?v=20261024-fast';
 
 // UI composition root: DOM events, local settings and presentation state.
@@ -657,7 +657,7 @@ function updateMemberDepartureCountdowns(){
     const departureTime = Number(row.dataset.departureTime || 0);
     status.classList.remove('counting', 'departed');
     if(!departureTime){
-      status.textContent = '未設定';
+      status.textContent = '—';
       return;
     }
     const remainingMs = departureTime - now;
@@ -1702,7 +1702,7 @@ function buildMemberRowHtml(member = {}){
       <div class="member-identity-row">
         <span class="member-avatar" aria-hidden="true"></span>
         <span class="name-text" contenteditable="true" data-placeholder="名前・ID">${name}</span>
-        <span class="member-departure-inline"><span class="member-departure-status">未設定</span><span class="dep" hidden>-</span></span>
+        <span class="member-departure-inline"><span class="member-departure-status">—</span><span class="dep" hidden>-</span></span>
         <button type="button" class="member-settings-toggle" aria-expanded="false" aria-label="集結主設定"></button>
       </div>
       <div class="member-auto-settings" hidden>
