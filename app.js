@@ -844,6 +844,7 @@ const DEFAULT_DEPARTURE_PRESETS = Object.freeze({
   prep:[0, 10, 30, 60, 120],
   diff:[30, 60, 90, 120, 180],
   'castle-diff':[0, 3, 5, 10, 30, 60],
+  'castle-march':[30, 60, 90, 120, 180],
   'switch-rally':[...SWITCH_MARCH_SECONDS],
   'switch-from-now':[...FROM_NOW_SECONDS]
 });
@@ -854,6 +855,7 @@ const DEPARTURE_PRESET_KIND_BY_EDITOR = Object.freeze({
   'landing-prep':'prep',
   'landing-diff':'diff',
   'castle-diff':'castle-diff',
+  'castle-march':'castle-march',
   'switch-rally':'switch-rally',
   'switch-from-now':'switch-from-now'
   // 'clock' は意図的に含めない -> プリセットなし -> 常にカスタム(ホイール)表示
@@ -865,6 +867,7 @@ const DEPARTURE_EDITOR_TITLES = Object.freeze({
   prep:'準備時間を編集',
   'landing-diff':'時差を編集',
   'castle-diff':'時差を編集',
+  'castle-march':'一番遅い行軍を編集',
   'switch-rally':'基準の行軍時間を編集',
   'switch-from-now':'今からを編集'
 });
@@ -950,6 +953,7 @@ function getCurrentDepartureValue(editorType){
   if(editorType === 'prep') return parseInt(prepTimeSel.value) || 0;
   if(editorType === 'landing-diff') return (parseInt(landingDiffMinSel.value) || 0) * 60 + (parseInt(landingDiffSecSel.value) || 0);
   if(editorType === 'castle-diff') return getCastleDiffSeconds();
+  if(editorType === 'castle-march') return getCastleMaxMarchSeconds();
   if(editorType === 'switch-rally') return parseInt(swRallyMinSel.value) || 0;
   if(editorType === 'switch-from-now') return parseInt(swFromNowInput.value) || 0;
   return null;
@@ -1104,6 +1108,11 @@ function getDepartureEditorValue(){
     const seconds = parseInt(document.getElementById('departure-edit-landing-diff-sec')?.dataset.value) || 0;
     return minutes * 60 + seconds;
   }
+  if(currentDepartureEditor === 'castle-march'){
+    const minutes = parseInt(document.getElementById('departure-edit-castle-march-min')?.dataset.value) || 0;
+    const seconds = parseInt(document.getElementById('departure-edit-castle-march-sec')?.dataset.value) || 0;
+    return minutes * 60 + seconds;
+  }
   if(currentDepartureEditor === 'castle-diff'){
     const minutes = parseInt(document.getElementById('departure-edit-castle-diff-min')?.dataset.value) || 0;
     const seconds = parseInt(document.getElementById('departure-edit-castle-diff-sec')?.dataset.value) || 0;
@@ -1185,6 +1194,11 @@ function buildDepartureCustomFields(editorType){
     departureEditFields.innerHTML =
       createWheelHtml('departure-edit-landing-diff-min', Array.from({length:61}, (_, index) => index), Math.min(60, Math.floor(totalSeconds / 60)), '分') +
       createWheelHtml('departure-edit-landing-diff-sec', Array.from({length:60}, (_, index) => index), totalSeconds % 60, '秒', true);
+  }else if(editorType === 'castle-march'){
+    const totalSeconds = getCastleMaxMarchSeconds();
+    departureEditFields.innerHTML =
+      createWheelHtml('departure-edit-castle-march-min', Array.from({length:61}, (_, index) => index), Math.min(60, Math.floor(totalSeconds / 60)), '分') +
+      createWheelHtml('departure-edit-castle-march-sec', Array.from({length:60}, (_, index) => index), totalSeconds % 60, '秒', true);
   }else if(editorType === 'castle-diff'){
     const totalSeconds = getCastleDiffSeconds();
     departureEditFields.innerHTML =
@@ -1283,6 +1297,8 @@ function applyEditorValue(editorType, value){
     landingDiffMinSel.dispatchEvent(new Event('change'));
     landingDiffSecSel.dispatchEvent(new Event('change'));
     localStorage.setItem('landingDiffSeconds', String(totalSeconds));
+  }else if(editorType === 'castle-march'){
+    setCastleMaxMarchSeconds(value || 0);
   }else if(editorType === 'castle-diff'){
     setCastleDiffSeconds(value || 0);
     onCastleDiffChanged();
@@ -1316,6 +1332,7 @@ wireDepartureRowTrigger(document.getElementById('l-rally-row'), 'landing-rally')
 wireDepartureRowTrigger(document.getElementById('l-prep-row'), 'landing-prep');
 wireDepartureRowTrigger(document.getElementById('l-two-wave-section'), 'landing-diff');
 wireDepartureRowTrigger(document.getElementById('diff-row'), 'castle-diff');
+wireDepartureRowTrigger(document.getElementById('max-march-row'), 'castle-march');
 wireDepartureRowTrigger(document.getElementById('sw-rally-row'), 'switch-rally');
 wireDepartureRowTrigger(document.getElementById('sw-from-now-row'), 'switch-from-now');
 
@@ -1593,6 +1610,7 @@ function collectDepartureRowData(){
 
 function setMemberResting(row, resting){
   row.classList.toggle('is-resting', resting);
+  renderMemberGroups();
   row.querySelector('.member-active-check')?.setAttribute('aria-checked', resting ? 'false' : 'true');
   if(resting){
     delete row.dataset.departureTime;
@@ -1817,6 +1835,15 @@ function setCastleDiffSeconds(totalSeconds){
   secSel.classList.toggle('is-collapsed', minutes > 0 && seconds === 0);
 }
 
+function getCastleMaxMarchSeconds(){
+  return parseInt(document.getElementById('max-march')?.value, 10) || 0;
+}
+
+function setCastleMaxMarchSeconds(totalSeconds){
+  const select = document.getElementById('max-march');
+  if(select) ensureSelectOption(select, totalSeconds, marchLabel(totalSeconds));
+}
+
 function isCastleSplit(){
   return getCastleDiffSeconds() > 0;
 }
@@ -1891,14 +1918,17 @@ function renderMemberGroups(){
     impactDisplay.style.display = lastCastleImpactTime && !split ? 'block' : 'none';
   }
 
+  const isRestingWrapper = wrapper => isMemberResting(wrapper.querySelector('.member-row'));
+  const activeFirst = list => [...list.filter(w => !isRestingWrapper(w)), ...list.filter(isRestingWrapper)];
+
   if(!split){
-    wrappers.forEach(wrapper => container.appendChild(wrapper));
+    activeFirst(wrappers).forEach(wrapper => container.appendChild(wrapper));
     if(controls && controls.parentElement !== section) container.after(controls);
     return;
   }
 
-  const groupOne = wrappers.filter(wrapper => memberGroup(wrapper.querySelector('.member-row')) === '1');
-  const groupTwo = wrappers.filter(wrapper => memberGroup(wrapper.querySelector('.member-row')) === '2');
+  const groupOne = activeFirst(wrappers.filter(wrapper => memberGroup(wrapper.querySelector('.member-row')) === '1'));
+  const groupTwo = activeFirst(wrappers.filter(wrapper => memberGroup(wrapper.querySelector('.member-row')) === '2'));
   container.appendChild(buildMemberGroupHead('1'));
   groupOne.forEach(wrapper => container.appendChild(wrapper));
   if(controls) container.appendChild(controls);
@@ -2066,8 +2096,8 @@ actionBtn.addEventListener('click',()=>{
   const prepSec = parseInt(prepTimeSel.value,10);
   const rallyMin = parseInt(rallyMinSel.value,10);
 
-  // 今から：現在時刻 + 準備時間 + 集結時間（行軍は各自がゲーム内で合わせる）
-  const timing = calculateCastle({nowMs:now.getTime(), prepSeconds:prepSec, rallyMinutes:rallyMin, maxMarchSeconds:0});
+  // 今から：現在時刻 + 準備時間 + 集結時間 + 一番遅い行軍（速い人は各自ゲーム内で合わせる）
+  const timing = calculateCastle({nowMs:now.getTime(), prepSeconds:prepSec, rallyMinutes:rallyMin, maxMarchSeconds:getCastleMaxMarchSeconds()});
   lastCastleImpactTime = timing.impactTime;
   lastCastleFirstDeparture = timing.firstDepartureTime;
 
@@ -2343,6 +2373,7 @@ function saveSettings(){
     rallyMin:rallyMinSel.value,
     prepTime:prepTimeSel.value,
     diffSec:getCastleDiffSeconds(),
+    maxMarchSec:getCastleMaxMarchSeconds(),
     members: members
   };
   localStorage.setItem('arrivalMarineSettings', JSON.stringify(data));
@@ -2365,6 +2396,8 @@ function loadSettings(){
 
     const savedDiff = Number(d.diffSec);
     if(Number.isInteger(savedDiff) && savedDiff >= 0 && savedDiff <= 3659) setCastleDiffSeconds(savedDiff);
+    const savedMaxMarch = Number(d.maxMarchSec);
+    if(Number.isInteger(savedMaxMarch) && savedMaxMarch >= 0 && savedMaxMarch <= 3659) setCastleMaxMarchSeconds(savedMaxMarch);
 
     const members = Array.isArray(d.members) ? d.members.filter(m => m && typeof m === 'object' && typeof m.name === 'string') : [];
     if(members.length>0){

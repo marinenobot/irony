@@ -31,7 +31,7 @@
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', {light:'#F2F2F7',dark:'#101014'}[theme]);
 })();
 </script>
-<link rel="stylesheet" href="style.css?v=20261025-groups" />
+<link rel="stylesheet" href="style.css?v=20261025-march" />
 
 </head>
 <body class="landing-active" data-theme="light">
@@ -103,6 +103,14 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
         <button type="button" class="setting-chevron departure-chevron departure-edit-trigger" data-editor="prep" aria-label="準備時間を編集">›</button>
       </span>
 
+    </div>
+
+    <div id="max-march-row" class="setting-row departure-setting-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="一番遅い行軍を編集">
+      <span class="setting-label departure-setting-name">一番遅い行軍</span>
+      <span class="setting-control departure-setting-control">
+        <select id="max-march" class="inline-select" tabindex="-1"><option value="0" selected>0秒</option></select>
+        <button type="button" class="setting-chevron departure-chevron departure-edit-trigger" data-editor="castle-march" aria-label="一番遅い行軍を編集">›</button>
+      </span>
     </div>
 
     <div id="diff-row" class="setting-row departure-setting-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="時差を編集">
@@ -427,7 +435,7 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
 <!-- トースト -->
 <div id="toast" class="toast">✓ コピーしました</div>
 
-<script type="module" src="app.js?v=20261025-groups"></script>
+<script type="module" src="app.js?v=20261025-march"></script>
 
 
 
