@@ -300,3 +300,21 @@ html[data-theme] body .rally-preset-editor-row input:focus {
   background: rgba(0, 122, 255, 0.1);
   color: var(--ios-blue);
 }
+
+/* 開閉の矢印や値をタップしても四角い枠・背景を出さない */
+html[data-theme] body .collapsible-header:focus,
+html[data-theme] body .collapsible-header:focus-visible,
+html[data-theme] body .page-content .inline-select:focus,
+html[data-theme] body .page-content .inline-select:focus-visible {
+  outline: 0;
+  box-shadow: none;
+  -webkit-tap-highlight-color: transparent;
+}
+html[data-theme] body .page-content .inline-select:focus {
+  border-color: transparent;
+}
+html[data-theme] body #page-calc .copy-preview-card .collapsible-header:hover,
+html[data-theme] body #page-calc .copy-preview-card .collapsible-header:focus,
+html[data-theme] body #page-calc .copy-preview-card .collapsible-header:active {
+  background: var(--surface);
+}

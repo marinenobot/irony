@@ -115,25 +115,6 @@ function installRallyPresetCards({landingRallyMinSel, ensureSelectOption}){
     editor.hidden = false;
   };
 
-  const quickMenuMain = document.querySelector('#clock-quick-menu .clock-quick-menu-main');
-  if(quickMenuMain && !document.getElementById('quick-rally-presets-btn')){
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.id = 'quick-rally-presets-btn';
-    button.className = 'clock-quick-menu-item';
-    button.setAttribute('role', 'menuitem');
-    button.innerHTML = '<span class="clock-quick-menu-title">集結時間プリセット</span><span class="clock-quick-menu-chevron" aria-hidden="true">›</span>';
-    quickMenuMain.appendChild(button);
-    button.addEventListener('click', () => {
-      const menu = document.getElementById('clock-quick-menu');
-      const settingsButton = document.getElementById('app-settings-button');
-      menu?.classList.remove('show');
-      menu?.setAttribute('aria-hidden', 'true');
-      settingsButton?.setAttribute('aria-expanded', 'false');
-      openEditor();
-    });
-  }
-
   targets.forEach(target => {
     if(target.row.previousElementSibling?.classList.contains('rally-preset-card')) return;
     const card = document.createElement('div');
