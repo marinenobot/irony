@@ -1,5 +1,5 @@
 import {DEFAULT_FIREBASE_CONFIG} from './js/config.js';
-import {connectRallySync, isSyncConfigured} from './js/api/rally-sync.js';
+import {connectRallySync, isSyncConfigured} from './js/api/rally-sync.js?v=20261024-pipcd';
 import {createPlayerApi} from './js/api/players.js';
 import {pad2, calculateCastle, calculateDeparture} from './js/domain/timing.js';
 import {lookupMarchTime} from './js/domain/march.js';
@@ -97,6 +97,7 @@ let firebaseSync = null;
 let firebaseMemberUnsubscribe = null;
 let currentRemoteDeparture = null;
 let utcPipLastDeparture = null;
+let lastCastleImpactTime = null;
 
 function firebaseNow(){
   return firebaseSync ? firebaseSync.now() : Date.now();
@@ -164,7 +165,7 @@ function subscribeRegisteredMember(){
       firebaseSync.removeMember(key).catch(()=>{});
       return;
     }
-    currentRemoteDeparture = {key, name, departureTime};
+    currentRemoteDeparture = {key, name, departureTime, impactTime:value.impactTime ?? null};
     updateDeviceCountdown();
   });
 }
@@ -188,7 +189,7 @@ async function publishRosterDepartureTimes(rowData){
   const departures = rowData.map(item => {
     const enteredName = (item.row.querySelector('.name-text')?.textContent || '').trim();
     const name = canonicalRosterName(enteredName);
-    return {key:rosterFirebaseKey(name), name, departureTime:item.depTime};
+    return {key:rosterFirebaseKey(name), name, departureTime:item.depTime, impactTime:lastCastleImpactTime};
   }).filter(item => item.name && item.key);
   try{
     await firebaseSync.publishDepartures(departures, LIVE_MEMBER_ROSTER.map(rosterFirebaseKey));
@@ -333,7 +334,8 @@ function getUtcPipDepartureData(){
   if(currentRemoteDeparture){
     utcPipLastDeparture = {
       name:currentRemoteDeparture.name,
-      departureTime:currentRemoteDeparture.departureTime
+      departureTime:currentRemoteDeparture.departureTime,
+      impactTime:currentRemoteDeparture.impactTime ?? null
     };
   }
   if(!utcPipLastDeparture) return null;
@@ -345,10 +347,15 @@ function getUtcPipDepartureData(){
   }
   const departureDate = new Date(utcPipLastDeparture.departureTime);
   const departureTimeText = `${pad2(departureDate.getUTCHours())}:${pad2(departureDate.getUTCMinutes())}:${pad2(departureDate.getUTCSeconds())}`;
+  const impactDate = Number.isFinite(utcPipLastDeparture.impactTime) ? new Date(utcPipLastDeparture.impactTime) : null;
+  const impactTimeText = impactDate ? `${pad2(impactDate.getUTCHours())}:${pad2(impactDate.getUTCMinutes())}:${pad2(impactDate.getUTCSeconds())}` : '';
+  const countdown = formatRemainingSeconds(remainingMs);
   return {
     name:utcPipLastDeparture.name,
-    countdown:formatRemainingSeconds(remainingMs),
-    departureTimeText
+    countdown,
+    countdownValue:countdown.replace(/秒$/, ''),
+    departureTimeText,
+    impactTimeText
   };
 }
 
@@ -398,7 +405,11 @@ const UTC_PIP_LAYOUT = {
   labelY:0.22,
   valueSize:0.56,       // カウントダウンの数字
   secondSize:0.16,      // 「秒」
-  valueY:0.68
+  valueY:0.68,
+  cdNameSize:0.26,      // カウントダウン時の名前
+  cdValueSize:0.66,     // カウントダウンの数字（整数）
+  cdUnitSize:0.24,      // 「秒」「着弾」
+  cdTimeSize:0.32       // 着弾時刻
 };
 
 function drawUtcVideoFrame(timeText, millisText, departureData){
@@ -412,16 +423,19 @@ function drawUtcVideoFrame(timeText, millisText, departureData){
   ctx.fillRect(0, 0, W, H);
   ctx.textBaseline = 'middle';
   if(departureData){
-    drawPipLine(ctx, [
-      {text:departureData.name || '', size:H * L.labelSize, weight:700, color:'#ffffff'},
-      {text:'　出発時刻　', size:H * L.labelSize, weight:400, color:'#9a9aa0'},
-      {text:departureData.departureTimeText || '--:--:--', size:H * L.labelSize, weight:600, color:'#ffffff'},
-      {text:' UTC', size:H * L.labelSize * 0.85, weight:600, color:'#9a9aa0'}
-    ], W / 2, H * L.labelY, inner);
-    drawPipLine(ctx, [
-      {text:'残り　', size:H * L.secondSize, weight:500, color:'#9a9aa0'},
-      {text:departureData.countdown, size:H * L.valueSize, weight:900, color:'#ffffff'}
-    ], W / 2, H * L.valueY, inner);
+    const parts = [
+      {text:(departureData.name || '') + '　', size:H * L.cdNameSize, weight:700, color:'#ffffff'},
+      {text:departureData.countdownValue, size:H * L.cdValueSize, weight:800, color:'#ffffff'},
+      {text:'秒', size:H * L.cdUnitSize, weight:700, color:'#ffffff'}
+    ];
+    if(departureData.impactTimeText){
+      parts.push(
+        {text:'　｜　', size:H * L.cdUnitSize, weight:400, color:'#5a6478'},
+        {text:'着弾 ', size:H * L.cdUnitSize, weight:500, color:'#9a9aa0'},
+        {text:departureData.impactTimeText, size:H * L.cdTimeSize, weight:700, color:'#ffffff'}
+      );
+    }
+    drawPipLine(ctx, parts, W / 2, H * L.timeY, inner);
     return;
   }
   drawPipLine(ctx, [
@@ -468,8 +482,10 @@ function tickUTC(){
       pipCountdown.hidden = !departureData;
       if(departureData){
         if(pipCountdownName) pipCountdownName.textContent = departureData.name || '';
-        if(pipCountdownValue) pipCountdownValue.textContent = departureData.countdown;
-        if(pipCountdownTime) pipCountdownTime.textContent = departureData.departureTimeText || '--:--:--';
+        if(pipCountdownValue) pipCountdownValue.textContent = departureData.countdownValue;
+        if(pipCountdownTime) pipCountdownTime.textContent = departureData.impactTimeText;
+        const pipImpact = pipDoc.getElementById('utc-pip-impact');
+        if(pipImpact) pipImpact.hidden = !departureData.impactTimeText;
       }
     }
   }
@@ -560,18 +576,17 @@ async function openUtcPipWindow(){
         .pip-line{display:flex;align-items:baseline;justify-content:center;gap:6px;white-space:nowrap}
         #utc-pip-time{font-size:9.5vh;font-weight:600;letter-spacing:-.02em}
         .pip-unit{color:#9a9aa0;font-size:4vh;font-weight:600}
-        .pip-cd{text-align:center;line-height:1.2}
-        .pip-cd-head{display:flex;align-items:baseline;justify-content:center;gap:.4em;color:#9a9aa0;font-size:3vh;font-weight:400;white-space:nowrap}
-        .pip-cd-head b{color:#fff;font-weight:700}
-        .pip-cd-head span{color:#fff;font-weight:600}
-        .pip-cd-value-row{display:flex;align-items:baseline;justify-content:center;gap:.35em;white-space:nowrap}
-        .pip-cd-label{color:#9a9aa0;font-size:3vh;font-weight:500}
-        .pip-cd-value{color:#fff;font-size:8.4vh;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
-        .pip-cd-value small{font-size:.45em;font-weight:600;color:#9a9aa0}
+        .pip-cd{display:flex;align-items:baseline;justify-content:center;gap:.5em;white-space:nowrap;line-height:1}
+        .pip-cd b{font-size:4vh;font-weight:700}
+        .pip-cd-value{font-size:9vh;font-weight:800;letter-spacing:-.02em}
+        .pip-cd-value small{font-size:.38em;font-weight:700;margin-left:.1em}
+        .pip-cd-impact{display:inline-flex;align-items:baseline;gap:.35em;padding-left:.6em;border-left:1px solid #5a6478}
+        .pip-cd-impact span{color:#9a9aa0;font-size:3.4vh;font-weight:500}
+        .pip-cd-impact strong{font-size:4.6vh;font-weight:700}
       
 
 </style>`;
-      utcPipWindow.document.body.innerHTML = '<div><div id="utc-pip-normal" class="pip-line"><span id="utc-pip-time">--:--:--</span><span class="pip-unit">UTC</span></div><div id="utc-pip-countdown" class="pip-cd" hidden><div class="pip-cd-head"><b id="utc-pip-countdown-name"></b><span>出発時刻</span><span id="utc-pip-countdown-time">--:--:--</span><span>UTC</span></div><div class="pip-cd-value-row"><span class="pip-cd-label">残り</span><span class="pip-cd-value"><span id="utc-pip-countdown-value">0秒</span></span></div></div></div>';
+      utcPipWindow.document.body.innerHTML = '<div><div id="utc-pip-normal" class="pip-line"><span id="utc-pip-time">--:--:--</span><span class="pip-unit">UTC</span></div><div id="utc-pip-countdown" class="pip-cd" hidden><b id="utc-pip-countdown-name"></b><span class="pip-cd-value"><span id="utc-pip-countdown-value">0</span><small>秒</small></span><span id="utc-pip-impact" class="pip-cd-impact"><span>着弾</span><strong id="utc-pip-countdown-time"></strong></span></div></div>';
       utcPipWindow.addEventListener('pagehide', () => { utcPipWindow = null; });
       tickUTC();
       return true;
@@ -1880,6 +1895,7 @@ actionBtn.addEventListener('click',()=>{
   // 今から：現在時刻 + 準備時間 + 集結時間 + 最長行軍
   const timing = calculateCastle({nowMs:now.getTime(), prepSeconds:prepSec, rallyMinutes:rallyMin, maxMarchSeconds:maxMarch});
   arriveUtc=new Date(timing.impactTime);
+  lastCastleImpactTime = timing.impactTime;
 
   const arriveStr=`${pad2(arriveUtc.getUTCHours())}:${pad2(arriveUtc.getUTCMinutes())}:${pad2(arriveUtc.getUTCSeconds())}`;
   impactTime.textContent=arriveStr;
