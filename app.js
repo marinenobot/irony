@@ -1837,10 +1837,13 @@ function generateCopyMessage(sortedRowData){
 
 /* ======= コピーボタン（トースト通知） ======= */
 const toast = document.getElementById('toast');
-function showToast(text='✓ コピーしました'){
+let toastTimer = null;
+function showToast(text='✓ コピーしました', duration=1500){
   toast.textContent = text;
+  toast.classList.toggle('toast-message', text.includes('\n'));
   toast.classList.add('show');
-  setTimeout(()=>toast.classList.remove('show'),1500);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>toast.classList.remove('show'), duration);
 }
 
 async function copyText(text){
@@ -1965,7 +1968,7 @@ actionBtn.addEventListener('click',()=>{
     const txt = document.getElementById('copy').textContent;
     flashResults('#impact-display');
     await copyText(txt);
-    showToast();
+    showToast(`✓ コピーしました\n\n${txt}`, 4000);
   }, 0);
 });
 
@@ -2317,49 +2320,6 @@ document.addEventListener('click', (e) => {
   }
 });
 
-
-/* ======= プレビュー折りたたみ ======= */
-const previewToggle = document.getElementById('preview-toggle');
-const previewContent = document.getElementById('preview-content');
-const previewArrow = document.getElementById('preview-arrow');
-let previewExpanded = false;
-
-previewContent.addEventListener('transitionend', function(){
-  if(previewExpanded){
-    previewContent.style.height = 'auto';
-  }
-});
-
-previewToggle.addEventListener('click', function(){
-  if(previewExpanded){
-    // 閉じる
-    const currentHeight = previewContent.scrollHeight;
-    previewContent.style.height = currentHeight + 'px';
-    previewContent.offsetHeight; // 強制リフロー
-    previewContent.style.height = '0';
-    previewContent.setAttribute('aria-hidden','true');
-    previewArrow.classList.remove('is-open');
-  }else{
-    // 開く
-    generateCopyMessage();
-    const targetHeight = previewContent.scrollHeight;
-    previewContent.style.height = targetHeight + 'px';
-    previewContent.setAttribute('aria-hidden','false');
-    previewArrow.classList.add('is-open');
-  }
-  previewExpanded = !previewExpanded;
-});
-
-// プレビュー本体タップでコピー（開閉トグルはヘッダー側のみが担当するため競合しない）
-const previewInner = document.querySelector('#preview-content .collapsible-content-inner');
-if(previewInner){
-  previewInner.addEventListener('click', async function(){
-    const previewText = document.getElementById('preview-text');
-    const text = previewText ? previewText.textContent : '';
-    if(!text) return;
-    if(await copyText(text)) showToast();
-  });
-}
 
 /* ======= ペット管理 ======= */
 // ペットデータの構造: { name: string, status: 'waiting'|'active'|'ended', endTime?: timestamp }
