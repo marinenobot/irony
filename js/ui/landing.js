@@ -75,7 +75,9 @@ function installRallyPresetCards({landingRallyMinSel, ensureSelectOption}){
   const cards = [];
 
   const ensurePresetOptions = target => {
+    const selectedValue = target.select.value;
     presets.forEach(value => ensureSelectOption(target.select, value, `${value}分`));
+    target.select.value = selectedValue;
   };
 
   const selectPreset = (target, value) => {
@@ -94,7 +96,6 @@ function installRallyPresetCards({landingRallyMinSel, ensureSelectOption}){
         button.addEventListener('click', event => {
           event.stopPropagation();
           selectPreset(target, parseInt(button.dataset.value, 10));
-          renderCards();
         });
       });
       const selected = parseInt(target.select.value, 10);

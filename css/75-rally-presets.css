@@ -19,53 +19,34 @@
 .rally-preset-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0;
-  padding: 3px;
-  border-radius: 9px;
-  background: var(--accent-soft);
+  gap: 7px;
 }
 
 .rally-preset-button {
   min-width: 0;
-  height: 38px;
-  min-height: 38px;
   margin: 0;
+  transition: none;
+  height: 44px;
   padding: 0 4px;
-  border: 0;
-  border-radius: 7px;
-  background: transparent;
-  box-shadow: none;
-  position: relative;
-  color: var(--text-muted);
+  border: 1px solid var(--divider);
+  border-radius: var(--control-radius);
+  background: var(--surface);
+  color: var(--text-primary);
   font-family: var(--font-ui);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1;
   white-space: nowrap;
   -webkit-tap-highlight-color: transparent;
-  transition: none;
 }
 
 .rally-preset-button.selected {
-  background: var(--surface);
+  border-color: var(--border-strong);
+  background: var(--button-bg);
   color: var(--text-primary);
   font-weight: 700;
-  box-shadow: var(--shadow);
+  border-width: 2px;
 }
-.rally-preset-button.selected::after {
-  content: "";
-  position: absolute;
-  left: 30%;
-  right: 30%;
-  bottom: 4px;
-  height: 2px;
-  border-radius: 1px;
-  background: currentColor;
-}
-.rally-preset-button:focus:not(:focus-visible) {
-  outline: 0;
-}
-
 
 #rally-row[hidden],
 #l-rally-row[hidden] {
