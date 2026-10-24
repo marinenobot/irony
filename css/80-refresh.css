@@ -328,3 +328,64 @@ html[data-theme] body #page-calc .copy-preview-card .collapsible-header:focus,
 html[data-theme] body #page-calc .copy-preview-card .collapsible-header:active {
   background: var(--surface);
 }
+
+/* 集結主のおやすみ：名前の左のチェック */
+html[data-theme] body #players .member-active-check {
+  position: relative;
+  flex: 0 0 auto;
+  width: 32px;
+  min-width: 32px;
+  height: 44px;
+  min-height: 44px;
+  margin: 0 -4px 0 -6px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  outline: 0;
+  transform: none;
+  -webkit-tap-highlight-color: transparent;
+}
+html[data-theme] body #players .member-active-check::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 22px;
+  height: 22px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background: var(--ios-blue);
+  transform: translate(-50%, -50%);
+}
+html[data-theme] body #players .member-active-check::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 10px;
+  border: solid #ffffff;
+  border-width: 0 2px 2px 0;
+  transform: translate(-50%, -62%) rotate(45deg);
+}
+html[data-theme] body #players .member-row.is-resting .member-active-check::before {
+  border: 2px solid var(--toggle-bg);
+  background: transparent;
+}
+html[data-theme] body #players .member-row.is-resting .member-active-check::after {
+  content: none;
+}
+html[data-theme] body #players .member-row.is-resting .member-avatar,
+html[data-theme] body #players .member-row.is-resting .name-text {
+  opacity: 0.4;
+}
+html[data-theme] body #players .member-departure-status.resting {
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+}

@@ -655,7 +655,12 @@ function updateMemberDepartureCountdowns(){
     const status = row.querySelector('.member-departure-status');
     if(!status) return;
     const departureTime = Number(row.dataset.departureTime || 0);
-    status.classList.remove('counting', 'departed');
+    status.classList.remove('counting', 'departed', 'resting');
+    if(isMemberResting(row)){
+      status.textContent = 'おやすみ';
+      status.classList.add('resting');
+      return;
+    }
     if(!departureTime){
       status.textContent = '—';
       return;
@@ -1573,12 +1578,49 @@ async function lookupPlayerForRow(row){
   }
 }
 
+function isMemberResting(row){
+  return row.classList.contains('is-resting');
+}
+
+function collectDepartureRowData(){
+  const rowData = [];
+  document.querySelectorAll('#players .member-row-wrapper').forEach(wrapper => {
+    const row = wrapper.querySelector('.member-row');
+    const depTime = Number(row?.dataset.departureTime || 0);
+    if(row && depTime && !isMemberResting(row)) rowData.push({wrapper, row, depTime});
+  });
+  return rowData.sort((a, b) => a.depTime - b.depTime);
+}
+
+function setMemberResting(row, resting){
+  row.classList.toggle('is-resting', resting);
+  row.querySelector('.member-active-check')?.setAttribute('aria-checked', resting ? 'false' : 'true');
+  if(resting){
+    delete row.dataset.departureTime;
+    row.classList.remove('has-departure');
+    const dep = row.querySelector('.dep');
+    if(dep) dep.textContent = '-';
+  }
+  updateMemberDepartureCountdowns();
+  saveSettings();
+  const rowData = collectDepartureRowData();
+  if(rowData.length) generateCopyMessage(rowData);
+  else generateCopyMessage();
+  if(resting) publishRosterDepartureTimes(rowData);
+}
+
 function attachRowEvents(row){
   if(row.dataset.eventsAttached) return;
   row.dataset.eventsAttached = 'true';
 
   const nameInput = row.querySelector('.name-text');
   renderMemberAvatar(row);
+
+  row.querySelector('.member-active-check')?.addEventListener('click', event => {
+    event.preventDefault();
+    event.stopPropagation();
+    setMemberResting(row, !isMemberResting(row));
+  });
 
   nameInput.addEventListener('input', function(){
     clearPlayerIfRenamed(row);
@@ -1669,6 +1711,7 @@ function attachRowEvents(row){
   row.querySelector('.member-identity-row').addEventListener('click', function(event){
     if(event.target.closest('.name-text')) return;
     if(event.target.closest('.member-settings-toggle')) return;
+    if(event.target.closest('.member-active-check')) return;
     toggleMemberSettings();
   });
 
@@ -1696,10 +1739,12 @@ function buildMemberRowHtml(member = {}){
   const boostChecked = member.statBoost ? ' checked' : '';
   const fid = escapeMemberText(member.fid || '');
   const avatar = escapeMemberText(member.avatar || '');
+  const resting = !!member.resting;
   return `
     <div class="delete-bg">削除</div>
-    <div class="member-row" data-fid="${fid}" data-avatar="${avatar}" data-nickname="${fid ? name : ''}">
+    <div class="member-row${resting ? ' is-resting' : ''}" data-fid="${fid}" data-avatar="${avatar}" data-nickname="${fid ? name : ''}">
       <div class="member-identity-row">
+        <button type="button" class="member-active-check" role="switch" aria-checked="${resting ? 'false' : 'true'}" aria-label="参加"></button>
         <span class="member-avatar" aria-hidden="true"></span>
         <span class="name-text" contenteditable="true" data-placeholder="名前・ID">${name}</span>
         <span class="member-departure-inline"><span class="member-departure-status">—</span><span class="dep" hidden>-</span></span>
@@ -1737,9 +1782,10 @@ function generateCopyMessage(sortedRowData){
   const rallyMin = rallyMinSel.value;
   const commonImpactTime = document.getElementById('common-impact-time').textContent;
 
-  const rows = sortedRowData
+  const rows = (sortedRowData
     ? sortedRowData.map(item => item.row)
-    : [...document.querySelectorAll('#players .member-row')];
+    : [...document.querySelectorAll('#players .member-row')])
+    .filter(row => !isMemberResting(row));
   const entries = rows.map(row => ({
     name:(row.querySelector('.name-text').textContent||'').trim(),
     dep:row.querySelector('.dep').textContent.trim()||'-'
@@ -1821,6 +1867,7 @@ actionBtn.addEventListener('click',()=>{
   // 最長行軍（メンバー行から自動スキャン）
   let maxMarch = 0;
   document.querySelectorAll('#players .member-row').forEach(row=>{
+    if(isMemberResting(row)) return;
     const march = parseInt(row.querySelector('.march-select').value,10) || 0;
     if(march > maxMarch) maxMarch = march;
   });
@@ -1842,8 +1889,15 @@ actionBtn.addEventListener('click',()=>{
 
   // 各人の出発時刻
   const rowData=[];
+  const restingWrappers=[];
   document.querySelectorAll('#players .member-row-wrapper').forEach(wrapper=>{
     const row = wrapper.querySelector('.member-row');
+    if(isMemberResting(row)){
+      delete row.dataset.departureTime;
+      row.classList.remove('has-departure');
+      restingWrappers.push(wrapper);
+      return;
+    }
     const march=parseInt(row.querySelector('.march-select').value,10)||0;
     let dep;
 
@@ -1868,11 +1922,13 @@ actionBtn.addEventListener('click',()=>{
   rowData.forEach(item => {
     tbody.appendChild(item.wrapper);
   });
+  restingWrappers.forEach(wrapper => tbody.appendChild(wrapper));
 
   generateCopyMessage(rowData);
 
   // 履歴に記録
   document.querySelectorAll('#players .member-row').forEach(row=>{
+    if(isMemberResting(row)) return;
     const name = (row.querySelector('.name-text').textContent||'').trim();
     const march = parseInt(row.querySelector('.march-select').value, 10);
     if(name && march){
@@ -2097,7 +2153,8 @@ function saveSettings(){
       coordY: row.querySelector('.coord-y')?.value || '',
       statBoost: !!row.querySelector('.stat-boost-toggle')?.checked,
       fid: row.dataset.fid || '',
-      avatar: row.dataset.avatar || ''
+      avatar: row.dataset.avatar || '',
+      resting: isMemberResting(row)
     });
   });
 
