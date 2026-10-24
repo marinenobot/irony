@@ -406,11 +406,74 @@ const UTC_PIP_LAYOUT = {
   valueSize:0.56,       // カウントダウンの数字
   secondSize:0.16,      // 「秒」
   valueY:0.68,
+  cdSideMargin:0.12,    // カウントダウン時の左右の余白
   cdNameSize:0.26,      // カウントダウン時の名前
-  cdValueSize:0.66,     // カウントダウンの数字（整数）
-  cdUnitSize:0.24,      // 「秒」「着弾」
-  cdTimeSize:0.32       // 着弾時刻
+  cdValueSize:0.62,     // カウントダウンの数字（整数）
+  cdUnitSize:0.24,      // 「分」「秒」
+  cdLabelSize:0.22,     // 「着弾」
+  cdTimeSize:0.30       // 着弾時刻
 };
+
+/* カウントダウン：名前は左、残り秒は中央、着弾時刻は右に固定して、文字の大きさを揃える */
+function drawPipCountdown(ctx, W, H, data){
+  const L = UTC_PIP_LAYOUT;
+  const margin = H * L.cdSideMargin;
+  const y = H * L.timeY;
+  const font = (size, weight) => `${weight} ${Math.round(size)}px ${UTC_PIP_FONT}`;
+  const measure = (text, size, weight) => { ctx.font = font(size, weight); return ctx.measureText(text).width; };
+
+  /* 「1分05秒」は数字だけ大きく、「分」「秒」は小さく */
+  const tokens = (data.countdown || '').match(/\d+|\D+/g) || [];
+  const valueParts = tokens.map(text => /^\d+$/.test(text)
+    ? {text, size:H * L.cdValueSize, weight:800}
+    : {text, size:H * L.cdUnitSize, weight:700});
+  const valueWidth = valueParts.reduce((sum, part) => sum + measure(part.text, part.size, part.weight), 0);
+  const gap = H * 0.12;
+
+  /* 着弾時刻は右端にそろえる */
+  let impactLeft = W - margin;
+  if(data.impactTimeText){
+    const timeSize = H * L.cdTimeSize;
+    const labelSize = H * L.cdLabelSize;
+    const labelText = '着弾 ';
+    const timeLeft = W - margin - measure(data.impactTimeText, timeSize, 700);
+    impactLeft = timeLeft - measure(labelText, labelSize, 500);
+    ctx.textAlign = 'left';
+    ctx.font = font(labelSize, 500);
+    ctx.fillStyle = '#9a9aa0';
+    ctx.fillText(labelText, impactLeft, y);
+    ctx.font = font(timeSize, 700);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(data.impactTimeText, timeLeft, y);
+  }
+
+  /* 残りは中央。着弾時刻にぶつかる時だけ左へ寄せる */
+  let x = Math.min(W / 2 - valueWidth / 2, impactLeft - gap - valueWidth);
+  const valueLeft = x;
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#ffffff';
+  valueParts.forEach(part => {
+    ctx.font = font(part.size, part.weight);
+    ctx.fillText(part.text, x, y);
+    x += ctx.measureText(part.text).width;
+  });
+
+  /* 名前は左の空きに収まるよう、名前だけ縮める（それでも長ければ省略） */
+  const nameMax = valueLeft - margin - gap;
+  let name = data.name || '';
+  let nameSize = H * L.cdNameSize;
+  const nameWidth = measure(name, nameSize, 700);
+  if(nameWidth > nameMax){
+    nameSize = Math.max(H * L.cdNameSize * 0.6, nameSize * nameMax / nameWidth);
+    while(name.length > 1 && measure(name, nameSize, 700) > nameMax){
+      name = name.slice(0, -2) + '…';
+    }
+  }
+  ctx.font = font(nameSize, 700);
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(name, margin, y);
+  ctx.textAlign = 'center';
+}
 
 function drawUtcVideoFrame(timeText, millisText, departureData){
   if(!utcPipContext || !utcPipCanvas) return;
@@ -423,19 +486,7 @@ function drawUtcVideoFrame(timeText, millisText, departureData){
   ctx.fillRect(0, 0, W, H);
   ctx.textBaseline = 'middle';
   if(departureData){
-    const parts = [
-      {text:(departureData.name || '') + '　', size:H * L.cdNameSize, weight:700, color:'#ffffff'},
-      {text:departureData.countdownValue, size:H * L.cdValueSize, weight:800, color:'#ffffff'},
-      {text:'秒', size:H * L.cdUnitSize, weight:700, color:'#ffffff'}
-    ];
-    if(departureData.impactTimeText){
-      parts.push(
-        {text:'　｜　', size:H * L.cdUnitSize, weight:400, color:'#5a6478'},
-        {text:'着弾 ', size:H * L.cdUnitSize, weight:500, color:'#9a9aa0'},
-        {text:departureData.impactTimeText, size:H * L.cdTimeSize, weight:700, color:'#ffffff'}
-      );
-    }
-    drawPipLine(ctx, parts, W / 2, H * L.timeY, inner);
+    drawPipCountdown(ctx, W, H, departureData);
     return;
   }
   drawPipLine(ctx, [
