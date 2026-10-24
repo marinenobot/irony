@@ -408,7 +408,7 @@ function drawUtcVideoFrame(timeText, millisText, departureData){
   const H = utcPipCanvas.height;
   const L = UTC_PIP_LAYOUT;
   const inner = W - H * L.sideMargin * 2;
-  ctx.fillStyle = '#1B2430';
+  ctx.fillStyle = '#06172E';
   ctx.fillRect(0, 0, W, H);
   ctx.textBaseline = 'middle';
   if(departureData){
@@ -555,7 +555,7 @@ async function openUtcPipWindow(){
       }
       utcPipWindow = await window.documentPictureInPicture.requestWindow({width:240, height:Math.round(240 / UTC_PIP_ASPECT)});
       utcPipWindow.document.head.innerHTML = `<meta charset="UTF-8"><style>
-        *{box-sizing:border-box} body{display:flex;align-items:center;justify-content:center;width:100vw;height:100vh;margin:0;background:#1B2430;color:#fff;font-family:${UTC_PIP_FONT};overflow:hidden;font-variant-numeric:tabular-nums}
+        *{box-sizing:border-box} body{display:flex;align-items:center;justify-content:center;width:100vw;height:100vh;margin:0;background:#06172E;color:#fff;font-family:${UTC_PIP_FONT};overflow:hidden;font-variant-numeric:tabular-nums}
         [hidden]{display:none!important}
         .pip-line{display:flex;align-items:baseline;justify-content:center;gap:6px;white-space:nowrap}
         #utc-pip-time{font-size:9.5vh;font-weight:600;letter-spacing:-.02em}
