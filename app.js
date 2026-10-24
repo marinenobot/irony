@@ -2096,7 +2096,7 @@ actionBtn.addEventListener('click',()=>{
   const prepSec = parseInt(prepTimeSel.value,10);
   const rallyMin = parseInt(rallyMinSel.value,10);
 
-  // 今から：現在時刻 + 準備時間 + 集結時間 + 一番遅い行軍（速い人は各自ゲーム内で合わせる）
+  // 現在時刻 + 準備時間 + 集結時間 + 一番遅い行軍（速い人は各自ゲーム内で合わせる）
   const timing = calculateCastle({nowMs:now.getTime(), prepSeconds:prepSec, rallyMinutes:rallyMin, maxMarchSeconds:getCastleMaxMarchSeconds()});
   lastCastleImpactTime = timing.impactTime;
   lastCastleFirstDeparture = timing.firstDepartureTime;
