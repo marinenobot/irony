@@ -31,3 +31,11 @@ html[data-theme] body .toast.toast-message {
   font-size: 14px;
   line-height: 1.5;
 }
+
+/* ===== 出発時刻タブの使い方の一言 ===== */
+html[data-theme] body #page-calc .departure-march-hint {
+  margin: 12px 4px 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}

@@ -181,7 +181,7 @@ export function initLandingPage({nowMs = Date.now, landingRallyMinSel, landingPr
     }
     if(await copyText(text)){
       flashResults('#l-result');
-      showToast();
+      showToast(`✓ コピーしました\n\n${text.trim()}`, 2500);
     }
   }
 

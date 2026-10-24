@@ -3,7 +3,7 @@ import {connectRallySync, isSyncConfigured} from './js/api/rally-sync.js?v=20261
 import {createPlayerApi} from './js/api/players.js';
 import {pad2, calculateCastle, calculateDeparture} from './js/domain/timing.js';
 import {lookupMarchTime} from './js/domain/march.js';
-import {initLandingPage} from './js/ui/landing.js?v=20261024-refresh2';
+import {initLandingPage} from './js/ui/landing.js?v=20261025-toast';
 import {initSwitchPage} from './js/ui/switch.js?v=20261024-fast';
 
 // UI composition root: DOM events, local settings and presentation state.
@@ -1897,6 +1897,17 @@ function flashResults(selector){
 const impactTime= document.getElementById('common-impact-time');
 
 actionBtn.addEventListener('click',()=>{
+  // 行軍時間が入っていない集結主がいたら計算しない
+  const missingMarch = [...document.querySelectorAll('#players .member-row')]
+    .filter(row => !isMemberResting(row))
+    .filter(row => (row.querySelector('.name-text').textContent || '').trim())
+    .filter(row => row.querySelector('.march-select')?.value === '');
+  if(missingMarch.length){
+    const names = missingMarch.map(row => (row.querySelector('.name-text').textContent || '').trim());
+    showToast(`行軍時間が未設定です\n${names.map(name => `・${name}`).join('\n')}`, 3000);
+    return;
+  }
+
   actionBtn.classList.add('calculating');
   actionBtn.disabled = true;
   actionBtn.textContent = '計算中...';
@@ -1986,7 +1997,7 @@ actionBtn.addEventListener('click',()=>{
     const txt = document.getElementById('copy').textContent;
     flashResults('#impact-display');
     await copyText(txt);
-    showToast(`✓ コピーしました\n\n${txt}`, 4000);
+    showToast(`✓ コピーしました\n\n${txt}`, 2500);
   }, 0);
 });
 

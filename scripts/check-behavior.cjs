@@ -85,6 +85,7 @@ const path = require('node:path');
         assert.deepEqual(errors, [], 'startup errors');
         assert.deepEqual(await page.locator('[data-theme-choice]').evaluateAll(els => els.map(el => el.dataset.themeChoice)), ['light', 'dark']);
         const countdownStyle = await page.locator('.member-departure-status').first().evaluate(el => {
+          el.classList.remove('resting');
           el.classList.add('counting');
           const s = getComputedStyle(el);
           return [s.backgroundColor, s.boxShadow, s.borderTopWidth];
