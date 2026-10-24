@@ -1545,6 +1545,24 @@ function setPlayerOnRow(row, fid, nickname, avatarUrl){
   row.dataset.nickname = nickname || '';
   row.dataset.avatar = avatarUrl || '';
   renderMemberAvatar(row);
+  rememberPlayer(fid, nickname, avatarUrl);
+}
+
+/* 一度IDから取得した集結主を覚えておく（行を消しても候補に出すため） */
+const KNOWN_PLAYERS_KEY = 'knownPlayers';
+function loadKnownPlayers(){
+  try{
+    const data = JSON.parse(localStorage.getItem(KNOWN_PLAYERS_KEY) || '{}');
+    return data && typeof data === 'object' && !Array.isArray(data) ? data : {};
+  }catch(error){
+    return {};
+  }
+}
+function rememberPlayer(fid, name, avatar){
+  if(!fid || !name) return;
+  const players = loadKnownPlayers();
+  players[fid] = {name, avatar:avatar || ''};
+  try{ localStorage.setItem(KNOWN_PLAYERS_KEY, JSON.stringify(players)); }catch(error){}
 }
 
 function clearPlayerIfRenamed(row){
@@ -2095,11 +2113,27 @@ function getSuggestions(inputText){
     .filter(el => el !== currentInput)
     .map(el => (el.textContent || '').trim().toLocaleLowerCase('ja-JP'))
     .filter(Boolean));
-  return LIVE_MEMBER_ROSTER
-    .filter(name => name.toLocaleLowerCase('ja-JP').includes(normalizedInput))
-    .filter(name => !used.has(name.toLocaleLowerCase('ja-JP')))
-    .map(name => ({name, marchSec:null}))
-    .slice(0, 24);
+  const lower = name => String(name || '').toLocaleLowerCase('ja-JP');
+  const usedIds = new Set(Array.from(document.querySelectorAll('#players .member-row'))
+    .filter(row => row.querySelector('.name-text') !== currentInput)
+    .map(row => row.dataset.fid)
+    .filter(Boolean));
+  const known = loadKnownPlayers();
+  const items = [];
+  const seenNames = new Set();
+  const ids = [...new Set([...Object.keys(known), ...DEFAULT_ROSTER_IDS])];
+  ids.forEach(fid => {
+    const name = known[fid]?.name || '';
+    if(usedIds.has(fid) || (name && used.has(lower(name)))) return;
+    if(!(fid.startsWith(normalizedInput) || (name && lower(name).includes(normalizedInput)))) return;
+    items.push({name, fid, avatar:known[fid]?.avatar || '', marchSec:null});
+    if(name) seenNames.add(lower(name));
+  });
+  LIVE_MEMBER_ROSTER
+    .filter(name => lower(name).includes(normalizedInput))
+    .filter(name => !used.has(lower(name)) && !seenNames.has(lower(name)))
+    .forEach(name => items.push({name, marchSec:null}));
+  return items.slice(0, 24);
 }
 
 
@@ -2122,11 +2156,11 @@ function showAutocomplete(inputElement, suggestions){
 
     const nameSpan = document.createElement('span');
     nameSpan.className = 'autocomplete-name';
-    nameSpan.textContent = item.name;
+    nameSpan.textContent = item.name || item.fid;
 
     const marchSpan = document.createElement('span');
     marchSpan.className = 'autocomplete-march';
-    marchSpan.textContent = '同期';
+    marchSpan.textContent = item.fid ? `ID ${item.fid}` : '同期';
 
     div.appendChild(nameSpan);
     div.appendChild(marchSpan);
@@ -2181,7 +2215,7 @@ function selectSuggestion(inputElement, item){
 
   // 重複チェック（自分自身は除く）
   const currentName = (inputElement.textContent || '').trim().toLowerCase();
-  const newName = item.name.trim().toLowerCase();
+  const newName = (item.name || item.fid || '').trim().toLowerCase();
   
   if(currentName !== newName){
     const existingRows = document.querySelectorAll('#players .member-row');
@@ -2196,8 +2230,13 @@ function selectSuggestion(inputElement, item){
     }
   }
 
-  inputElement.textContent = item.name;
-  clearPlayerIfRenamed(row);
+  inputElement.textContent = item.name || item.fid;
+  if(item.fid && item.name){
+    setPlayerOnRow(row, item.fid, item.name, item.avatar || '');
+  }else{
+    clearPlayerIfRenamed(row);
+    if(item.fid) lookupPlayerForRow(row);
+  }
 
   const marchSelect = row.querySelector('.march-select');
   if(marchSelect && Number.isFinite(Number(item.marchSec))){
@@ -2300,6 +2339,9 @@ function migrateHistoryData(){
 
 updateMode();
 loadSettings();
+document.querySelectorAll('#players .member-row').forEach(row => {
+  rememberPlayer(row.dataset.fid, (row.querySelector('.name-text')?.textContent || '').trim(), row.dataset.avatar);
+});
 moveRestingMembersToBottom();
 seedDefaultRoster();
 migrateHistoryData();
