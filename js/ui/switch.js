@@ -76,7 +76,7 @@ export function initSwitchPage({nowMs = Date.now, swRallyMinSel, swFromNowInput,
       // 6. プレビュー全文を自動でクリップボードにコピー
       const copied = await copyText(previewMsg);
       if(copied) showToast('✓ コピーしました');
-    }, 600);
+    }, 0);
   });
 
   // プレビュー本体タップでコピー（開閉トグルはヘッダー側のみが担当するため競合しない）

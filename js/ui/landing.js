@@ -228,6 +228,6 @@ export function initLandingPage({nowMs = Date.now, landingRallyMinSel, landingPr
       btn.disabled = false;
 
       doCopy(timeStr, timeStr2);
-    }, 600);
+    }, 0);
   });
 }

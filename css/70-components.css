@@ -163,12 +163,7 @@
   -webkit-tap-highlight-color: transparent;
   appearance: none;
   -webkit-appearance: none;
-  transition:
-    background-color 0.2s,
-    color 0.2s,
-    border-color 0.2s,
-    box-shadow 0.2s,
-    transform 0.1s;
+  transition: none;
 }
 .page-content .btn-primary:active {
   background: var(--button-bg);
@@ -427,7 +422,7 @@
   .copy-preview-card .preview-text-box {
     transition-property:
       background-color, color, border-color, box-shadow, fill, stroke;
-    transition-duration: 0.25s;
+    transition-duration: 0.08s;
     transition-timing-function: ease;
   }
 }
@@ -463,4 +458,10 @@ body .member-settings-toggle:focus-visible {
 body .member-settings-toggle:focus-visible {
   text-decoration: underline;
   text-underline-offset: 4px;
+}
+
+/* 操作した瞬間に反応を示す。 */
+.page-content .setting-row:active,
+.page-content .setting-control[role="button"]:active {
+  opacity: 0.6;
 }

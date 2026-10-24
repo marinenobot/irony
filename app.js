@@ -3,8 +3,8 @@ import {connectRallySync, isSyncConfigured} from './js/api/rally-sync.js';
 import {createPlayerApi} from './js/api/players.js';
 import {pad2, calculateCastle, calculateDeparture} from './js/domain/timing.js';
 import {lookupMarchTime} from './js/domain/march.js';
-import {initLandingPage} from './js/ui/landing.js';
-import {initSwitchPage} from './js/ui/switch.js';
+import {initLandingPage} from './js/ui/landing.js?v=20261024-fast';
+import {initSwitchPage} from './js/ui/switch.js?v=20261024-fast';
 
 // UI composition root: DOM events, local settings and presentation state.
 // Network transports and time formulas live in js/api and js/domain.
@@ -1891,7 +1891,7 @@ actionBtn.addEventListener('click',()=>{
     flashResults('#impact-display');
     await copyText(txt);
     showToast();
-  }, 500);
+  }, 0);
 });
 
 /* ======= 履歴管理 ======= */

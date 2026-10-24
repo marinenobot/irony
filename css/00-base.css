@@ -102,7 +102,7 @@
   svg * {
     transition-property:
       background-color, color, border-color, box-shadow, fill, stroke;
-    transition-duration: 0.25s;
+    transition-duration: 0.08s;
     transition-timing-function: ease;
   }
 }
@@ -164,16 +164,16 @@ button {
   cursor: pointer;
   margin-top: var(--spacing);
   min-height: var(--touch-target);
-  transition:
-    background 0.2s,
-    transform 0.1s;
+  transition: none;
+  touch-action: manipulation;
 }
 button:hover {
   background: var(--button-bg);
 }
 button:active {
   background: var(--button-bg);
-  transform: scale(0.98);
+  transform: none;
+  opacity: 0.65;
 }
 button:focus {
   outline: none;
@@ -213,7 +213,7 @@ button:focus {
 }
 .collapsible-content {
   overflow: hidden;
-  transition: height 0.3s ease;
+  transition: height 0.12s ease;
 }
 .collapsible-content[aria-hidden="true"] {
   height: 0;
