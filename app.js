@@ -3,7 +3,7 @@ import {connectRallySync, isSyncConfigured} from './js/api/rally-sync.js?v=20261
 import {createPlayerApi} from './js/api/players.js';
 import {pad2, calculateCastle, calculateDeparture} from './js/domain/timing.js';
 import {lookupMarchTime} from './js/domain/march.js';
-import {initLandingPage} from './js/ui/landing.js?v=20261025-toast';
+import {initLandingPage} from './js/ui/landing.js?v=20261025-inline';
 import {initSwitchPage} from './js/ui/switch.js?v=20261024-fast';
 
 // UI composition root: DOM events, local settings and presentation state.
@@ -1334,8 +1334,6 @@ function wireDepartureRowTrigger(el, editorType){
 wireDepartureRowTrigger(document.getElementById('rally-row'), 'rally');
 wireDepartureRowTrigger(document.getElementById('prep-input-group'), 'prep');
 wireDepartureRowTrigger(document.getElementById('l-rally-row'), 'landing-rally');
-wireDepartureRowTrigger(document.getElementById('l-prep-row'), 'landing-prep');
-wireDepartureRowTrigger(document.getElementById('l-two-wave-section'), 'landing-diff');
 wireDepartureRowTrigger(document.getElementById('sw-rally-row'), 'switch-rally');
 wireDepartureRowTrigger(document.getElementById('sw-from-now-row'), 'switch-from-now');
 

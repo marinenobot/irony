@@ -39,3 +39,49 @@ html[data-theme] body #page-calc .departure-march-hint {
   line-height: 1.5;
   color: var(--text-muted);
 }
+
+/* ===== 着弾時刻タブ：準備時間・時差をその場で入力 ===== */
+html[data-theme] body #page-landing .time-in {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+}
+html[data-theme] body #page-landing .time-in input {
+  width: 2.2ch;
+  min-width: 28px;
+  height: 32px;
+  padding: 0 2px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+html[data-theme] body #page-landing .time-in input:focus {
+  background: rgba(0, 122, 255, 0.12);
+  color: #007aff;
+}
+html[data-theme] body #page-landing .time-in input.is-invalid {
+  background: rgba(215, 0, 21, 0.12);
+  color: #d70015;
+}
+html[data-theme] body #page-landing .time-in span {
+  margin-right: 4px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+}
+html[data-theme] body #page-landing .time-in span:last-child {
+  margin-right: 0;
+}
+html[data-theme] body #page-landing #l-prep-row select[hidden],
+html[data-theme] body #page-landing #l-two-wave-section select[hidden] {
+  display: none !important;
+}

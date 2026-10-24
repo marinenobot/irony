@@ -133,6 +133,38 @@ function installRallyPresetCards({landingRallyMinSel, ensureSelectOption}){
   renderCards();
 }
 
+function bindTimeInputs(minInput, secInput, getSeconds, setSeconds){
+  if(!minInput || !secInput) return;
+  const show = () => {
+    const total = getSeconds();
+    minInput.value = String(Math.floor(total / 60));
+    secInput.value = String(total % 60);
+  };
+  const apply = () => {
+    minInput.value = minInput.value.replace(/\D/g, '').slice(0, 2);
+    secInput.value = secInput.value.replace(/\D/g, '').slice(0, 2);
+    const seconds = parseInt(secInput.value, 10) || 0;
+    const invalid = seconds > 59;
+    secInput.classList.toggle('is-invalid', invalid);
+    if(invalid) return;
+    setSeconds((parseInt(minInput.value, 10) || 0) * 60 + seconds);
+  };
+  [minInput, secInput].forEach(input => {
+    input.addEventListener('input', apply);
+    input.addEventListener('focus', () => input.select());
+    input.addEventListener('blur', () => {
+      if(secInput.classList.contains('is-invalid')){
+        secInput.classList.remove('is-invalid');
+      }
+      show();
+    });
+    input.addEventListener('keydown', event => {
+      if(event.key === 'Enter') input.blur();
+    });
+  });
+  show();
+}
+
 export function initLandingPage({nowMs = Date.now, landingRallyMinSel, landingPrepTimeSel, landingDiffMinSel, landingDiffSecSel, ensureSelectOption, marchLabel, copyText, flashResults, showToast}){
   const savedLandingRally = parseInt(localStorage.getItem('landingRallyMin'));
   const savedLandingPrep = parseInt(localStorage.getItem('landingPrepTime'));
@@ -167,6 +199,24 @@ export function initLandingPage({nowMs = Date.now, landingRallyMinSel, landingPr
   landingDiffMinSel.addEventListener('change', updateLandingDiffDisplay);
   landingDiffSecSel.addEventListener('change', updateLandingDiffDisplay);
   updateLandingDiffDisplay();
+
+  // 準備時間・時差はその場で分・秒を入力（値は隠したselectに入れて保存・計算に使う）
+  bindTimeInputs(document.getElementById('l-prep-min'), document.getElementById('l-prep-sec'),
+    () => parseInt(landingPrepTimeSel.value, 10) || 0,
+    total => {
+      ensureSelectOption(landingPrepTimeSel, total, marchLabel(total));
+      landingPrepTimeSel.dispatchEvent(new Event('change'));
+    });
+  bindTimeInputs(document.getElementById('l-diff-min-input'), document.getElementById('l-diff-sec-input'),
+    () => (parseInt(landingDiffMinSel.value, 10) || 0) * 60 + (parseInt(landingDiffSecSel.value, 10) || 0),
+    total => {
+      const minutes = Math.floor(total / 60);
+      const seconds = total % 60;
+      ensureSelectOption(landingDiffMinSel, minutes, `${minutes}分`);
+      ensureSelectOption(landingDiffSecSel, seconds, `${seconds}秒`);
+      landingDiffMinSel.dispatchEvent(new Event('change'));
+      landingDiffSecSel.dispatchEvent(new Event('change'));
+    });
 
   installRallyPresetCards({landingRallyMinSel, ensureSelectOption});
 
