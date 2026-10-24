@@ -19,30 +19,52 @@
 .rally-preset-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 7px;
+  gap: 0;
+  padding: 3px;
+  border-radius: 9px;
+  background: var(--accent-soft);
 }
 
 .rally-preset-button {
   min-width: 0;
-  height: 40px;
+  height: 38px;
+  min-height: 38px;
+  margin: 0;
   padding: 0 4px;
-  border: 1px solid var(--divider);
-  border-radius: var(--control-radius);
-  background: var(--surface);
-  color: var(--text-primary);
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  box-shadow: none;
+  position: relative;
+  color: var(--text-muted);
   font-family: var(--font-ui);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1;
   white-space: nowrap;
   -webkit-tap-highlight-color: transparent;
 }
 
 .rally-preset-button.selected {
-  border-color: var(--border-strong);
-  background: var(--button-bg);
-  color: var(--button-text);
+  background: var(--surface);
+  color: var(--text-primary);
+  font-weight: 700;
+  box-shadow: var(--shadow);
 }
+.rally-preset-button.selected::after {
+  content: "";
+  position: absolute;
+  left: 30%;
+  right: 30%;
+  bottom: 4px;
+  height: 2px;
+  border-radius: 1px;
+  background: currentColor;
+}
+.rally-preset-button:focus:not(:focus-visible) {
+  outline: 0;
+}
+
 
 #rally-row[hidden],
 #l-rally-row[hidden] {
@@ -73,7 +95,10 @@
 
 .rally-preset-sheet {
   width: min(100%, 430px);
-  padding: 12px 14px max(22px, env(safe-area-inset-bottom));
+  padding: 8px 20px max(22px, env(safe-area-inset-bottom));
+  max-height: 85dvh;
+  overflow-y: auto;
+  font-family: var(--font-ui);
   border-radius: 18px 18px 0 0;
   background: var(--surface);
   color: var(--text-primary);
@@ -82,18 +107,25 @@
 
 .rally-preset-sheet-head {
   display: grid;
-  grid-template-columns: 60px 1fr 60px;
+  grid-template-columns: 80px minmax(0, 1fr) 80px;
   align-items: center;
-  height: 38px;
+  min-height: 48px;
 }
 
 .rally-preset-sheet-head strong {
   text-align: center;
-  font-size: 16px;
+  font-size: 15px;
+  white-space: nowrap;
 }
 
 .rally-preset-sheet-head button {
+  width: auto;
+  min-width: 0;
+  margin: 0;
   padding: 6px 0;
+  white-space: nowrap;
+  box-shadow: none;
+  text-align: left;
   border: 0;
   background: transparent;
   color: var(--text-secondary);
@@ -103,40 +135,55 @@
 
 .rally-preset-sheet-head .rally-preset-save {
   color: var(--text-primary);
-  font-weight: 700;
+  font-weight: 600;
+  text-align: right;
 }
 
 .rally-preset-editor {
   display: grid;
-  gap: 8px;
-  margin-top: 12px;
+  gap: 0;
+  margin-top: 8px;
+  border-top: 1px solid var(--divider);
 }
 
 .rally-preset-editor-row {
   display: grid;
-  grid-template-columns: 82px 1fr 26px;
+  grid-template-columns: minmax(0, 1fr) 72px 22px;
   align-items: center;
   gap: 8px;
-  padding: 8px 10px;
-  border: 1px solid var(--divider);
-  border-radius: 10px;
-  background: var(--surface-secondary);
+  min-height: 56px;
+  padding: 4px 0;
+  border: 0;
+  border-bottom: 1px solid var(--divider);
+  border-radius: 0;
+  background: transparent;
 }
 
 .rally-preset-editor-row label,
 .rally-preset-editor-row span {
+  margin: 0;
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 500;
 }
 
-.rally-preset-editor-row input {
+body .rally-preset-editor-row input {
   width: 100%;
   height: 36px;
-  padding: 0 10px;
-  border: 1px solid var(--divider);
-  border-radius: 8px;
-  background: var(--surface);
+  min-width: 0;
+  min-height: 36px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   color: var(--text-primary);
-  font: inherit;
+  font: 600 17px var(--font-ui);
   text-align: right;
+}
+
+/* 入力中は数値の下線だけで示す。 */
+body .rally-preset-editor-row input:focus {
+  outline: 0;
+  box-shadow: none;
+  border-bottom: 1px solid var(--accent);
 }

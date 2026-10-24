@@ -444,3 +444,23 @@
   letter-spacing: -0.16px;
   text-align: right;
 }
+
+/* タップ後に設定行・矢印の四角いフォーカス枠を残さない。 */
+.page-content .setting-row:focus,
+.page-content .setting-control[role="button"]:focus,
+body .member-settings-toggle:focus,
+body .member-settings-toggle:focus-visible {
+  outline: 0;
+  box-shadow: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.page-content .setting-row,
+.page-content .setting-control[role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+.page-content .setting-row:focus-visible .setting-label,
+.page-content .setting-control[role="button"]:focus-visible,
+body .member-settings-toggle:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
