@@ -50,10 +50,14 @@ export async function connectRallySync(config, {loadSdk = loadFirebaseSdk} = {})
         const departureTime = Number.isFinite(Number(value?.departureTime))
           ? Number(value.departureTime)
           : Date.parse(value?.launchTime || '');
-        const impactTime = Number(value?.impactTime);
-        callback(value && Number.isFinite(departureTime)
-          ? {name:value.name || '', departureTime, impactTime:Number.isFinite(impactTime) ? impactTime : null}
-          : null);
+        if(!value || !Number.isFinite(departureTime)){
+          callback(null);
+          return;
+        }
+        const result = {name:value.name || '', departureTime};
+        const impactTime = Number(value.impactTime);
+        if(value.impactTime != null && Number.isFinite(impactTime)) result.impactTime = impactTime;
+        callback(result);
       });
     },
     removeMember:key => sdk.remove(reference(`${MEMBERS_PATH}/${key}`)),

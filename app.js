@@ -1806,22 +1806,13 @@ function generateCopyMessage(sortedRowData){
     dep:row.querySelector('.dep').textContent.trim()||'-'
   }));
   const namedEntries = entries.filter(entry => entry.name);
-  const sameDeparture = namedEntries.length > 0 && namedEntries.every(entry => entry.dep === namedEntries[0].dep);
 
   const lines=[];
-  if(sameDeparture){
-    lines.push(`${rallyMin}分集結お願いします`);
-    lines.push('');
-    lines.push(`着弾時刻:${commonImpactTime} UTC`);
-    lines.push('');
-    namedEntries.forEach(entry => lines.push(`・${entry.name}`));
-  }else{
-    lines.push(`${rallyMin}分集結お願いします！🙇‍♂️🙇‍♂️✨`);
-    lines.push('');
-    entries.forEach(entry => lines.push(`${entry.name || '集結主'} → ${entry.dep} UTC`));
-    lines.push('━━━━━━━━━━━');
-    lines.push(`着弾時刻：${commonImpactTime} UTC`);
-  }
+  lines.push(`${rallyMin}分集結お願いします！🙇‍♂️🙇‍♂️✨`);
+  lines.push('');
+  lines.push(`着弾時刻：${commonImpactTime} UTC`);
+  lines.push('');
+  namedEntries.forEach(entry => lines.push(`・${entry.name}`));
   const msg = lines.join('\n');
   document.getElementById('copy').textContent = msg;
   
