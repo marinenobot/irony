@@ -1,0 +1,22 @@
+/* ===== 選ばれていない（おやすみ）集結主は小さく ===== */
+html[data-theme] body #players .member-row.is-resting .member-identity-row {
+  min-height: 40px !important;
+  height: 40px !important;
+}
+html[data-theme] body #players .member-row.is-resting .name-text {
+  font-size: 14px;
+  font-weight: 500;
+}
+html[data-theme] body #players .member-row.is-resting .member-avatar {
+  transform: scale(0.75);
+}
+html[data-theme] body #players .member-row.is-resting .member-active-check {
+  transform: scale(0.85);
+}
+html[data-theme] body #players .member-row.is-resting .member-departure-status.resting {
+  font-size: 12px;
+  padding: 2px 6px;
+}
+html[data-theme] body #players .member-row.is-resting .member-settings-toggle {
+  transform: scale(0.85);
+}

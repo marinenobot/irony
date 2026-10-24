@@ -31,7 +31,7 @@
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', {light:'#F2F2F7',dark:'#101014'}[theme]);
 })();
 </script>
-<link rel="stylesheet" href="style.css?v=20261025-prep" />
+<link rel="stylesheet" href="style.css?v=20261025-shimei" />
 
 </head>
 <body class="landing-active" data-theme="light">
@@ -76,7 +76,7 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
 
   <!-- ページタブ -->
   <div class="page-tabs">
-    <button type="button" class="page-tab-btn" data-page="page-calc">王城決戦</button>
+    <button type="button" class="page-tab-btn" data-page="page-calc">集結主指名</button>
     <button type="button" class="page-tab-btn active" data-page="page-landing">着弾時刻</button>
     <button type="button" class="page-tab-btn" data-page="page-switch">スイッチ</button>
   </div>
@@ -95,30 +95,14 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
     </div>
 
     <div id="departure-schedule-row" class="setting-row departure-setting-row departure-schedule-row">
-      <span class="setting-label departure-setting-name departure-schedule-label">準備時間</span>
+      <span class="setting-label departure-setting-name departure-schedule-label">今から</span>
 
       <span id="prep-input-group" class="setting-control departure-setting-control" role="button" tabindex="0" aria-haspopup="dialog" aria-label="準備時間を編集">
         <select id="prep-time" class="inline-select" tabindex="-1"></select>
+        <span class="departure-after-text">後</span>
         <button type="button" class="setting-chevron departure-chevron departure-edit-trigger" data-editor="prep" aria-label="準備時間を編集">›</button>
       </span>
 
-    </div>
-
-    <div id="max-march-row" class="setting-row departure-setting-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="一番遅い行軍を編集">
-      <span class="setting-label departure-setting-name">一番遅い行軍</span>
-      <span class="setting-control departure-setting-control">
-        <select id="max-march" class="inline-select" tabindex="-1"><option value="0" selected>0秒</option></select>
-        <button type="button" class="setting-chevron departure-chevron departure-edit-trigger" data-editor="castle-march" aria-label="一番遅い行軍を編集">›</button>
-      </span>
-    </div>
-
-    <div id="diff-row" class="setting-row departure-setting-row" role="button" tabindex="0" aria-haspopup="dialog" aria-label="時差を編集">
-      <span class="setting-label departure-setting-name">時差</span>
-      <span class="setting-control departure-setting-control">
-        <select id="diff-min" class="inline-select" tabindex="-1"><option value="0" selected>0分</option></select>
-        <select id="diff-sec" class="inline-select" tabindex="-1"><option value="0" selected>0秒</option></select>
-        <button type="button" class="setting-chevron departure-chevron departure-edit-trigger" data-editor="castle-diff" aria-label="時差を編集">›</button>
-      </span>
     </div>
   </div>
 
@@ -147,10 +131,9 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
                   <span class="name-text" contenteditable="true" data-placeholder="名前・ID"></span>
                   <span class="member-departure-inline"><span class="member-departure-status">—</span><span class="dep" hidden>-</span></span>
                   <button type="button" class="member-settings-toggle" aria-expanded="false" aria-label="集結主設定"></button>
-                  <span class="member-drag-handle" aria-label="ドラッグで①②を移動" role="button"><i></i><i></i><i></i></span>
                 </div>
                 <div class="member-auto-settings" hidden>
-                  <label class="member-setting-row member-settings-pet-control"><span class="member-setting-label">ペット</span><span class="member-setting-value"><span class="member-pet-remaining"></span><input type="checkbox" class="member-settings-pet-toggle"><span class="stat-boost-switch"></span></span></label>
+                  <div class="member-setting-pair"><div class="member-setting-row"><span class="member-setting-value member-coordinates"><span class="coord-axis">X</span><input class="coord-input coord-x" inputmode="numeric" pattern="[0-9]*" placeholder="598" aria-label="X座標"><span class="coord-axis">Y</span><input class="coord-input coord-y" inputmode="numeric" pattern="[0-9]*" placeholder="606" aria-label="Y座標"></span></div><div class="member-setting-row"><span class="member-setting-value march-control"><select class="march-select"></select><small class="march-auto-badge">手動</small></span></div></div><label class="member-setting-row stat-boost-control"><span class="member-setting-label">ステ強化</span><span class="member-setting-value"><input type="checkbox" class="stat-boost-toggle"><span class="stat-boost-switch"></span></span></label><label class="member-setting-row member-settings-pet-control"><span class="member-setting-label">ペット</span><span class="member-setting-value"><span class="member-pet-remaining"></span><input type="checkbox" class="member-settings-pet-toggle"><span class="stat-boost-switch"></span></span></label>
                 </div>
               </div>
             </div>
@@ -163,10 +146,9 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
                   <span class="name-text" contenteditable="true" data-placeholder="名前・ID"></span>
                   <span class="member-departure-inline"><span class="member-departure-status">—</span><span class="dep" hidden>-</span></span>
                   <button type="button" class="member-settings-toggle" aria-expanded="false" aria-label="集結主設定"></button>
-                  <span class="member-drag-handle" aria-label="ドラッグで①②を移動" role="button"><i></i><i></i><i></i></span>
                 </div>
                 <div class="member-auto-settings" hidden>
-                  <label class="member-setting-row member-settings-pet-control"><span class="member-setting-label">ペット</span><span class="member-setting-value"><span class="member-pet-remaining"></span><input type="checkbox" class="member-settings-pet-toggle"><span class="stat-boost-switch"></span></span></label>
+                  <div class="member-setting-pair"><div class="member-setting-row"><span class="member-setting-value member-coordinates"><span class="coord-axis">X</span><input class="coord-input coord-x" inputmode="numeric" pattern="[0-9]*" placeholder="598" aria-label="X座標"><span class="coord-axis">Y</span><input class="coord-input coord-y" inputmode="numeric" pattern="[0-9]*" placeholder="606" aria-label="Y座標"></span></div><div class="member-setting-row"><span class="member-setting-value march-control"><select class="march-select"></select><small class="march-auto-badge">手動</small></span></div></div><label class="member-setting-row stat-boost-control"><span class="member-setting-label">ステ強化</span><span class="member-setting-value"><input type="checkbox" class="stat-boost-toggle"><span class="stat-boost-switch"></span></span></label><label class="member-setting-row member-settings-pet-control"><span class="member-setting-label">ペット</span><span class="member-setting-value"><span class="member-pet-remaining"></span><input type="checkbox" class="member-settings-pet-toggle"><span class="stat-boost-switch"></span></span></label>
                 </div>
               </div>
             </div>
@@ -434,7 +416,7 @@ document.body.dataset.theme = document.documentElement.dataset.theme || 'light';
 <!-- トースト -->
 <div id="toast" class="toast">✓ コピーしました</div>
 
-<script type="module" src="app.js?v=20261025-prep"></script>
+<script type="module" src="app.js?v=20261025-shimei"></script>
 
 
 
